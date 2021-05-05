@@ -1,6 +1,6 @@
 # defined type
 
-Go言語仕様書を読み進めたり、Type Parameters Proposalを読む上で知っていると便利な概念の一つに"[defined type](https://golang.org/ref/spec#Type_definitions)"があります。
+[Go言語仕様書](https://golang.org/ref/spec)を読み進めたり、[Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/go2draft-type-parameters.md)を読む上で知っていると便利な概念の一つに"[defined type](https://golang.org/ref/spec#Type_definitions)"があります。
 
 この概念はとても重要なのですが言語仕様書上での説明がわかりにくいため、わかりやすく正確に説明するのがこの記事の目的です。
 
