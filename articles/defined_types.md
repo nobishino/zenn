@@ -99,7 +99,7 @@ defined typeの理解が役立つ場面としては、次のようなものが�
 
 これらの成り立つ条件は包含関係にあり、「型の同一性」が最も狭く、「convert可能性」が最も広い、という関係にあります。
 
-![値xと型Tの関係性](./img/go-definedtypes.png)
+(![値xと型Tの関係性](https://storage.googleapis.com/zenn-user-upload/pii0km3h6o3yqokmrr4koiyexx0l)
 
 
 それではこの集合の差分はどのような場合なのでしょうか？実は、この差の部分を記述するために、"defined type"の概念が使われています。詳しく知りたいかたは、Go言語仕様書を確認してみてください。
