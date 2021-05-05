@@ -7,9 +7,9 @@ published: false # 公開設定（falseにすると下書き）
 ---
 # defined type
 
-[Go言語仕様書](https://golang.org/ref/spec)を読み進めたり、[Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/go2draft-type-parameters.md)を読む上で知っていると便利な概念の一つに"[defined type](https://golang.org/ref/spec#Type_definitions)"があります。
+[Go言語仕様書](https://golang.org/ref/spec)を読み進めたり、[Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md)を読む上で知っていると便利な概念の一つに"[defined type](https://golang.org/ref/spec#Type_definitions)"があります。
 
-この概念はとても重要なのですが言語仕様書上での説明がわかりにくいため、わかりやすく正確に説明するのがこの記事の目的です。
+この概念はとても重要なのですが言語仕様書上での説明がわかりにくいため、わかりやすく正確に説明するのがこの記事の目的です。[^footnote_2]
 
 ## defined type の定義
 
@@ -115,8 +115,7 @@ Go言語の型は、[defined type](https://golang.org/ref/spec#Type_definitions)
 
 逆に、defined typeではない型は、型リテラル(type literal)で表される型です。
 
-# 脚注
+[^footnote_2]: この記事は以前の[発表資料](https://docs.google.com/presentation/d/1JSsrv404ZDJSnxp4UcJ3iVYDJAiT3RyETMe9AvbkxuY/edit?usp=sharing)を単独で読めるように記事化したものです。
 
-[^footnote_1]: [Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/go2draft-type-parameters.md)など、公式のドキュメントの中で、"defined type"という語をこれよりも狭い意味に、つまり「型定義により宣言された新しい型」のみを指す意味に用いている場合があるので注意してください。Go言語仕様書の上で正確な定義はあくまでこの記事にあげた2つの場合です。
-
+[^footnote_1]: [Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md)の[この部分](https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#type-lists-in-interface-types)など、公式のドキュメントの中で、"defined type"という語をこれよりも狭く「型定義により宣言された新しい型」のみを指す意味に用いている場合があります。しかし、Go言語仕様書の上で正確な定義はあくまでこの記事にあげた2つの場合です。このように定義がわかりにくい故に混乱した用法も見られることが、この記事を執筆している動機でもあります。
 
