@@ -1,3 +1,10 @@
+---
+title: "Go言語のdefined typeとは何か" # 記事のタイトル
+emoji: "😸" # アイキャッチとして使われる絵文字（1文字だけ）
+type: "tech" # tech: 技術記事 / idea: アイデア記事
+topics: ["go"] # タグ。["markdown", "rust", "aws"]のように指定する
+published: false # 公開設定（falseにすると下書き）
+---
 # defined type
 
 [Go言語仕様書](https://golang.org/ref/spec)を読み進めたり、[Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/go2draft-type-parameters.md)を読む上で知っていると便利な概念の一つに"[defined type](https://golang.org/ref/spec#Type_definitions)"があります。
