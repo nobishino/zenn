@@ -15,7 +15,7 @@ published: false # 公開設定（falseにすると下書き）
 
 Go言語の型は、[defined type](https://golang.org/ref/spec#Type_definitions)である型と、そうでない型の2つに分けられます。
 
-このうち、defined typeである型とは、次の2つのいずれかの型のことです:
+このうち、defined typeである型とは、次の2つのいずれかの型のことです:[^footnote_1]
 
 - [型定義](https://golang.org/ref/spec#Type_definitions)によって宣言された新しい型
 - [事前宣言](https://golang.org/ref/spec#Predeclared_identifiers)された型
@@ -115,5 +115,8 @@ Go言語の型は、[defined type](https://golang.org/ref/spec#Type_definitions)
 
 逆に、defined typeではない型は、型リテラル(type literal)で表される型です。
 
+# 脚注
+
+[^footnote_1]: [Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/go2draft-type-parameters.md)など、公式のドキュメントの中で、"defined type"という語をこれよりも狭い意味に、つまり「型定義により宣言された新しい型」のみを指す意味に用いている場合があるので注意してください。Go言語仕様書の上で正確な定義はあくまでこの記事にあげた2つの場合です。
 
 
