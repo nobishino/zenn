@@ -6,18 +6,63 @@ topics: [go, generics]
 published: false
 ---
 
+- [はじめに](#はじめに)
+- [Type Sets Proposalとは何か](#type-sets-proposalとは何か)
+- [この記事のテーマ: Type Sets Proposalに加えられた変更](#この記事のテーマ-type-sets-proposalに加えられた変更)
+- [interface/constraintに対して制約を追加する](#interfaceconstraintに対して制約を追加する)
+- [なぜこのように制約するのか](#なぜこのように制約するのか)
+- [constraintの包含関係](#constraintの包含関係)
+  - [命題1](#命題1)
+    - [導出1](#導出1)
+  - [命題2](#命題2)
+    - [導出2](#導出2)
+
 # はじめに
 
-TBW
+この記事は、https://github.com/golang/go/issues/45346 に加えられた修正内容とその意味について説明するもので、[Goの"Type Sets" Proposalを読む](https://zenn.dev/nobishii/articles/99a2b55e2d3e50)の続編です。前提となる知識は次のようなものですので、前編を読んでいない方は先に読んでからこの記事を読んだ方がわかりやすいと思います。
 
-# interface/constraintに対して追加された制約の内容
+- Go言語についての初歩的な知識と実装経験(A Tour of Go程度)
+- Type Parameters Proposalの概要
+- [Goの"Type Sets" Proposalを読む](https://zenn.dev/nobishii/articles/99a2b55e2d3e50)の後半の内容
+- underlying typeやmethod setsの理解
+
+この記事では、https://github.com/golang/go/issues/45346 のことを簡単に"Type Sets Proposal"と呼ぶことにします。
+
+内容メモ
+
+- 制約の内容説明
+- モチベーション
+    - インタフェース型の標準形への変換ができるようになる
+    - 標準形に変換されたインタフェース型同士は包含関係を容易に計算できる
+- 標準形への変形の具体例
+- 標準形へ変換できると何が嬉しいか
+
+
+# Type Sets Proposalとは何か
+
+Type Sets Proposalは、Go言語のGenericsの実現方法に関わるProposalです。
+
+より具体的に書くと、Type Sets Proposalとは、Type Parameters Proposalのおける型制約の表現手段であった"type list"を置き換えて改善するProposalです。つまり、これがAcceptedになると、現在のType Parameters Proposalの内容の一部がこのProposalの内容に置き換えられて採用されることになります。
+
+そして、このType Sets ProposalはAcceptされることがおそらく確実([likely accept](https://github.com/golang/go/issues/45346#issuecomment-880098162))で、"Proposal-FinalCommentPeriod"のラベルがつけられています。
+
+# この記事のテーマ: Type Sets Proposalに加えられた変更
+
+その具体的な内容はdescriptionにあるのですが、この記事で紹介したいのはそこからさらに加えられた変更内容です。その内容は、griesemer氏による次のコメントで詳しく説明されています。
+
+https://github.com/golang/go/issues/45346#issuecomment-862505803
+
+丁寧に説明はされているのですが、無駄がなさすぎて少し行間の空いたように感じられる記述でもあるので、より理解しやすく紹介することを試みたいと思います。
+# interface/constraintに対して制約を追加する
+
+変更内容を一言で言うと、「interface/constraintとして許容されるパターンが当初のType Sets Proposalよりも狭く限定される」と言う変更です。具体的には、次のように制約されます。
 
 interface定義において、union elementの要素となる型は、method set部分を持つ型であってはいけません。言い換えると、method set部分を持つ型は、次のようにスタンドアローンで現れなければいけません。
 
 ```go
 // OKな例
 type ConstraintGood interface {
-    interface { // Method setを持つinterfaceはこの形でなら使える
+    interface { // Method set部分を持つinterfaceはこの形でなら使える
         Method()
     }
 }
@@ -27,6 +72,16 @@ type ConstraintBad interface {
     int | interface { Method() } // methodをもつinterface型を、union elementの要素としてはいけない
 }
 ```
+
+ここに2つの例を挙げましたが、当初のType Sets Proposalでは後者の書き方も許されていました。ですが、最新のType Sets Proposalではこれは許されなくなります。(コンパイルエラーになると思われます)
+
+# なぜこのように制約するのか
+
+なぜこのような制約が追加されたのでしょうか？要約すると次のようになります。
+
+- この形のインタフェースは、「標準形」に変形することができる
+- 「標準形」のインタフェース同士は、型セットの包含関係を簡単に計算できる
+- ゆえに、次の
 
 # constraintの包含関係
 
