@@ -132,7 +132,7 @@ interface {
 
 さらにこの`ConstraintTerm`としては`Type`を取ることができます。この`Type`として「『MethodSpecを含むinterface型、及びMethodSpecを含むinterface型をInterfaceTypeNameに埋め込んだinterface型』を使うことはできない」というのが今回の変更内容だと言えます。
 
-※ConstraintTermが1つだけの場合は許可されるべきではないかという気もしますが、そのケースはConstraintElemではなくInterfaceTypeとして許可されるので、`ConstraintTerm`の`Type`に対して上記のinterfaceが禁止される、という規定の仕方で良いと思います。ここは新しい仕様書でどういう記述になるかはわかりません。
+※`ConstraintTerm`が1つだけの場合は許可されるべきではないかという気もしますが、そのケースは`ConstraintElem`ではなく`InterfaceType`として許可されるので、`ConstraintTerm`の`Type`に対して上記の`interface`が禁止される、という規定の仕方で良いと思います。ここは新しい仕様書でどういう記述になるかはわかりません。
 
 
 # なぜこのように制限するのか
