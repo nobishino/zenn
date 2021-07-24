@@ -363,7 +363,7 @@ type Invalid2 interface {
 type MyFloat float64
 
 func(MyFloat) String() string {...}
-func(MyFloat) ToInt() string {...}
+func(MyFloat) ToInt() int {...}
 ```
 
 のような型を定義すれば、`MyFloat`が`Invalid1`を満たすけれども`Invalid2`は満たさないことがわかります。
