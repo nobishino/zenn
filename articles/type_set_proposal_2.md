@@ -85,7 +85,8 @@ type C2 interface {
 ```go
 // ダメな例
 type C2 interface {
-	~int | Stringer		// invalid: Stringerはmethodを定義しているinterface型なので、unionsのtermとして使ってはいけない
+    // invalid: Stringerはmethodを定義しているinterface型なので、unionsのtermとして使ってはいけない
+    ~int | Stringer		
 }
 ```
 
@@ -335,7 +336,8 @@ type C2 interface {
 ```go
 // ダメな例
 type Invalid1 interface {
-	~int | Stringer		// invalid: Stringerはmethodを定義しているinterface型なので、unionsのtermとして使ってはいけない
+    // invalid: Stringerはmethodを定義しているinterface型なので、unionsのtermとして使ってはいけない
+    ~int | Stringer		
     ToInt() int
 }
 ```
