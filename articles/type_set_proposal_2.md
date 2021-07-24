@@ -1,6 +1,6 @@
 ---
 title: "Type Sets Proposalを読む(2)"
-emoji: "💬"
+emoji: "📖"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [go, generics]
 published: false
