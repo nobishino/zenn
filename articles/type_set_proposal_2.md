@@ -8,10 +8,9 @@ published: false
 
 - [はじめに](#はじめに)
 - [Type Sets Proposalとは何か](#type-sets-proposalとは何か)
-- [記事のテーマ: Type Sets Proposalに加えられた変更](#記事のテーマ-type-sets-proposalに加えられた変更)
-- [変更内容: interface/constraintに対して制約を追加する](#変更内容-interfaceconstraintに対して制約を追加する)
+- [interface/constraintに対して制限を追加する](#interfaceconstraintに対して制限を追加する)
   - [EBNFによる表現](#ebnfによる表現)
-- [なぜこのように制約するのか](#なぜこのように制約するのか)
+- [なぜこのように制限するのか](#なぜこのように制限するのか)
 - [具体例](#具体例)
   - [unionsを標準形に変形する](#unionsを標準形に変形する)
   - [標準形のunionsを1つにまとめる](#標準形のunionsを1つにまとめる)
@@ -19,7 +18,7 @@ published: false
   - [最終形](#最終形)
 - [ある型が型制約を満たすかどうかの判定](#ある型が型制約を満たすかどうかの判定)
 - [ある型制約が別な型制約に含まれるかどうかの判定](#ある型制約が別な型制約に含まれるかどうかの判定)
-- [この制約がないとどうなるか](#この制約がないとどうなるか)
+- [この制限がないとどうなるか](#この制限がないとどうなるか)
 
 # はじめに
 
@@ -40,16 +39,15 @@ Type Sets Proposalは、Go言語のGenericsの実現方法に関わるProposal�
 
 より具体的に書くと、Type Sets Proposalとは、Type Parameters Proposalにおける型制約の表現手段であった"type list"を置き換えて改善するProposalです。つまり、現在のType Parameters Proposalの内容の一部がこのProposalの内容に置き換えられて採用されます。
 
-# 記事のテーマ: Type Sets Proposalに加えられた変更
+# interface/constraintに対して制限を追加する
 
 その具体的な内容はdescriptionにあるのですが、この記事で紹介したいのはそこからさらに加えられた変更内容です。その内容は、griesemer氏による次のコメントで詳しく説明されています。
 
 https://github.com/golang/go/issues/45346#issuecomment-862505803
 
 非常に丁寧に説明はされているのですが、それでも十分に難しいので、より具体的に理解しやすく紹介することを試みたいと思います。
-# 変更内容: interface/constraintに対して制約を追加する
 
-変更内容を一言で言うと、「interface/constraintとして許容されるパターンが当初のType Sets Proposalよりも狭く限定される」と言う変更です。具体的には、次のように制約されます。
+変更内容を一言で言うと、「interface/constraintとして許容されるパターンが当初のType Sets Proposalよりも狭く限定される」と言う変更です。具体的には、次のように制限されます。
 
 interface定義において、union element(以下、unionsと書きます)の項(原文では"term"のため以下termと記載します)となる型は、methodをもつinterface型であってはいけません。言い換えると、methodを持つinterface型は、スタンドアローンで現れなければいけません。
 
@@ -136,9 +134,9 @@ interface {
 ※ConstraintTermが1つだけの場合は許可されるべきではないかという気もしますが、そのケースはConstraintElemではなくInterfaceTypeとして許可されるので、`ConstraintTerm`の`Type`に対して上記のinterfaceが禁止される、という規定の仕方で良いと思います。ここは新しい仕様書でどういう記述になるかはわかりません。
 
 
-# なぜこのように制約するのか
+# なぜこのように制限するのか
 
-なぜこのような制約が追加されたのでしょうか？要約すると次のようになります。
+なぜこのような制限が追加されたのでしょうか？要約すると次のようになります。
 
 - この形のunion element(unions)は、「標準形」に変形することができる
 - 「標準形」のunions同士は、型セットの包含関係を比較的簡単に計算できる
@@ -259,7 +257,7 @@ type C interface {
 }
 ```
 
-この具体例に限らず一般的に、Type Sets Proposalに付け加えられた制約の下では、全てのinterface型は、
+この具体例に限らず一般的に、Type Sets Proposalに付け加えられた制限の下では、全てのinterface型は、
 
 ```go
 interface {
@@ -330,7 +328,7 @@ type C2 interface {
     - （※論理的には`D, E, ~F...`の和集合に含まれる、になりますが、Goの型の性質から「複数のtermにまたがって初めて包含される」ような場合はありません）
 - `C1`のmethod setが`C2`のmethod setに含まれる
 
-# この制約がないとどうなるか
+# この制限がないとどうなるか
 
 ここで「禁止される」interface定義をもう一度見てみましょう。
 
