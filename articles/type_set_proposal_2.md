@@ -134,7 +134,6 @@ interface {
 
 ※`ConstraintTerm`が1つだけの場合は許可されるべきではないかという気もしますが、そのケースは`ConstraintElem`ではなく`InterfaceType`として許可されるので、`ConstraintTerm`の`Type`に対して上記の`interface`が禁止される、という規定の仕方で良いと思います。ここは新しい仕様書でどういう記述になるかはわかりません。
 
-
 # なぜこのように制限するのか
 
 なぜこのような制限が追加されたのでしょうか？要約すると次のようになります。
@@ -347,7 +346,7 @@ type Invalid1 interface {
 ```go
 // Invalid1を変形したインタフェース？？？
 type Invalid2 interface {
-	~int 
+    ~int 
     String() string
     ToInt() int
 }
@@ -362,4 +361,6 @@ func(MyFloat) String() string {...}
 func(MyFloat) ToInt() string {...}
 ```
 
-のような型を定義すれば、`MyFloat`が`Invalid1`を満たすけれども`Invalid2`は満たさないことがわかります。どうやってみても、`Invalid1`のtermである`Stringer`をインライン化することはできないのです。そうすると、型制約を満たすかどうかの判定も先程のように単純に2つの問題に分けて考えよう、とはいかなくなります。これをみると、Type Sets Proposalに加えられた変更のメリットがわかりますね。
+のような型を定義すれば、`MyFloat`が`Invalid1`を満たすけれども`Invalid2`は満たさないことがわかります。
+
+結局どうやってみても、`Invalid1`のtermである`Stringer`をインライン化することはできないのです。そうすると、型制約を満たすかどうかの判定も先程のように単純に2つの問題に分けて考えよう、とはいかなくなります。これをみると、Type Sets Proposalに加えられた変更のメリットがわかります。
