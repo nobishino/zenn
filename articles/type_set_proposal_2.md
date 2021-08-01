@@ -57,12 +57,12 @@ interface定義において、union element(以下、unionsと書きます)の�
 
 ```go
 // OKな例
-type Stringer {
+type Stringer interface {
     // そもそもunionsがないので問題なし
     String() string 
 }
 
-type Number {
+type Number interface {
     // unionsがあるが、termであるintとfloatはいずれもnon-interface型なので問題なし
     ~int | ~float64 
 }
