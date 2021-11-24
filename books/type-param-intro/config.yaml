@@ -1,0 +1,10 @@
+title: "Go言語の型パラメータ入門"
+summary: "Go言語に導入される型パラメータの機能と実例を解説します。歴史的経緯などは記述せずに執筆時点の最新仕様だけを解説します。"
+topics: ["Go", "Type parameter", "generics"]
+published: false
+price: 0 # 有料の場合200〜5000
+# 本に含めるチャプターを順番に並べましょう
+chapters:
+  - 00_intro
+  - 01_simple_usage
+  - 10_references
