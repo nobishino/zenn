@@ -74,6 +74,28 @@ max := Max(x, y) // max == NewInt(2)
 
 # underlying type
 
+Go言語の全ての型は、それに対応する"underlying type"という型を持っています。
+
+1つの型に対して、対応するunderlying typeは必ず1つだけ存在します。underlying typeを持たない型や、underlying typeを2つ以上持つ型は存在しません。
+
+## 具体例
+
+まず具体例を見てみます。
+
+```go
+type NewInt int // NewIntのunderlying typeはint
+
+type NewNewInt NewInt // NewNewIntのunderlying typeもint
+
+// intのunderlying typeはint
+
+type IntSlice []int // IntSliceのunderlying typeは[]int
+
+// []intのunderlying typeは[]int
+```
+
+大まかにいうと、`type A B`という形の型定義を左から右に遡ってゆき、それ以上遡れないところにある型がunderlying typeです。
+
 # `constraints`パッケージ
 
 # structralなインタフェースとそのstructural type 
