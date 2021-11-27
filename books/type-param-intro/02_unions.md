@@ -105,7 +105,7 @@ func f[T I](x T) {
 }
 ```
 
-Iを実装する型は`[]int`のみで、かつこの型は`for range`でループすることができる型です。
+`I`を実装する型は`[]int`のみで、かつこの型は`for range`でループすることができる型です。
 このような場合、`I`を型制約とする型パラメータの値に対して`for range`ループを書くことができます。
 
 ::: message
@@ -116,6 +116,7 @@ type I interface {
 	[]int | []string
 }
 とするとコンパイルが通らなくなります。
+```
 
 > cannot range over x (variable of type T constrained by I) (T has no structural type)
 
