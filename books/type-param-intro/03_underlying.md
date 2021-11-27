@@ -75,3 +75,10 @@ max := Max(x, y) // max == NewInt(2)
 # underlying type
 
 # `constraints`パッケージ
+
+# structralなインタフェースとそのstructural type 
+
+https://gospec-previewer.vercel.app/refs/0bacee18fda5733fe0bcf5c15e095f16abce3252#For_statements
+
+> The expression on the right in the "range" clause is called the range expression, which may be an array, pointer to an array, slice, string, map, or channel permitting receive operations. The range expression may also be of type parameter type with a structural constraint in which case the rules below consider the constraint's structural type as the type of the range expression.
+
