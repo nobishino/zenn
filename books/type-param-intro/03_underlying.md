@@ -109,7 +109,9 @@ https://go.dev/ref/spec#Types によると、
 
 のように再帰的な定義になっています。
 
+::: message
 なお、`T`が型パラメータ型の場合も、`T`のunderlying typeは`T`自身です。上記引用箇所はGo1.17の仕様書なのでこれが言及されていません。
+:::
 
 より丁寧な解説を見たいかたは、DQNEOさんによる次の発表を見るのが良いと思います。
 
@@ -220,19 +222,24 @@ type I interface {
 underlying typeと関連の深い新しい概念であるstructural typeについてここで説明します。
 ## 定義
 
+### 型制約がstructuralである
+
 「型制約がstructuralである」という概念を次のように定義します。
 
 - 型制約がstructuralであるとは、次のいずれかが成り立つことをいう。
   - その型制約を満たす（実装する）全ての型のunderlying typeが同一である
   - その型制約を満たす（実装する）全ての型のunderlying typeが同一の要素型を持つchannel型であり、その中に受信専用チャネルと送信専用チャネルが混ざっていないこと
 
+### 型制約の"structural type"
+
 また、型制約がstructuralであるとき、その共通のunderlying typeのことをstructural typeと呼びます。そうでないとき、structural typeは存在しません。
 
+:::message
 ここでは2つの概念を定義していることに気をつけてください。
 
 - 型制約がstructuralであるとはどういうことか
 - 型制約「の」structural typeとは何か
-
+:::
 ## 具体例
 
 次の型制約はstructuralでしょうか？またその場合structural typeは何でしょうか？
@@ -248,7 +255,7 @@ type C2 interface {
 ```
 
 - `C1`を実装する全ての型のunderlying typeは`[]int`なので`C1`はstructuralで、そのstructural typeは`[]int`です。
-- `C2`を実装する型は`int`, `string`なのでunderlying typeは同一でなく`C2`はstructuralではありません。
+- `C2`を実装する型は`int`, `string`なのでunderlying typeは同一でなく`C2`はstructuralではありません。よって、`C2`のstructural typeは存在しません。
 
 ## structural typeの登場場面
 
@@ -259,6 +266,8 @@ type C2 interface {
 - for range
 - 制約型推論(後述)
 
+本章では最初の3つについて説明します。
+
 ## 代入可能性
 
 型パラメータ型の変数に対する代入を考えてみましょう。味気ない例ですが、次のコードは動作します。
@@ -268,10 +277,6 @@ https://gotipplay.golang.org/p/UJz2aE7bqH_e
 ```go
 type C interface {
 	~[]int
-}
-
-func main() {
-
 }
 
 func F[T C](x T) {
@@ -286,10 +291,6 @@ https://gotipplay.golang.org/p/5f8DKNv6Hq_E
 ```go
 type C interface {
 	~[]int | string // stringを増やした
-}
-
-func main() {
-
 }
 
 func F[T C](x T) {
@@ -377,8 +378,3 @@ func f[T I](x T) {
 ```
 
 > ./prog.go:11:12: cannot range over x (variable of type T constrained by I) (T has no structural type)
-
-https://gospec-previewer.vercel.app/refs/0bacee18fda5733fe0bcf5c15e095f16abce3252#For_statements
-
-> The expression on the right in the "range" clause is called the range expression, which may be an array, pointer to an array, slice, string, map, or channel permitting receive operations. The range expression may also be of type parameter type with a structural constraint in which case the rules below consider the constraint's structural type as the type of the range expression.
-
