@@ -104,10 +104,12 @@ https://go.dev/ref/spec#Types によると、
 
 とあります。つまり、
 
-- `T`が事前宣言されたboolean, 数値, 文字列型や型リテラルの場合は`T`のunderlying typeは`T`自身
-- それ以外の場合、(`T`は`type T X`のように定義された型なので)`T`のunderlying typeは`X`のunderlying type
+- `T`が事前宣言されたboolean, 数値, 文字列型や型リテラルのとき、`T`のunderlying typeは`T`自身である
+- それ以外の場合、(`T`は`type T X`のように定義された型なので)`T`のunderlying typeは`X`のunderlying typeである
 
 のように再帰的な定義になっています。
+
+なお、`T`が型パラメータ型の場合も、`T`のunderlying typeは`T`自身です。上記引用箇所はGo1.17の仕様書なのでこれが言及されていません。
 
 より丁寧な解説を見たいかたは、DQNEOさんによる次の発表を見るのが良いと思います。
 
@@ -116,9 +118,9 @@ https://go.dev/ref/spec#Types によると、
 
 # `constraints`パッケージと`unions`
 
-`<, >`で比較可能な型を`unions`で列挙できることは分かりましたが、実際に全ての方を書こうとすると面倒だなと思われた方もいると思います。
+`<, >`で比較可能な型を`unions`で列挙できることは分かりましたが、実際に全ての型を書こうとすると面倒だなと思われた方もいると思います。
 
-そこで、順序付できるとか、足し算ができるなどの基本的な型制約は標準パッケージ`constraints`で提供されることになりました。
+そこで、順序付けできるとか、数値型である、などの基本的な型制約は標準パッケージ`constraints`で提供されることになりました。
 
 https://github.com/golang/go/blob/master/src/constraints/constraints.go
 
@@ -213,7 +215,168 @@ type I interface {
 
 # structralなインタフェースとそのstructural type 
 
-さて、前章で扱った`for range`ループ
+※この節の内容はスキップしても大丈夫です。
+
+underlying typeと関連の深い新しい概念であるstructural typeについてここで説明します。
+## 定義
+
+「型制約がstructuralである」という概念を次のように定義します。
+
+- 型制約がstructuralであるとは、次のいずれかが成り立つことをいう。
+  - その型制約を満たす（実装する）全ての型のunderlying typeが同一である
+  - その型制約を満たす（実装する）全ての型のunderlying typeが同一の要素型を持つchannel型であり、その中に受信専用チャネルと送信専用チャネルが混ざっていないこと
+
+また、型制約がstructuralであるとき、その共通のunderlying typeのことをstructural typeと呼びます。そうでないとき、structural typeは存在しません。
+
+ここでは2つの概念を定義していることに気をつけてください。
+
+- 型制約がstructuralであるとはどういうことか
+- 型制約「の」structural typeとは何か
+
+## 具体例
+
+次の型制約はstructuralでしょうか？またその場合structural typeは何でしょうか？
+
+```go
+type C1 interface {
+	~[]int
+}
+
+type C2 interface {
+	int | string
+}
+```
+
+- `C1`を実装する全ての型のunderlying typeは`[]int`なので`C1`はstructuralで、そのstructural typeは`[]int`です。
+- `C2`を実装する型は`int`, `string`なのでunderlying typeは同一でなく`C2`はstructuralではありません。
+
+## structural typeの登場場面
+
+このstructural typeですが、次のような場面で登場します。
+
+- 代入可能性
+- composite literals
+- for range
+- 制約型推論(後述)
+
+## 代入可能性
+
+型パラメータ型の変数に対する代入を考えてみましょう。味気ない例ですが、次のコードは動作します。
+
+https://gotipplay.golang.org/p/UJz2aE7bqH_e
+
+```go
+type C interface {
+	~[]int
+}
+
+func main() {
+
+}
+
+func F[T C](x T) {
+	x = []int{} // 型Tの変数xに[]intの値を代入している
+}
+```
+
+しかし、次のコードは動作しません。
+
+https://gotipplay.golang.org/p/5f8DKNv6Hq_E
+
+```go
+type C interface {
+	~[]int | string // stringを増やした
+}
+
+func main() {
+
+}
+
+func F[T C](x T) {
+	x = []int{} // 代入できない
+}
+```
+
+`C`の型の「範囲」は広がっているのに代入ができなくなるのは不思議な気もします。これは次のように考えてください。
+
+`T`と`[]int`は異なる型なので、`T`型の変数`x`に`[]int{}`を代入するためには、`T`のunderlying typeが`[]int`であることが必要だ、というのがGo1.17の仕様です。
+ところが今`T`は型パラメータなので、`T`のunderlying typeは`T`自身です。
+このような場合、`T`のunderlying typeの代わりに、`T`の制約のstructural typeを使う、というのが新しく追加される仕様です。
+
+つまり、`T`の制約である`C`のstructural typeが`[]int`なので最初の例は代入できましたが、二つ目の例は`C`のstructural typeが存在しないために代入できなくなったということです。
+
+## composite literals
+
+型パラメータ型を使って、composite literalsを書くことができる場合があります。
+その条件にもstructural typeが関係しています。
+
+例えば次のコードは動作します。
+
+https://gotipplay.golang.org/p/RFvZrv_hp6T
+
+```go
+type C interface { // structural type = struct { Field int }
+	struct{ Field int }
+}
+
+func F[T C](T) {
+	_ = T{Field: 1} // composite literalを作れる
+}
+```
+
+しかし次のコードは動作しません。
+
+https://gotipplay.golang.org/p/7UY0hO2-rlj
+
+```go
+type C interface {
+	struct{ Field int } | struct { Field int `tag` }
+}
+
+func F[T C](T) {
+	_ = T{Field: 1}
+}
+```
+
+composite literalを作るのに使う型名が型パラメータ型の名前である場合、その制約はstructural typeを持っていなければいけません。
+2つ目の例は、全く同じ構造のstruct型のunionsであるにもかかわらず、struct tagの有無によって型の同一性が満たされず、`C`のstructural typeが存在しないため、`T`のcomposite literalは作れません。
+
+## `for range`ループ
+
+前章`for range`ループについて扱いましたが、実は型パラメータ型に対して`for range`ループを回すためには、制約がstructural typeを持っていないといけません。
+
+例えば次の例は動作します。
+
+https://gotipplay.golang.org/p/ec6KpsOHgHv
+
+```go
+// 動作する例
+type I interface {
+	[]int 
+}
+
+func f[T I](x T) {
+	for range x {
+	}
+}
+```
+
+しかし次の例は（どちらもスライスであるにもかかわらず）動作しません。
+
+https://gotipplay.golang.org/p/biQ_41vglso
+
+```go
+type I interface {
+	[]int | []string
+}
+
+func f[T I](x T) {
+	for range x {
+	}
+}
+```
+
+> ./prog.go:11:12: cannot range over x (variable of type T constrained by I) (T has no structural type)
 
 https://gospec-previewer.vercel.app/refs/0bacee18fda5733fe0bcf5c15e095f16abce3252#For_statements
 
