@@ -3,7 +3,7 @@ title: "Goジェネリクス入門(上)" # 記事のタイトル
 emoji: "😸" # アイキャッチとして使われる絵文字（1文字だけ）
 type: "tech" # tech: 技術記事 / idea: アイデア記事
 topics: ["go"] # タグ。["markdown", "rust", "aws"]のように指定する
-published: false # 公開設定（falseにすると下書き）
+published: true # 公開設定（falseにすると下書き）
 ---
 
 Go1.18のリリースは2022年３月の予定になっており、ジェネリクスを含む言語仕様書はかなりの頻度で加筆修正されています。
