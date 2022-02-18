@@ -7,4 +7,12 @@ price: 0 # 有料の場合200〜5000
 chapters:
   - 00_intro
   - 01_simple_usage
+  - 02_unions
+  - 03_underlying
+  - 04_multiple_params
+  - 05_instantiation
+  - 06_type_sets
+  - 07_slices
+  - 08_maps
+  - 09_enum
   - 10_references
