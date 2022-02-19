@@ -704,28 +704,74 @@ type I interface {
 この点については筆者資料の[Type Sets Proposalを読む(2)](https://zenn.dev/nobishii/articles/type_set_proposal_2)で議論しています。
 :::
 
-## core type
+# core type
 
 underlying typeを一般化した新しい概念であるcore typeと、それがどのように仕様に関わるかについて説明します。
 
-### 定義
+## 定義
 
 https://tip.golang.org/ref/spec#Core_types
 
-### core typeが存在する場合としない場合
+定義はこちらにあるのですが、
 
-Go言語の型はcore typeという型を持つ場合と持たない場合があります
+- この定義どおりに読むと型セット(type set)の概念が必要なので型セットを使わずに読み替えたい
+- 型パラメータ型のcore typeについて言語仕様書の記述に疑問がある
 
-- 型`T`がinterface型でないとき、`T`のcore typeは`T`のunderlying typeである
+ことから、筆者が妥当と考えている定義を以下記載します。言語仕様書がアップデートされ次第こちらもできるだけメンテするつもりです。
+
+## core typeが存在する場合としない場合
+
+Go言語の型はcore typeという型を持つ場合と持たない場合があります。型`T`がcore typeを持つのは、次の場合です。
+
+- `T`がインタフェース型でも型パラメータでもないとき
+- `T`がインタフェース型であり、つぎのいずれかに該当するとき
+	- `T`を実装する全ての型のunderlying type`U`が同一であるとき
+	- `T`を実装する全ての型は、同一の要素型`E`のチャネル型であり、かつ、それらが方向付きチャネルを含む場合にはその方向が同一であるとき
+		- つまり、`E`の受信チャネル`<-chan E`と送信チャネル`chan<- E`の両方は含んでいないとき
+- `T`が型パラメータであり、その型制約(常にインタフェース型)がcore typeをもつとき
+
+これ以外のすべての場合、`T`はcore typeを持ちません。
+
+`T`がcore typeをもつ場合、それぞれのケースにおいてcore typeは次のように決まります。
+
+- 型`T`がinterface型でも型パラメータでもないとき、`T`のcore typeは`T`のunderlying typeである
 - 型`T`がinterface型のとき
-  - その`T`を実装する全ての型のunderlying typeが同一であるとき、そのunderlying typeが`T`のcore typeである
+  - その`T`を実装する全ての型のunderlying type`U`が同一であるとき、`T`のcore typeは`U`である
   - その`T`を実装する全ての型のunderlying typeが同一の要素型`E`を持つchannel型であり、
-    - underlying typeが双方向チャネルのみであれば、その双方向チャネル型`chan E`が`T`のcore typeである
+    - underlying typeが双方向チャネル型のみであれば、その双方向チャネル型`chan E`が`T`のcore typeである
     - 受信チャネル`<-chan E`か送信チャネル`chan<- E`のどちらか一方のみがunderlying typeに含まれていれば、それが`T`のcore typeである
-    - 受信チャネルと送信チャネルが混ざっているとき、`T`のcore typeは存在しない
-  - それ以外のすべての場合、`T`のcore typeは存在しない
+- 型`T`が型パラメータ型で、`T`の型制約がcore typeを持つとき、それが`T`のcore typeである
 
-### 具体例
+channelの場合には例外的な規定が必要なのでややこしくなっていますが、大雑把に言えば次のような理解で大丈夫です。
+
+### 大雑把なcore typeの理解
+
+- `T`がインタフェース型でも型パラメータでもないとき、`T`のcore typeは`T`のunderlying type
+ - これは常に正しい
+- `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一であれば`T`はcore typeを持ち、`T`のcore typeは`U`
+ - これは常に正しい
+- `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一であれば`T`はcore typeを持ち、`T`のcore typeは`U`
+- `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一でなければ`T`はcore typeを持たない
+  - これは厳密には正しくない
+- `T`が型パラメータであるとき、`T`のcore typeは`T`の型制約のcore type(core typeが存在するかしないか含めて型制約に従う)
+
+:::message
+
+言語仕様上、型パラメータ`T`のcore typeは文言通りに読むと`T`のunderlying typeである型制約になります。しかし、仕様書の随所で「型パラメータのcore type」という言い方を「制約のcore type」の意味で用いている箇所が見られ、かつその用語法がむしろ便利である（だからこそ厳密ではないのに使われてしまっている）と考えたため、本記事では型パラメータのcore typeは型制約のcore typeであるとしました。
+
+そのような用法の一例を挙げます:
+
+https://tip.golang.org/ref/spec#Composite_literals
+
+> The LiteralType's core type T must be a struct, array, slice, or map type
+
+これは型パラメータ`T`が"LiteralType"に相当する場合にでコンポジットリテラル`T{}`が作れることへの言及であり、`T`のcore typeは明らかに`T`の型制約のcore typeと解釈されています。
+
+一方、core typeの文言上の定義によれば型パラメータ`T`はインタフェース型ではないのでunderlying type = core typeのはずです。
+
+:::
+
+## 具体例
 
 次の型制約はcore typeをもつでしょうか？またその場合core typeは何でしょうか？
 
@@ -742,7 +788,7 @@ type C2 interface {
 - `C1`を実装する全ての型のunderlying typeは`[]int`なので`C1`はcore typeをもち、core typeは`[]int`です。
 - `C2`を実装する型は`int`, `string`なのでunderlying typeは同一でなく`C2`はcore typeをもちません。
 
-### core typeの登場場面
+## core typeの登場場面
 
 このcore typeですが、次のような場面で登場します。
 
@@ -753,7 +799,7 @@ type C2 interface {
 
 本章では最初の3つについて説明します。
 
-#### 代入可能性
+## 代入可能性
 
 型パラメータ型の変数に対する代入を考えてみましょう。味気ない例ですが、次のコードは動作します。
 
@@ -791,7 +837,7 @@ func F[T C](x T) {
 
 つまり、`T`の制約である`C`のcore typeが`[]int`なので最初の例は代入できましたが、二つ目の例は`C`のcore typeが存在しないために代入できなくなったということです。
 
-#### composite literals
+## composite literals
 
 型パラメータ型を使って、composite literalsを書くことができる場合があります。
 その条件にもcore typeが関係しています。
@@ -827,7 +873,7 @@ func F[T C](T) {
 composite literalを作るのに使う型名が型パラメータ型の名前である場合、その制約はcore typeを持っていなければいけません。
 2つ目の例は、全く同じ構造のstruct型のunionsであるにもかかわらず、struct tagの有無によって型の同一性が満たされず、`C`のcore typeが存在しないため、`T`のcomposite literalは作れません。
 
-#### `for range`ループ
+## `for range`ループ
 
 前章`for range`ループについて扱いましたが、実は型パラメータ型に対して`for range`ループを回すためには、制約がcore typeを持っていないといけません。
 
@@ -864,7 +910,7 @@ func f[T I](x T) {
 
 ./prog.go:11:12: cannot range over x (variable of type T constrained by I) (T has no core type)
 
-#### 制約型推論とcore type
+## 制約型推論とcore type
 
 他にcore typeの関連仕様として欠かせないのは型推論アルゴリズムの一部である「制約型推論」です。
 「制約型推論」が適用されるためには、型制約がcore typeをもつことが必要となっています。これを理解することで、「なんでこれは型推論できるのにこれはできないの？」という疑問にスッキリ答えられるようになるでしょう。
@@ -876,3 +922,7 @@ func f[T I](x T) {
 - `~`近似要素をつかうと型定義によって作りうる無限の型にインタフェースを実装させることができる
 - `~T`は`T`をunderlying typeに持つすべての型を表す
 - core typeはunderlying typeを拡張したような概念で、型推論をはじめ型パラメータの関わる言語仕様の随所に現れる重要概念
+
+## 最後に
+
+この記事をかくにあたり[#gospecreading](https://gospecreading.connpass.com/)から得られた理解が本質的でした。いつもありがとうございます。
