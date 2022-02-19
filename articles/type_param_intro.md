@@ -747,12 +747,9 @@ channelの場合には例外的な規定が必要なのでややこしくなっ�
 ### 大雑把なcore typeの理解
 
 - `T`がインタフェース型でも型パラメータでもないとき、`T`のcore typeは`T`のunderlying type
- - これは常に正しい
 - `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一であれば`T`はcore typeを持ち、`T`のcore typeは`U`
- - これは常に正しい
 - `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一であれば`T`はcore typeを持ち、`T`のcore typeは`U`
-- `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一でなければ`T`はcore typeを持たない
-  - これは厳密には正しくない
+- `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一でなければ`T`はcore typeを持たない(これはchannelの例外があり厳密には正しくない)
 - `T`が型パラメータであるとき、`T`のcore typeは`T`の型制約のcore type(core typeが存在するかしないか含めて型制約に従う)
 
 :::message
