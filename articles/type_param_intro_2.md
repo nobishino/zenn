@@ -14,6 +14,7 @@ published: false # 公開設定（falseにすると下書き）
     - [型推論が成功してもインスタンス化が失敗することはある](#型推論が成功してもインスタンス化が失敗することはある)
   - [全体像](#全体像)
 - [型推論の概要](#型推論の概要)
+  - [unification(unify)の直感的説明](#unificationunifyの直感的説明)
   - [関数引数型推論(概要)](#関数引数型推論概要)
   - [制約型推論(概要)](#制約型推論概要)
 - [unification/unify](#unificationunify)
@@ -229,9 +230,86 @@ f(x) // xは型あり引数
 
 :::
 
+## unification(unify)の直感的説明
+
+型推論の厳密な説明には、unification(unify)の理解が必要です。
+
+しかし、unificationの厳密な説明をすると前置きが長くなってしまうので、ここでは
+
+- unificationとは、型パラメータを含む2つの型をパターンマッチングする仕組みである
+- パターンマッチングした結果、substitution map entryが作られる
+
+ことを具体例から感じ取ってください。
+
+| 型1 | 型2 | つくられるsubstitution map entry |
+| ---- | ---- | ---- |
+| `[]map[int]bool`| `T1` | `T1 -> []map[int]bool` |
+| `[]map[int]bool`| `[]T1` | `T1 -> map[int]bool` |
+| `[]map[int]bool`| `[]map[T1]T2` | `T1 -> int, T2 -> bool` |
+| `[]map[int]bool`| `*T` | unification失敗し、entryはつくられない |
+
+ここで、**substitution mapとは、型推論によって作られるkey->valueストアであって、未知の型パラメータをkeyとし、他の型をvalueとするもの**です。
+
+型推論の目的は、substitution mapを完成させて、未知の型パラメータを具体的な型引数に対応付けることだと言えます。
+
+ここまでの言葉を使って少しフォーマルに言い直すと、「**unificationとは、2つの型を受け取って動作するルーチン**であり、その結果として**substitution mapに0個以上のエントリを追加する**もの」だと言えます。
+
+ですから、今後unificationが出てきたときは、「受け取る2つの型は何なのか？」ということを問いながら読みすすめると理解がしやすいとおもいます。
 ## 関数引数型推論(概要)
 
+関数引数型推論は、「関数に渡された実引数の型」と、「関数の引数の型」をunifyします。ただし、このunificationは、関数の引数の型が型パラメータを含むときにのみ行われます。
+
+例を挙げましょう。
+
+
+```go
+func f[T any](x T) {...}
+
+var x int
+f(x)
+```
+
+この関数呼び出し`f(x)`では型パラメータ`T`が未知なので型推論が起動します。`x`の型`int`と, パラメータの型`T`がunificationルーチンの「引数」となります。`T`と`int`のunificationによりentry`T -> int`がsubstitution mapに追加され、ここですべての型パラメータが既知となるため型推論が完了します。
+
 ## 制約型推論(概要)
+
+制約型推論は、「型パラメータ」と、「その型パラメータに課された型制約」をunifyします。
+ただし、型制約がcore typeを持つ場合にのみ制約型推論が起動されます。
+
+:::message
+
+core typeについては[前編](https://zenn.dev/nobishii/articles/type_param_intro#core-type)を参照ください。
+
+:::
+
+:::message
+
+型制約はインタフェース型であり、よってもちろんそれ自体が「型」であることを注意しておきます。「unificationは2つの型を受け取るルーチンである」と書いたとおりですね。
+
+:::
+
+例を挙げましょう。
+
+https://gotipplay.golang.org/p/juIw_gcBT5U
+
+```go
+func main() {
+	l := []int{1, 2, 3}
+	fmt.Println(Head(l)) // 1
+}
+
+func Head[Elem any, List ~[]Elem](list List) Elem {
+	return list[0]
+}
+```
+
+このジェネリックな`Head`関数は2つの型パラメータ`Elem, List`を持ちますが、1つの引数`l`だけから両方の型パラメータを決定できます。それは制約型推論が次のように動作するからです。
+
+1. まず関数引数型推論(型あり)により、`l`の型`[]int`と対応する型パラメータ`List`がunifyされ、entry `List -> []int`が作られる
+1. 次に制約型推論が`List`に対して起動する。
+   1. `List`の型制約`~[]Elem`はcore typeをもつ型であるので、そのcore type`[]Elem`と`List`がunifyされ、entry `[]Elem -> List`ができる。
+   2. 
+
 
 # unification/unify
 
