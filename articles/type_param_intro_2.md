@@ -22,8 +22,7 @@ published: false # 公開設定（falseにすると下書き）
     - [例](#例)
   - [型の同一性(identity)と等価性(equivalence)](#型の同一性identityと等価性equivalence)
     - [等価性の例](#等価性の例)
-- [関数引数型推論の厳密な定式化](#関数引数型推論の厳密な定式化)
-- [制約型推論の厳密な定式化](#制約型推論の厳密な定式化)
+  - [等価性とunificationの例](#等価性とunificationの例)
 - [具体例や未解決の問題](#具体例や未解決の問題)
   - [公式ドキュメントに見る制約型推論の活用例](#公式ドキュメントに見る制約型推論の活用例)
   - [関数引数型推論と引数の順序](#関数引数型推論と引数の順序)
@@ -53,6 +52,7 @@ published: false # 公開設定（falseにすると下書き）
 | リンク | 内容紹介 |
 | ---- | ---- |
 | [GopherCon 2021: Robert Griesemer & Ian Lance Taylor - Generics!](https://www.youtube.com/watch?v=Pa_e9EeCdy8) | [英語] Go言語開発者によるジェネリクス解説です。前半のgriesemer氏の発表部分に型セットの説明があります。| 
+| [Type Parameters Proposal](https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md) | [英語] ジェネリクスのプロポーザルドキュメントです。型セットについては[ここ](https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#type-sets)で説明されています。 |
 | [Go の "Type Sets" proposal を読む - Zenn](https://zenn.dev/nobishii/articles/99a2b55e2d3e50)| Type Setsのプロポーザルが出たときに書いた記事です。前半は経緯の解説なので今は読む必要ありません。Type setの仕様は後半で解説しています。| 
 | [初めての型セット](https://speakerdeck.com/nobishino/introduction-to-type-sets) | Go1.17リリースパーティの発表スライドです。「型セット」と「実装」の概念理解にフォーカスしています。 すこし図があります。|
 | [Go言語仕様書(Go1.18ドラフト) - Interface types](https://tip.golang.org/ref/spec#Interface_types) | 言語仕様書の型セット該当部分です。 |
@@ -413,7 +413,7 @@ unificationの厳密な定義をみたとき、腑に落ちなさを感じる方
 
 https://go.dev/ref/spec#Type_identity
 
-ここで厳密な定義を解説することはしませんが、`type A B`というように型定義したときに`A`と`B`とはことなる型であるということだけ注意してください。
+ここで厳密な定義を解説することはしませんが、`type A B`というように型定義したときに`A`と`B`とは異なる型であるということだけ注意してください。
 
 **定義(型の等価性)**
 
@@ -441,14 +441,77 @@ type Y chan MyInt
 
 このように定義した`X, Y`は等価ではありません。
 
-# 関数引数型推論の厳密な定式化
+## 等価性とunificationの例
 
-# 制約型推論の厳密な定式化
+等価性があってはじめてunificationが成功する例を挙げましょう。
+
+https://gotipplay.golang.org/p/ckSANEXiR9c
+
+```go
+package main
+
+import "fmt"
+
+type A chan int
+type X[T ~<-chan U | ~chan U, U any] struct {
+	T T
+	U U
+}
+
+func main() {
+	var x X[A]
+	fmt.Printf("T: %T, U: %T\n", x.T, x.U)
+	// T: main.A, U: int
+}
+```
+
+ジェネリックな型`X`は型パラメータ`T, U`を持ちますが、宣言`var x X[A]`において１つの型引数しか渡されていません。
+よって、制約型推論によって`U`が決定できないとコンパイルエラーになってしまいます。
+
+この型推論は次のように進みます。
+
+- エントリー`T -> A`は明示的に与えられます。
+- 型パラメータ`U`の制約`any`はcore typeが存在しない型なので、`U`についての制約型推論は行われません。
+- 型パラメータ`T`の制約`~<-chan U | ~chan U`はcore type`<-chan U`を持ちます。よって制約型推論により、`T`と`<-chan U`のunificationを行いますが、`T`は`A`であることがすでにわかっているので、`A`と`<-chan U`のunificationを行います。
+- つまり、エントリー`U -> ?`を追加することで`type A chan int`と`<-chan U`を等価にすることができるかどうかが問題になります。
+- 試みとして、`U -> int`というエントリーを追加すると仮定しましょう。
+- `type A chan int`と`<-chan int`が等価かどうか？を考えます。
+- この2つは同一ではないので、1つ目の条件にはあてはまりません。
+- `A`は`chan int`とは異なる型なので、channelの方向を無視しても同一の型にはなりません。よって2つ目の条件にもあてはまりません。
+- 最後にunderlying typeを考えると、`A`のunderlying typeは`chan int`であり、これは方向を無視すれば`<-chan int`と同一の型になります。よって等価性の3番めの条件を満たしています。
+- つまり、エントリー`U -> int`を追加することで、型`A`と`<-chan int`を等価にすることができたので、このエントリーの追加をもってunificationが成功しました。
+- これですべての型パラメータが確定したので、型推論が完了します。
+
+:::message
+
+このcore typeは難しいパターンなので、[前編のcore type部分](https://zenn.dev/nobishii/articles/type_param_intro#core-type)を見直してください。
+
+:::
+
+:::message
+
+上記の例だとあたかもエントリーを「あてずっぽう」に決めているように見えるので違和感をおぼえるかもしれません。
+
+もちろん実際のコンパイラは決まったアルゴリズムでエントリーを発見しているはずですが、前述の通りunificationが可能であることを示すためには実際に等価性を満たすことのできるエントリーが存在することを言えば十分です。
+
+:::
 
 # 具体例や未解決の問題
 
 ## 公式ドキュメントに見る制約型推論の活用例
 
+Type Parameters Proposalに出てくる、[Pointer method example](https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#pointer-method-example)を解説します。
+
+:::message
+
+このセクションはほとんどproposalにかかれている通りのことを書きます。ここで挙げるのは、制約型推論の応用として面白い例だからです。
+
+:::
+
 ## 関数引数型推論と引数の順序
 
+https://github.com/golang/go/issues/43056
+
 ## 制約型推論とdefined type、型推論インタリービング
+
+https://github.com/golang/go/issues/51139
