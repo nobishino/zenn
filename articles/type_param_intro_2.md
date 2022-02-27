@@ -230,7 +230,7 @@ f(x) // xは型あり引数
 | `[]map[int]bool`| `[]map[T1]T2` | `T1 -> int, T2 -> bool` |
 | `[]map[int]bool`| `*T` | unification失敗し、entryはつくられない |
 
-ここで、**substitution mapとは、型推論によって作られるkey->valueストアであって、未知の型パラメータをkeyとし、他の型をvalueとするもの**です。
+ここで、**substitution mapとは、型推論によって作られるkey->valueストアであって、型パラメータをkeyとし、他の型をvalueとするもの**です。
 
 型推論の目的は、substitution mapを完成させて、未知の型パラメータを具体的な型引数に対応付けることだと言えます。
 
