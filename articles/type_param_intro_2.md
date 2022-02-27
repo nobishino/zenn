@@ -498,6 +498,8 @@ func main() {
 
 # 具体例や未解決の問題
 
+いくつか型推論にまつわる面白い話題を挙げてこの記事を終わります。
+
 ## 公式ドキュメントに見る制約型推論の活用例
 
 Type Parameters Proposalに出てくる、[Pointer method example](https://go.googlesource.com/proposal/+/refs/heads/master/design/43651-type-parameters.md#pointer-method-example)を解説します。
@@ -508,10 +510,20 @@ Type Parameters Proposalに出てくる、[Pointer method example](https://go.go
 
 :::
 
+
+
 ## 関数引数型推論と引数の順序
 
 https://github.com/golang/go/issues/43056
 
+関数引数型推論において、unifyしうる型のペアが複数あるとき、どの順序でunifyを行うかは未定義です。
+ほとんどの場合、順序によって結果が変わることはありませんが、結果が変わる厄介な例が挙げられています。
+
 ## 制約型推論とdefined type、型推論インタリービング
 
 https://github.com/golang/go/issues/51139
+
+制約型推論とdefined type、代入可能性の兼ね合いでコンパイルできないコードが挙げられています。
+Go1.18仕様では関数引数型推論と制約型推論を別のステップで行いますが、関数引数型推論の対象となるペアが複数ある場合に間に制約型推論を挟み込むことでコンパイルが可能になるのではないかという提案がなされています。(issueでいうところのinterleaved world)
+
+問題はこれがGo1.18との後方互換性を持つかどうかで、griesemer氏は「おそらく後方互換性があるだろう」と述べています。
