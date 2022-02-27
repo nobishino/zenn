@@ -20,9 +20,8 @@ published: false # 公開設定（falseにすると下書き）
 - [unification/unify](#unificationunify)
   - [unificationの厳密な定義](#unificationの厳密な定義)
     - [例](#例)
-    - [たとえ話: 解の求め方がわからなくても方程式は定義できる](#たとえ話-解の求め方がわからなくても方程式は定義できる)
-  - [substitution mapとentry](#substitution-mapとentry)
   - [型の同一性(identity)と等価性(equivalence)](#型の同一性identityと等価性equivalence)
+    - [等価性の例](#等価性の例)
 - [関数引数型推論の厳密な定式化](#関数引数型推論の厳密な定式化)
 - [制約型推論の厳密な定式化](#制約型推論の厳密な定式化)
 - [具体例や未解決の問題](#具体例や未解決の問題)
@@ -42,13 +41,20 @@ published: false # 公開設定（falseにすると下書き）
 
 # 型セットについての資料
 
-この記事では型セット(Type set)についての知識を前提とします。Type setについては前編では説明していないのですが、次の記事やスライドで説明しています。
+この記事では型セット(Type set)についての理解を前提とします。Type setについては、ひとまず次のポイントを理解してください。
+
+- Go言語のinterface型はすべて、「型の集合（型セット）」を定めるものである。
+- 型`T`がinterface`I`を実装するとは、`I`の型セットに`T`が属するということである。
+
+型セットについては前編では説明していないのですが、現在のところ次のような資料が利用できます。
+
+英語でよければ1番上のGriesemer氏の解説がよく、日本語で読む場合は[Go の "Type Sets" proposal を読む - Zenn](https://zenn.dev/nobishii/articles/99a2b55e2d3e50)の後半部分が良いかと思います。
 
 | リンク | 内容紹介 |
 | ---- | ---- |
-| [初めての型セット](https://speakerdeck.com/nobishino/introduction-to-type-sets) | Go1.17リリースパーティの発表スライドです。「型セット」と「実装」の概念理解にフォーカスしています。 すこし図があります。|
-| [Go の "Type Sets" proposal を読む - Zenn](https://zenn.dev/nobishii/articles/99a2b55e2d3e50)| Type Setsのプロポーザルが出たときに書いた記事です。前半は経緯の解説なので今は読む必要ありません。Type setの仕様は後半で解説しています。| 
 | [GopherCon 2021: Robert Griesemer & Ian Lance Taylor - Generics!](https://www.youtube.com/watch?v=Pa_e9EeCdy8) | [英語] Go言語開発者によるジェネリクス解説です。前半のgriesemer氏の発表部分に型セットの説明があります。| 
+| [Go の "Type Sets" proposal を読む - Zenn](https://zenn.dev/nobishii/articles/99a2b55e2d3e50)| Type Setsのプロポーザルが出たときに書いた記事です。前半は経緯の解説なので今は読む必要ありません。Type setの仕様は後半で解説しています。| 
+| [初めての型セット](https://speakerdeck.com/nobishino/introduction-to-type-sets) | Go1.17リリースパーティの発表スライドです。「型セット」と「実装」の概念理解にフォーカスしています。 すこし図があります。|
 | [Go言語仕様書(Go1.18ドラフト) - Interface types](https://tip.golang.org/ref/spec#Interface_types) | 言語仕様書の型セット該当部分です。 |
 
 # インスタンス化とは
@@ -255,6 +261,8 @@ f(x) // xは型あり引数
 ここまでの言葉を使って少しフォーマルに言い直すと、「**unificationとは、2つの型を受け取って動作するルーチン**であり、その結果として**substitution mapに0個以上のエントリを追加する**もの」だと言えます。
 
 ですから、今後unificationが出てきたときは、「受け取る2つの型は何なのか？」ということを問いながら読みすすめると理解がしやすいとおもいます。
+
+以下、substitution map entryのことを単に「エントリー」と書きます。
 ## 関数引数型推論(概要)
 
 関数引数型推論は、「関数に渡された実引数の型」と、「関数の引数の型」をunifyします。ただし、このunificationは、関数の引数の型が型パラメータを含むときにのみ行われます。
@@ -288,45 +296,150 @@ core typeについては[前編](https://zenn.dev/nobishii/articles/type_param_i
 
 :::
 
-例を挙げましょう。
+仕様書にある例を使って説明します。
 
-https://gotipplay.golang.org/p/juIw_gcBT5U
+https://gotipplay.golang.org/p/G77uiNe_taU
 
 ```go
-func main() {
-	l := []int{1, 2, 3}
-	fmt.Println(Head(l)) // 1
+type T[A any, B []C, C *A] struct {
+	A A
+	B B
+	C C
 }
 
-func Head[Elem any, List ~[]Elem](list List) Elem {
-	return list[0]
+func main() {
+	var t T[int]
+	fmt.Printf("A: %T, B: %T, C:%T\n", t.A, t.B, t.C)
+	// A: int, B: []*int, C:*int
 }
 ```
 
-このジェネリックな`Head`関数は2つの型パラメータ`Elem, List`を持ちますが、1つの引数`l`だけから両方の型パラメータを決定できます。それは制約型推論が次のように動作するからです。
+このジェネリックな`T`関数は3つの型パラメータ`A, B, C`を持ちますが、変数`t`の宣言において1つの型引数`A = int`しか特定していません。しかし、制約型推論によって残り2つの型引数を決定できるため、コンパイルが成功します。
 
-1. まず関数引数型推論(型あり)により、`l`の型`[]int`と対応する型パラメータ`List`がunifyされ、entry `List -> []int`が作られる
-1. 次に制約型推論が`List`に対して起動する。
-   1. `List`の型制約`~[]Elem`はcore typeをもつ型であるので、そのcore type`[]Elem`と`List`がunifyされ、entry `[]Elem -> List`ができる。
-   2. 
+流れとしてはつぎのようになります。
 
+
+1. `var t T[int]`は関数呼び出しではないため関数引数型推論は行われず、スキップされます。
+1. 未知の型パラメータ`B, C`があるため、制約型推論が起動します。
+   1. `C`はcore type`*A`をもつため、`C`と`*A`をunifyして`C -> *A`というエントリーができます。
+   2. `B`はcore type`[]C`をもつため、`B`と`[]C`をunifyして`B -> []C`というエントリーができます。
+   3. 明示された型引数`int`により、`A -> int`がすでにあるため、`C -> *A`における`A`を`int`で置き換えます。これで`C -> *int`というエントリーができます。
+   4. さらに`B -> []C`における`C`を`*int`で置き換えることで、`B -> []*int`というエントリーができます。
+   5. これ以上置き換えはできないので、制約型推論が終了します。
+1. 未知の型パラメータがなくなったので、型推論を終了します。
+
+最終的なsubstitution mapは次のようになっています:
+
+```
+A -> int
+B -> []*int
+C -> *int
+```
 
 # unification/unify
+
+ここまでの話で、型推論がどのように行われるかはほとんど説明しました。
+
+しかし、その説明のなかで「unifyする」とか「unification」という手続き（ルーチン）がどのようなものなのかは厳密に説明していませんでした。
+
+このセクションでは、unify/unificationとは厳密には何を意味するのかを説明します。
 
 ## unificationの厳密な定義
 
 **定義**
 
-2つの型をunifyするとは、その2つの型を等価にするようなsubstitution map entryを見つけることである。
+2つの型をunifyするとは、その2つの型を **等価(equivalent)** にするようなsubstitution map entryを見つけることである。
 
+つまり、`X`と`Y`という2つの型をunifyするとは、エントリー`P -> A`を適当に追加して、**`X`と`Y`に含まれている`P`を`A`に置き換えれば`X`と`Y`が等価になるようにする**ということです。
+
+:::message
+
+仕様書上は次のように書かれています。
+
+https://tip.golang.org/ref/spec#Type_unification
+
+> Unification is the process of finding substitution map entries that make the two types equivalent.
+
+:::
+
+この定義を完全なものとするには、「等価(equivalent)」とは何かも定義する必要があります。
+
+「型が等価である」ことの厳密な定義は少しあとに回したいのですが、すこしだけ述べておくと、「型が等価である」というのは「型が同一である」よりも少し広い（ゆるい）条件です。
+つまり、2つの型が同一(identical)であればそれらは等価でもあるのですが、2つの型が等価であっても同一ではない場合があります。
+
+まずunificationの具体例をみておきましょう。
 ### 例
 
-### たとえ話: 解の求め方がわからなくても方程式は定義できる
 
-## substitution mapとentry
+- `[B []C]`において、型`B`と型`[]C`をunifyするとは、エントリー`B -> []C`を追加することです。なぜなら、`B`には`B`が「含まれて」おり、`B`をエントリー`B -> []C`に従って置き換えることで`[]C`と`[]C`が「等価」になるからです。
+- `[]map[int]bool`と`[]map[T1]T2`をunifyするとは、`T1 -> int, T2 -> bool`という２つのエントリーを追加することです。なぜなら、`[]map[T1]T2`に含まれる`T1`と`T2`をそれぞれエントリーに従って置き換えることで、2つの型はどちらも`[]map[int]bool`となり、等価となるからです。
 
+
+![unification_1](/images/unification_1.jpeg)
+
+unificationが失敗する例をあげておきます。
+
+`[]map[int]bool`と`*T`のunificationを試みると、どのようなエントリ`T -> ?`を追加してもこの2つの型を等価にすることはできないので、unificationが失敗します。
+
+型推論の中でunificationが失敗すれば、コンパイルエラーとなります。
+
+https://gotipplay.golang.org/p/C1kepqzqWKJ
+
+```go
+func f[T any](x *T) {}
+
+func main() {
+	f(make([]map[int]bool, 0))
+	// type []map[int]bool of make([]map[int]bool, 0) does not match *T (cannot infer T)
+}
+```
+
+関数引数型推論により`[]map[int]bool`と`*T`のunificationが試みられますが、この2つを等価にするようなエントリーは存在しないのでunificationが失敗し、型推論の失敗によりコンパイルが失敗します。
+
+:::message
+
+unificationの厳密な定義をみたとき、腑に落ちなさを感じる方もいるとおもいます。その腑に落ちなさは、この定義が「エントリーを求める方法」について何も述べていないからではないかと思います。
+
+実際、Go言語仕様書はunificationにおいて「エントリーを求める方法・アルゴリズム」については述べていません。しかし、unificationによって見つけるべきエントリーとはどのようなものなのか、については正確に述べているので、仕様書としては十分なのです。
+
+高校相当の数学に例えると、「unificationの定義」は、「(0個以上の)エントリー`x`の組が満たすべき方程式」のようなものです。2次方程式`x^2 + x - 1 = 0`の解とは何か、という「定義」は、その方程式を「解く方法」がわからなくても、それとは無関係に行うことができます。これと同じように、unificationの定義においては、「エントリーが満たすべき性質」を述べているだけで、「そのようなエントリーを求める方法」については述べていませんし、それで十分だということです。
+
+方程式のたとえによるならば、「方程式」を満たすエントリーが存在すればunificationが可能ですし、方程式が「解なし」であればunificationは失敗し、コンパイルエラーになるわけです。
+
+:::
 ## 型の同一性(identity)と等価性(equivalence)
 
+「型の同一性」はGo1.17以前から定義されている用語です。
+
+https://go.dev/ref/spec#Type_identity
+
+ここで厳密な定義を解説することはしませんが、`type A B`というように型定義したときに`A`と`B`とはことなる型であるということだけ注意してください。
+
+**定義(型の等価性)**
+
+2つの型`X, Y`が等価であるとは、つぎの3つのいずれかが成り立つことです。
+
+- `X, Y`が同一(identical)であるとき
+- `X, Y`がどちらもchannel型であり、方向を無視すれば同一であるとき
+- `X, Y`のunderlying typeが等価であるとき
+
+### 等価性の例
+
+- `type X = int`と`type Y = int`は同一なので等価です。
+- `X = <-chan int`と`Y = chan int`は方向を無視すれば同一なので等価です。
+- `type X <-chan int`と`type Y = chan int`は、`X`のunderlying type`<-chan int`と`Y`のunderlying type`chan int`が等価なので、等価です。
+
+等価ではない例も挙げておきます。
+
+```go
+type MyInt int
+
+type X chan int
+
+type Y chan MyInt
+```
+
+このように定義した`X, Y`は等価ではありません。
 
 # 関数引数型推論の厳密な定式化
 
