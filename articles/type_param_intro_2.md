@@ -510,8 +510,139 @@ Type Parameters Proposalに出てくる、[Pointer method example](https://go.go
 
 :::
 
+次のようなジェネリックな関数を考えます。
 
+```go
+// Setterはstringの値をSetできるインタフェース
+type Setter interface {
+	Set(string)
+}
 
+// FromStringsは[]stringを受け取ってSetterのスライスを返す
+// その際にSetメソッドでsの内容をSetする
+func FromStrings[T Setter](s []string) []T {
+	result := make([]T, len(s))
+	for i, v := range s {
+		result[i].Set(v)
+	}
+	return result
+}
+```
+
+これを次のように使いたいのですが、これはコンパイルできません。
+
+```go
+type Settable int
+
+func (p *Settable) Set(s string) {
+	i, _ := strconv.Atoi(s) // real code should not ignore the error
+	*p = Settable(i)
+}
+
+func F() {
+	nums := FromStrings[Settable]([]string{"1", "2"})
+  _ = nums
+}
+```
+
+https://gotipplay.golang.org/p/g2GkggqE7e0
+
+> Settable does not implement Setter (Set method has pointer receiver)
+
+これは、`Set`メソッドを実装しているのはあくまで`*Settable`型であり、`Settable`型ではないので、`Settable`が型制約`Setter`を実装しないからです。
+
+では、`*Settable`型を渡すとどうなるでしょうか。
+
+```go
+func F() {
+	nums := FromStrings[*Settable]([]string{"1", "2"})
+	_ = nums
+}
+```
+
+https://gotipplay.golang.org/p/TYI_tmQ06tZ
+
+> panic: runtime error: invalid memory address or nil pointer dereference
+> [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x45810e]
+
+今度はコンパイルできるのですがpanicしてしまいます。
+
+```go
+func FromStrings[T Setter](s []string) []T {
+	result := make([]T, len(s))
+	for i, v := range s {
+		result[i].Set(v)
+	}
+	return result
+}
+```
+
+をみると、`result[i]`は`*Settable`のゼロ値である`nil`が入っているので、`Set`呼び出しのときにnil pointer dereferenceになるからです。かといって、`Settable`という型を`T`から取り出すことはできません。
+
+素朴な解決策は、2つの型パラメータを用いることです。
+
+```go
+// パラメータ付きの型制約。何かのBに対するポインタ型であり、かつ、Set(string)を実装するという型制約になっている。
+type Setter2[B any] interface {
+	Set(string)
+	*B
+}
+
+// 2つの型パラメータを持つようにする
+func FromStrings2[T any, PT Setter2[T]](s []string) []T {
+	result := make([]T, len(s)) // T型のスライスとして初期化する
+	for i, v := range s {
+		// PT型へのコンバージョン
+		p := PT(&result[i])
+		// PTはSetメソッドを持つ
+		p.Set(v)
+	}
+	return result
+}
+```
+
+これを利用して`F`を書き直せます:
+
+```go
+func F2() {
+	nums := FromStrings2[Settable, *Settable]([]string{"1", "2"})
+	fmt.Println(nums) // [1 2]
+}
+```
+
+https://gotipplay.golang.org/p/VFxDjHrE7N6
+
+これは意図通りに動作しますが、2つの型引数を渡すところが億劫です。
+
+そこで、制約型推論を活用して次のようにすることができます。
+
+```go
+func F3() {
+	nums := FromStrings2[Settable]([]string{"1", "2"})
+	fmt.Println(nums) // [1, 2]
+}
+```
+https://gotipplay.golang.org/p/01aOdAHrXut
+
+型引数を2つ渡すのではなく、１つだけ渡しました。これでも結果は同一となります。
+
+起きているのは次のようなことです。
+
+- `T -> Settable`が確定する
+- `PT`の型制約`Setter2[T]`の`T`に`Settable`を渡してインスタンス化する。
+- `PT`の型制約を擬似コードで書くと次のようになる:
+
+```go
+type Setter2Instantiated interface {
+	Set(string)
+	*Settable
+}
+```
+
+- 制約型推論が起動する。`Setter2Instantiated`はcore type `*Settable`を持つので、`PT`と`*Settable`をunifyする。
+- エントリー`PT -> *Settable`が作られ、全ての型引数が確定して型推論が終了する。
+
+このように、制約型推論を使うことで、ポインタレシーバメソッドをジェネリックに扱う関数を少し短いコードで呼び出すことができました。
 ## 関数引数型推論と引数の順序
 
 https://github.com/golang/go/issues/43056
