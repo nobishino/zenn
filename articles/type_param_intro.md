@@ -538,7 +538,7 @@ type NewNewInt NewInt
 
 「できない」というのが答えです。`int, NewInt, NewNewInt`はそれぞれ相異なる型であり、したがって`NewInt`と`NewNewInt`は`Number`インタフェースを実装しないからです。
 
-## `~`(approximation element)
+## `~`をつかってunderlying typeをマッチングする
 
 しかし、`NewInt`や`NewNewInt`も数値型であることに変わりはなく、`>=`などの演算子で比較することができるのですから、このような型を許すインタフェースを作りたいです。
 もちろん、`NewInt`を直接unionsに加えれば`NewInt`に`Number`を実装させることはできます:
