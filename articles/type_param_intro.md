@@ -167,11 +167,16 @@ func (s *Stack[T]) ZipWith[S,U any](x *Stack[S], func(T, S) U) *Stack[U] {
 
 ```go
 // これは書ける
-// 具体的な実装例: https://gotipplay.golang.org/p/-_HxaTjE_Zi
 func ZipWith[S,T,U any](x *Stack[T], y *Stack[S], func(T, S) U) *Stack[U] {
     // ...
 }
 ```
+
+:::message
+
+具体的な実装例はこちらにあります: https://gotipplay.golang.org/p/-_HxaTjE_Zi
+
+:::messsage
 
 
 ## 具体例3: 型パラメータを持つ型`Set[T comparable]`
