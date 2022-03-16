@@ -167,10 +167,12 @@ func (s Stack[T]) ZipWith[S,U any](x Stack[S], func(T, S) U) Stack[U] {
 
 ```go
 // これは書ける
-func ZipWith[S,T,U any](x Stack[T], y Stack[S], func(T, S) U) Stack[U] {
+// 具体的な実装例: https://gotipplay.golang.org/p/-_HxaTjE_Zi
+func ZipWith[S,T,U any](x *Stack[T], y *Stack[S], func(T, S) U) *Stack[U] {
     // ...
 }
 ```
+
 
 ## 具体例3: 型パラメータを持つ型`Set[T comparable]`
 
@@ -502,7 +504,7 @@ func f[T I](x T) {
 - `==, !=`による比較可能性は`comparable`インタフェースで表現する(再掲)。
 - フィールドを持つという性質を型制約で表して、型パラメータ型の値のフィールドを参照することはできない。
 
-# 近似要素`~`、underlying type、core type
+# `~`、underlying type、core type
 
 ## モチベーション
 
@@ -544,7 +546,7 @@ type Number interface {
 ```
 
 しかし、「`int`を元にして型定義で作られる新しい型」は無限にあるので、それら全てが`Number`を実装するようにしたいです。
-そのための文法として、Go言語は`~`で表されるapproximation element(近似要素)を導入しました。
+そのための文法として、Go言語は`~`を導入しました。
 
 ```go
 type Number interface { 
@@ -573,6 +575,15 @@ var x y NewInt = 1, 2
 
 max := Max(x, y) // max == NewInt(2)
 ```
+
+:::message
+
+Proposal段階では`~int`のような要素は近似要素(approximation element)と呼ばれていました。
+
+これはつまり`type MyInt int`のような型は`int`に「似ている」型であるという気持ちが込められていると思います。
+※物理学や工学では`x ~ 1000`のような記法で「`x`は1000に近い」という意味を表したりすることがあります。
+
+:::
 
 ## underlying type
 
