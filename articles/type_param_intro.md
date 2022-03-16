@@ -158,7 +158,7 @@ func(s *Stack[T]) Push(x T)
 
 ```go
 // これは書けない
-func (s Stack[T]) ZipWith[S,U any](x Stack[S], func(T, S) U) Stack[U] {
+func (s *Stack[T]) ZipWith[S,U any](x *Stack[S], func(T, S) U) *Stack[U] {
     // ...
 }
 ```
