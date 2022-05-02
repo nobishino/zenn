@@ -1,0 +1,23 @@
+{
+  "name": "zenn",
+  "version": "1.0.0",
+  "description": "a repository to sync to zenn",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nobishino/zenn.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nobishino/zenn/issues"
+  },
+  "homepage": "https://github.com/nobishino/zenn#readme",
+  "dependencies": {
+    "zenn-cli": "^0.1.109"
+  }
+}
