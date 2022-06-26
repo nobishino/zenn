@@ -504,7 +504,7 @@ func f[T I](x T) {
 - `==, !=`による比較可能性は`comparable`インタフェースで表現する(再掲)。
 - フィールドを持つという性質を型制約で表して、型パラメータ型の値のフィールドを参照することはできない。
 
-# `~`、underlying type、core type
+# `~`とunderlying type
 
 ## モチベーション
 
@@ -733,9 +733,19 @@ type I interface {
 この点については筆者資料の[Type Sets Proposalを読む(2)](https://zenn.dev/nobishii/articles/type_set_proposal_2)で議論しています。
 :::
 
+## まとめ
+
+- `~`をつかうと型定義によって作りうる無限の型にインタフェースを実装させることができる
+- `~T`は`T`をunderlying typeに持つすべての型を表す
 # core type
 
 underlying typeを一般化した新しい概念であるcore typeと、それがどのように仕様に関わるかについて説明します。
+
+:::message
+
+この章は特に言語仕様書に関心のある人向けの内容で、通常読む必要はありませんが、続編 [Go言語のジェネリクス入門(2) インスタンス化と型推論](https://zenn.dev/nobishii/articles/type_param_intro_2)の内容の前提になっています。
+
+:::
 
 ## 定義
 
@@ -905,9 +915,9 @@ func f[T I](x T) {
 
 ## まとめ
 
-- `~`をつかうと型定義によって作りうる無限の型にインタフェースを実装させることができる
-- `~T`は`T`をunderlying typeに持つすべての型を表す
-- core typeはunderlying typeを拡張したような概念で、型推論をはじめ型パラメータの関わる言語仕様の随所に現れる重要概念
+- core typeはunderlying typeを拡張したような概念である
+- 「for~rangeループで使える」などの型の性質を型制約で表現したい場合、型制約がcore typeを持つことが必要となる
+- core typeは制約型推論という型推論アルゴリズムにも使われる(詳細は続編で)
 
 ## 最後に
 
