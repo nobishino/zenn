@@ -817,50 +817,11 @@ type C2 interface {
 
 このcore typeですが、次のような場面で登場します。
 
-- 代入可能性
 - composite literals
 - for range
 - 制約型推論(後述)
 
-本章では最初の3つについて説明します。
-
-## 代入可能性
-
-型パラメータ型の変数に対する代入を考えてみましょう。味気ない例ですが、次のコードは動作します。
-
-https://gotipplay.golang.org/p/UJz2aE7bqH_e
-
-```go
-type C interface {
-	~[]int
-}
-
-func F[T C](x T) {
-	x = []int{} // 型Tの変数xに[]intの値を代入している
-}
-```
-
-しかし、次のコードは動作しません。
-
-https://gotipplay.golang.org/p/5f8DKNv6Hq_E
-
-```go
-type C interface {
-	~[]int | string // stringを増やした
-}
-
-func F[T C](x T) {
-	x = []int{} // 代入できない
-}
-```
-
-`C`の型の「範囲」は広がっているのに代入ができなくなるのは不思議な気もします。これは次のように考えてください。
-
-`T`と`[]int`は異なる型なので、`T`型の変数`x`に`[]int{}`を代入するためには、`T`のunderlying typeが`[]int`であることが必要だ、というのがGo1.17の仕様です。
-ところが今`T`は型パラメータなので、`T`のunderlying typeはその型制約です。
-このような場合、代入可能性を判断するために「`T`のunderlying typeの代わりに`T`の制約のcore typeを使う」というのが新しく追加される仕様です。
-
-つまり、`T`の制約である`C`のcore typeが`[]int`なので最初の例は代入できましたが、二つ目の例は`C`のcore typeが存在しないために代入できなくなったということです。
+本章では最初の2つについて説明します。
 
 ## composite literals
 
