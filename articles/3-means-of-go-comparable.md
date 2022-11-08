@@ -99,11 +99,17 @@ Go1.18のジェネリクス導入により、事前宣言された型制約`comp
 comparable型制約について詳しくは[Go言語のジェネリクス入門(1)](https://zenn.dev/nobishii/articles/type_param_intro#%E5%85%B7%E4%BD%93%E4%BE%8B3%3A-%E5%9E%8B%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%82%92%E6%8C%81%E3%81%A4%E5%9E%8Bset%5Bt-comparable%5D)に書きました。
 :::
 
-型`X`が`comparable`を実装するのは、次のときです。
+言語仕様書によると、型`T`が`comparable`を実装するのは次の場合です:
+
+> * T is not an interface type and T supports the operations == and !=; or
+> * T is an interface type and each type in T's type set implements comparable.
+
+つまり、型`X`が`comparable`を実装するのは、次のときです。
 
 - `X`がboolean、整数、浮動小数点数、複素数、文字列、ポインター、チャネル、配列型であるとき
+- `X`がinterface型であってその型セットがcomparableを実装する型のみからなるとき
 
-comparable(言語仕様)と違い、`X`がinterface型であるとき、`X`は`comparable`を実装しません。これを示すのが次のサンプルプログラムです。
+ややこしく書いてあるのはunions（後述)を考慮した記述なのでこの記事の本筋とは関係ありません。重要なのは、comparable(言語仕様)と違い、`X`がふつうのinterface型であるとき、comparable(型制約)は`X`を**含まない**ということです。これを示すのが次のサンプルプログラムです。
 
 ```go
 // https://go.dev/play/p/WzCU9sh__fD
@@ -118,13 +124,46 @@ func main() {
 func f[T comparable](x T) {}
 ```
 
-つまり、**comparable(型制約)はcomparable(言語仕様)と比べて、interface型を一切含まない分だけ狭い概念になっています。**
+つまり、**comparable(型制約)はcomparable(言語仕様)と比べて、ふつうのinterface型を一切含まない分だけ狭い概念になっています。**
+
+:::message
+「ふつうの」interface型の正確な意味は次節で補足します。
+:::
 
 このようになった理由は、`comparable`型制約を満たしてインスタンス化された関数の中で`==`による比較を行ったときにrun-time panicが起きないことを保証したほうがよいと判断されたからとおもわれます。
 
-(issueが探せてないので見つかったら追記したいです)
+:::message
+この議論をしていたissueが探せてないので見つかったら追記したいです。PR歓迎しています。
+:::
 
 標語的にまとめると、**comparable(型制約)は静的に判断され、panicを引き起こさずに比較できる型だけを含みます。**
+
+## 少し進んだ補足: unionsを含むinterface型はcomparableを実装しうる
+
+上記で「ふつうの」interface型と限定して書いたのは、正確には **「unionsを含まないinterface型」** のことでした。
+
+unionsを含むinterface型はcomparableを実装できます。これを例示したのが次のサンプルプログラムです。
+
+```go
+// https://go.dev/play/p/Z456wQiTfum
+type C interface {
+	~int | ~string
+}
+
+func main() {}
+
+func f[T C](t T) {
+	g(t) // compileできる。つまりCがcomparableを実装することがわかる
+}
+
+func g[S comparable](s S) {}
+```
+
+:::message
+unionsについて詳しくは[Go言語のジェネリクス入門(1)](https://zenn.dev/nobishii/articles/type_param_intro#unions)を参照してください。
+:::
+
+unionsを含まないinterface型を便利に表すことばがないので、この記事やこの記事の冒頭に掲載したVenn図ではinterfaceというのをGo1.17以前の**「unionsを含まないinterface」**の意味で使わせてもらっています。もしこの点で混乱させていたらすみません。。
 
 # comparable(reflect)
 
