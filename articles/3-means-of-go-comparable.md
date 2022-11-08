@@ -3,7 +3,7 @@ title: "Go言語のcomparableには3つの意味がある"
 emoji: "👋"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go]
-published: false
+published: true
 ---
 
 タイトルの通り、Go言語のcomparableには3つの意味があります。
@@ -163,7 +163,7 @@ func g[S comparable](s S) {}
 unionsについて詳しくは[Go言語のジェネリクス入門(1)](https://zenn.dev/nobishii/articles/type_param_intro#unions)を参照してください。
 :::
 
-unionsを含まないinterface型を便利に表すことばがないので、この記事やこの記事の冒頭に掲載したVenn図ではinterfaceというのをGo1.17以前の**「unionsを含まないinterface」**の意味で使わせてもらっています。もしこの点で混乱させていたらすみません。。
+unionsを含まないinterface型を便利に表すことばがないので、この記事やこの記事の冒頭に掲載したVenn図ではinterfaceというのをGo1.17以前の **「unionsを含まないinterface」** の意味で使わせてもらっています。もしこの点で混乱させていたらすみません。。
 
 # comparable(reflect)
 
