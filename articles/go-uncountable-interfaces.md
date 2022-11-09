@@ -1,5 +1,5 @@
 ---
-title: "【ネタ】unionsを含まないinterfaceを非可算interface(uncountable interface)と呼ぶとかっこいい"
+title: "【ネタ】unionsを含まないinterfaceを非可算interface(uncountable interfaces)と呼ぶとかっこいい"
 emoji: "👻"
 type: "idea" # tech: 技術記事 / idea: アイデア
 topics: [Go, 集合論]
@@ -27,7 +27,7 @@ Go言語に関する記事を書いていると、Go1.17以前のinterface型、
 しかし、言語仕様書にはそのようなinterfaceを表す用語はきちんと定義されていません。
 
 :::message
-[Basic Intefaces](https://go.dev/ref/spec#basic_interfaces)という用語は存在するのですが、これは従来からある埋め込みインタフェースを含まないので、ほしいことばよりも少し範囲が狭すぎるのです。
+[Basic Interfaces](https://go.dev/ref/spec#basic_interfaces)という用語は存在するのですが、これは従来からある埋め込みインタフェースを含まないので、ほしいことばよりも少し範囲が狭すぎるのです。
 :::
 
 可能な呼び方としては次のようなものが考えられるのですが、どれもいまいちエレガントさに欠けています。
@@ -63,10 +63,10 @@ Go1.18以降のインタフェースは、型集合（型セット）を定め�
 
 つまり、unionsを含まないインタフェースであることと、型セットが[非可算無限集合](https://ja.wikipedia.org/wiki/%E9%9D%9E%E5%8F%AF%E7%AE%97%E9%9B%86%E5%90%88)であるインタフェースであることとは同値であると予想します。
 
-そして、この予想に基づき、unionsを含まないインタフェースを「非可算インタフェース(uncountable interface)」と呼ぶことが自然である、と主張します。
+そして、この予想に基づき、unionsを含まないインタフェースを「非可算インタフェース(uncountable interfaces)」と呼ぶことが自然である、と主張します。
 
 :::message
-もちろん反対語は可算インタフェース(countable interface)です。
+もちろん反対語は可算インタフェース(countable interfaces)です。
 :::
 
 :::message
