@@ -182,7 +182,7 @@ proposalによると、型`T`が型制約`C`を満たす(satisfy)のは次の2�
 - `[]int`は`comparable`を実装しない (守るべき前提)
 
 すると、**`[]int`は`any`を実装し、`any`は`comparable`を実装するのに、`[]int`は`comparable`を実装しない**という奇妙な結論になってしまいます。
-つまり、`implementする`という関係は本来[推移法則](https://ja.wikipedia.org/wiki/%E6%8E%A8%E7%A7%BB%E9%96%A2%E4%BF%82)を満たさないといけないはずなのに、推移法則を満たさない結果になってしまっています。
+つまり、`implement`するという関係は本来[推移法則](https://ja.wikipedia.org/wiki/%E6%8E%A8%E7%A7%BB%E9%96%A2%E4%BF%82)を満たさないといけないはずなのに、推移法則を満たさない結果になってしまっています。
 
 これは言語仕様として困るので、ここまでで使った前提のどれかは諦めないといけません。
 最も諦めがつくのは、**implementとsatisfyが同義であるという前提**です。
@@ -233,8 +233,6 @@ type C interface {
 `fmt.Stringer`がこれを実装するかを考えてみましょう。`fmt.Stringer`は`comparable`を実装しません。しかし、`fmt.Stringer`はspec-comparableであり、かつ`String() string`を実装します。したがって**`fmt.Stringer`は`C`を実装はしませんが`C`を満たします。**
 
 `[]int`はどうでしょうか？`[]int`はspec-comparableではないので`C`を満たしません。
-
-## まとめのVenn図
 
 ## ある型がstrictly comparableであることをコンパイル時にチェックする方法
 
