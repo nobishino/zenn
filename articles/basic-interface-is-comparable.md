@@ -288,9 +288,9 @@ func TisComparable[P T]() {
 func isComparable[_ comparable]() {}
 ```
 
-- Proposal採用後のGo言語では`P`が`comparable`を満たすのは`P`がspec-comparableなときでした。
-- 型パラメータ型である`P`がspec-comparableになるのは`P`の型制約である`T`の型集合に属するすべての型が`comparable`を実装するときです。
-- `T`は普通の型なので`T`の型集合は`T`のみからなる集合です。
+- Proposal採用後のGo言語では`P`が`comparable`を**満たす**のは`P`がspec-comparableなときでした。
+- 型パラメータ型である`P`がspec-comparableになるのは`P`の型制約である`T`の型集合に属するすべての型が`comparable`を**実装する**ときです。
+- `T`は普通の非インタフェース型なので`T`の型集合は`T`のみからなる集合です。
 - その集合の唯一の要素である`T`が`comparable`を**実装**するということは、`T`は**strictly comparable**です。
 - よって、**このコードのコンパイルができるならば`T`はspec-comparableであるばかりかstrictly comparableでもある**ということが保証できます。
 
