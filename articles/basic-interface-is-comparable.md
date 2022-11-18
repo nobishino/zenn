@@ -3,7 +3,7 @@ title: "Basic Interfaceはcomparableを満たすようになる(でも実装す�
 emoji: "👋"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go]
-published: false
+published: true
 ---
 
 
