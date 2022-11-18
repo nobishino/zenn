@@ -9,7 +9,7 @@ published: true
 
 前回の記事[Go言語のcomparableには3つの意味がある](./3-means-of-go-comparable.md)において、言語仕様のcomparableと型制約のcomparableは指す範囲が異なるということを説明しました。たとえば、`any`型は言語仕様上comparableですが、`comparable`型制約を満たしていません。
 
-このギャップをなくすProposalがacceptされそうです。今回はその内容を説明します。
+このギャップをなくすProposalが[acceptされそう](https://github.com/golang/go/issues/56548#issuecomment-1317523527)です。今回はその内容を説明します。
 
 https://github.com/golang/go/issues/56548
 
