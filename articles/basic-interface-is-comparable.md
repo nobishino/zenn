@@ -1,5 +1,5 @@
 ---
-title: "Basic Interfaceはcomparableを満たすようになる(でも実装するようにはならない)"
+title: "Go言語のBasic Interfaceはcomparableを満たすようになる(でも実装するようにはならない)"
 emoji: "👋"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go]
