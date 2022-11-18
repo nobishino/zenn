@@ -236,7 +236,7 @@ type C interface {
 }
 ```
 
-`fmt.Stringer`がこれを実装するかを考えてみましょう。`fmt.Stringer`は`comparable`を実装しません。しかし、`fmt.Stringer`はspec-comparableであり、かつ`String() string`を実装します。したがって**`fmt.Stringer`は`C`を実装はしませんが`C`を満たします。**
+`fmt.Stringer`がこれを実装するかを考えてみましょう。`fmt.Stringer`は`comparable`を実装しません。しかし、`fmt.Stringer`はspec-comparableであり、かつ`String() string`を実装します。したがって **`fmt.Stringer`は`C`を実装はしませんが`C`を満たします。**
 
 `[]int`はどうでしょうか？`[]int`はspec-comparableではないので`C`を満たしません。
 
