@@ -284,7 +284,7 @@ func TisComparable[P T]() {
 func isComparable[_ comparable]() {}
 ```
 
-型パラメータ型である`P`が`comparable`を実装するのは`P`の型制約である`T`の型セットに属するすべての型が`comparable`を実装するときですが、`T`は普通の型なので`T`の型集合は`T`飲みからなる集合です。それが`comparable`を実装するということは`T`はstrictly comparableです。よって、このコードのコンパイルができるならば`T`はspec-comparableであるばかりかstrictly comparableでもあるということが保証できます。
+型パラメータ型である`P`が`comparable`を実装するのは`P`の型制約である`T`の型セットに属するすべての型が`comparable`を実装するときですが、`T`は普通の型なので`T`の型集合は`T`のみからなる集合です。それが`comparable`を実装するということは`T`はstrictly comparableです。よって、このコードのコンパイルができるならば`T`はspec-comparableであるばかりかstrictly comparableでもあるということが保証できます。
 
 :::message
 
