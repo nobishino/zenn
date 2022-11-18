@@ -219,6 +219,12 @@ type comparable inteface {
 - 型`T`が`comparable`を実装する(implement)とき
 - `T`がspec-comparableであるとき
 
+この2つのうち前者は後者に含まれますから、結局、
+
+**型`T`が型制約`comparable`を満たす(satisfy)のは`T`がspec-comparableであるときである**
+
+と簡単にできます。
+
 `T`に`any`を代入すれば`any`はspec-comparableなので、`any`は`comparable`を満たします。
 
 ### より複雑な制約
