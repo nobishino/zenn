@@ -1,5 +1,5 @@
 ---
-title: "【ネタ】unionsを含まないinterfaceを非可算interface(uncountable interfaces)と呼ぶとかっこいい"
+title: "【ネタ】Go言語のbasic interfaceを非可算interface(uncountable interfaces)と呼ぶとかっこいい"
 emoji: "👻"
 type: "idea" # tech: 技術記事 / idea: アイデア
 topics: [Go, 集合論]
