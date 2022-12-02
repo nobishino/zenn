@@ -66,7 +66,7 @@ https://go.dev/ref/spec#Package_initialization
 
 # `.`によるimport(151 Bytes)  by @tenntenn 
 
-次は@tenntennさんに投稿いただいたQuineです。
+次は[@tenntenn](https://github.com/tenntenn)さんに投稿いただいたQuineです。
 
 ```
 package main
@@ -87,7 +87,7 @@ https://go.dev/play/p/Ht7aRBmaLWt
 
 # asciiコードの技巧(137 Bytes) by @cia-rana
 
-次に紹介するのは @cia-ranaさんによる異なるアプローチのQuineです。
+次に紹介するのは [@cia-rana](https://github.com/cia-rana)さんによる異なるアプローチのQuineです。
 
 ```go
 package main
@@ -119,9 +119,9 @@ https://twitter.com/DQNEO/status/1594939354874798082
 
 `.s`ファイルにアセンブリを書いてビルドすれば、標準パッケージなしでも標準出力ができるということですね。`main.s`もありというルールにしておけばよかったかもしれません。
 
-# 禁じ手 - `embed`パッケージ() by tenntenn
+# 禁じ手 - `embed`パッケージ() by @tenntenn
 
-最後に禁じ手っぽいものを紹介します（？）。
+最後に禁じ手っぽいものを紹介します（？）。[@tenntenn](https://github.com/tenntenn)さんからいただきました。
 
 ```go
 package main
