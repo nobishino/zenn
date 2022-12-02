@@ -3,7 +3,7 @@ title: "QuineであそんでまなぶGo言語"
 emoji: "👻"
 type: "idea" # tech: 技術記事 / idea: アイデア
 topics: [Go]
-published: false
+published: true
 ---
 
 # 対象読者
