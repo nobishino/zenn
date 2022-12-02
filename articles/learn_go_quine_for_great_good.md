@@ -119,7 +119,7 @@ https://twitter.com/DQNEO/status/1594939354874798082
 
 `.s`ファイルにアセンブリを書いてビルドすれば、標準パッケージなしでも標準出力ができるということですね。`main.s`もありというルールにしておけばよかったかもしれません。
 
-# 禁じ手 - `embed`パッケージ() by @tenntenn
+# 禁じ手のようで禁じ手でない - `embed`パッケージ() by @tenntenn
 
 最後に禁じ手っぽいものを紹介します（？）。[@tenntenn](https://github.com/tenntenn)さんからいただきました。
 
