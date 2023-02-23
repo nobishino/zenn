@@ -6,6 +6,13 @@ topics: [Go]
 published: true
 ---
 
+*注意*
+
+この記事の内容はGo1.19までの言語仕様には当てはまりますが、Go1.20以降の言語仕様には当てはまりません。
+Go1.20以降でどうなったかについては、次の記事を参照してください。
+
+https://zenn.dev/nobishii/articles/basic-interface-is-comparable
+
 タイトルの通り、Go言語のcomparableには3つの意味があります。
 
 普段意識する必要はないと思いますが、混乱することがあるかもしれないのでまとめました。
