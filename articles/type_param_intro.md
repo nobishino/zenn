@@ -12,6 +12,9 @@ Go1.18は2022年3月にリリースされました。このリリースはGo言�
 ## 更新履歴
 
 - 2023/02/23: Go1.20の[`comparable`の仕様変更](https://golang.org/doc/go1.20#language)に対応しました。
+  - こちらについては次の資料があります:
+    - [The Go Blog - All your comparable types](https://go.dev/blog/comparable) Griesemer氏によるGo公式ブログです。
+	- [Go言語のBasic Interfaceはcomparableを満たすようになる(でも実装するようにはならない)](https://zenn.dev/nobishii/articles/basic-interface-is-comparable) 上記の内容に対する筆者の解説記事です。Go1.20リリース前に書いたので用語が使えてないところがあります。
 
 **シリーズ**
 
