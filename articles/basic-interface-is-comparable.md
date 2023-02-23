@@ -7,7 +7,7 @@ published: true
 ---
 
 
-前回の記事[Go言語のcomparableには3つの意味がある](./3-means-of-go-comparable.md)において、言語仕様のcomparableと型制約のcomparableは指す範囲が異なるということを説明しました。たとえば、`any`型は言語仕様上comparableですが、`comparable`型制約を満たしていません。
+前回の記事[Go言語のcomparableには3つの意味がある](https://zenn.dev/nobishii/articles/3-means-of-go-comparable)において、Go1.19までの言語仕様のcomparableと型制約のcomparableは指す範囲が異なるということを説明しました。たとえば、`any`型はGo1.19言語仕様上comparableですが、`comparable`型制約を満たしていませんでした。
 
 このギャップをなくすProposalが[acceptされそう](https://github.com/golang/go/issues/56548#issuecomment-1317523527)です。今回はその内容を説明します。
 
@@ -37,7 +37,7 @@ func main() {
 
 :::message
 
-unionsなどについては[Go言語のジェネリクス入門(1)](type_param_intro.md)を参照してください。
+unionsなどについては[Go言語のジェネリクス入門(1)](https://zenn.dev/nobishii/articles/type_param_intro)を参照してください。
 
 :::
 
@@ -50,7 +50,7 @@ authorのgriesemerさんは議論のために次の用語を用いています�
 | spec-comparable | comparable(言語仕様) | 言語仕様上`==`を使ってもコンパイルができるすべての型 |
 | strictly comparable | comparable(型制約) | `==`で`panic`せずに比較できる型 |
 
-[前回の記事](./3-means-of-go-comparable.md)のvenn図とは次のように対応します:
+[前回の記事](https://zenn.dev/nobishii/articles/3-means-of-go-comparable)のvenn図とは次のように対応します:
 
 ![comparableの種類](/images/venn-comparable-go-2.png)
 
