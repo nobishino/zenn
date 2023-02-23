@@ -206,11 +206,11 @@ proposalによると、型`T`が型制約`C`を満たす(satisfy)のは次の2�
 - `C`が`interface{comparable; E}`の形で書けて、`T`がspec-comparableであり、かつ`T`が`E`を実装する(implement)とき
   - ここで、`E`はbasic interfaceつまりunionsを含まないinterfaceであるものとする
 
-`C`に`comparable`を代入して整理すると次のようになります。`comparable`はbasic intefaceである`any`をつかって次のように書けることに気をつけます:
+`C`に`comparable`を代入して整理すると次のようになります。`comparable`はbasic interfaceである`any`をつかって次のように書けることに気をつけます:
 
 ```go
 // これは疑似コードです
-type comparable inteface {
+type comparable interface {
 	comparable 
 	any
 }
