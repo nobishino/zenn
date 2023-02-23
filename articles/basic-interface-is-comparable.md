@@ -66,10 +66,12 @@ Go1.18では、あらゆる型制約`C`について、
 
 という3つの文章は全く同じ意味です。
 
-そして`comparable`の型集合は、strictly comparableな型全体からなる集合です。つまり、
+そして`comparable`の型集合は、strictly comparableな型全体からなる集合です。つまり、comparable型のうち、インタフェース型を含まない型です。より正確には、
 
-- spec-comparableな非インタフェース型
-- strictry-comparableな型のみをフィールドに持つstruct型
+- Boolean, 数値, 文字列, ポインター, チャネル型
+- 全てのフィールドがstrictly comparableであるような構造体型
+- 要素型がstrictly comparableであるような配列型
+- 型集合の要素が全てstrictly comparableであるような型パラメータ型
 
 だけが`comparable`の型集合に属します。これを示すのが次のサンプルコードです。
 
