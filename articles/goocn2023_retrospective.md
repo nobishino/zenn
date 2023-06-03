@@ -277,15 +277,15 @@ https://twitter.com/shino_nobishii/status/1652915109826793472?s=20
 
 ## race detectorを使えばメモリーモデルを読まなくていいというのはなぜですか？
 
+data raceのないプログラムであれば逐次一貫的なモデルで説明がつくからです。
+
 race detectorを使っていてテストのカバレッジが十分であれば、プロダクトコードがdata raceを発生させていないことにある程度自信が持てます。
-
 data raceを発生させないプログラムは逐次一貫モデルに従うので、メモリーモデルの詳細を理解することなく、「すべての演算が何らかの順序で一列に並べられて実行されたもの」としてすべての挙動を説明できます。これはプログラマーが並行処理を考えるときの「素直な」考え方そのままで良いということです。
-
 よって、race detectorがうまく使えていれば、happens-beforeとか観測可能性とかを考える必要はありません。
 
 ## race detectorにfalse positiveはありますか？
 
-ありません。（あったらrace detectorのバグです)
+いいえ、ありません。（あったらrace detectorのバグです)
 
 https://go.dev/doc/articles/race_detector 
 
@@ -297,6 +297,8 @@ https://go.dev/doc/articles/race_detector
 https://www.infoq.com/presentations/go-race-detector/
 
 ## 発表で使われていた図の描き方は一般的なものですか？
+
+はい。
 
 メモリーモデルという分野についていうと他にも例があって、Rust Atomics And Locksで使われていたりします。
 
