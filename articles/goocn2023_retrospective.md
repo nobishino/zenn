@@ -8,18 +8,29 @@ published: false
 
 [Go Conference 2023 Online](https://gocon.jp/2023/)のLong Sessionで発表させていただきました。この記事はその発表作りの振り返りです。
 
+Go Conference 2023 Onlineでは参加者からのアンケートを募集しているそうです。ぜひ回答しましょう！
+
+https://docs.google.com/forms/d/e/1FAIpQLSdXkRUI820tCvMATuhBsvFItIAoYAvcTg4LpSb4KFW3hXHcPw/viewform
+
+# 発表資料
+
 https://gocon.jp/2023/sessions/A3-L/
 
-**発表資料**
 https://docs.google.com/presentation/d/1UjL5jTqreNrFpulVi6l_H5vY_Bcz9jQriL65gZs1zFM/edit?usp=sharing
+
+# 概要
+
+発表が出来上がるまでにあった出来事をカジュアルに振り返ります。重要なインプットや示唆を頂いたことに対するacknowedgementも兼ねています。
 
 勢いで書いているので、大体時系列に書いているようで微妙に前後したりしています。
 
-全体を通じて伝えたいことは次のようなことです。
+伝えたいことは特にないのですが、
 
-- プログラミングをしている人のバックグラウンドは多様である
-- それ故に自分だから出せる付加価値は必ずある
-- そういう付加価値は人と会話すると気づきやすい
+- 今後発表することに興味がある
+- Proposalをどう書いたか興味がある
+- Go Memory Modelの勉強方法に興味がある
+
+方には参考になる要素もあるかもしれません。
 
 # `#gospecreading`
 
