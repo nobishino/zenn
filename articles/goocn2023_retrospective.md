@@ -3,7 +3,7 @@ title: "[発表振り返り] よくわかるThe Go Memory Model for Go Conferenc
 emoji: "😊"
 type: "idea" # tech: 技術記事 / idea: アイデア
 topics: [Go]
-published: false
+published: true
 ---
 
 [Go Conference 2023 Online](https://gocon.jp/2023/)のLong Sessionで発表させていただきました。この記事はその発表作りの振り返りです。
