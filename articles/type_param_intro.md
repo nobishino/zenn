@@ -11,8 +11,9 @@ Go1.18は2022年3月にリリースされました。このリリースはGo言�
 
 ## 更新履歴
 
-- 2023/02/23: Go1.20の[`comparable`の仕様変更](https://golang.org/doc/go1.20#language)に対応しました。
-  - こちらについては次の資料があります:
+- 2024/01/03: [Go1.21(2023-08-08)](https://go.dev/doc/devel/release#go1.21.0)で`cmp`パッケージが標準ライブラリに追加されたことに対応しました。
+- 2023/02/23: [Go1.20(2023-02-01)](https://go.dev/doc/devel/release#go1.20)の[`comparable`の仕様変更](https://golang.org/doc/go1.20#language)に対応しました。
+  - 次の関連資料があります:
     - [The Go Blog - All your comparable types](https://go.dev/blog/comparable) Griesemer氏によるGo公式ブログです。
 	- [Go言語のBasic Interfaceはcomparableを満たすようになる(でも実装するようにはならない)](https://zenn.dev/nobishii/articles/basic-interface-is-comparable) 上記の内容に対する筆者の解説記事です。Go1.20リリース前に書いたので用語が使えてないところがあります。
 
@@ -413,7 +414,6 @@ func Max[T Number] (x, y T) T {
 ::: message
 
 `>=`などで順序づけられる型はこの5つ以外にもありますが、全て書き出すと大変なため5つだけ書きました。
-この辺りは後程触れる`constraints`パッケージで解決されます。
 
 :::
 
@@ -642,46 +642,44 @@ https://go.dev/ref/spec##Types によると、
 - https://www.youtube.com/watch?v=mlg1Scnm44Q&t=3148s
 - [上記発表のスライド](https://speakerdeck.com/dqneo/go-language-underlying-type)
 
-## `constraints`パッケージと`unions`
+## `cmp`パッケージ
 
-`<, >`で比較可能な型を`unions`で列挙できることは分かりましたが、実際に全ての型を書こうとすると面倒だなと思われた方もいると思います。
+`<, >`で順序づけできる型を`unions`で列挙できることは分かりましたが、実際に全ての型を書こうとすると面倒だなと思われた方もいると思います。
 
-そこで、順序付けできるとか、数値型である、などの基本的な型制約はパッケージ`constraints`で提供されることになりました。
+そこで、`<, >`で順序づけできる型によって満たされる型制約は標準パッケージ`cmp`の`cmp.Ordered`として提供されています。
 
-https://github.com/golang/exp/blob/master/constraints/constraints.go
-
-例えは、順序付できる型を表すインタフェースは`constraints.Ordered`です:
+実装は次のようになっています。
 
 ```go
 // Ordered is a constraint that permits any ordered type: any type
 // that supports the operators < <= >= >.
 // If future releases of Go add new ordered types,
 // this constraint will be modified to include them.
+//
+// Note that floating-point types may contain NaN ("not-a-number") values.
+// An operator such as == or < will always report false when
+// comparing a NaN value with any other value, NaN or not.
+// See the [Compare] function for a consistent way to compare NaN values.
 type Ordered interface {
-	Integer | Float | ~string
-}
-```
-
-`Integer`, `Float`も同じ`constraings`パッケージで定義されているインタフェースです。
-
-ここで`unions`の要素として別なインタフェース型が初めて出てきましたね。
-
-`Integer`を`unions`の一部として使った場合どういう意味になるかというと、`Integer`の`unions`に列挙されている型を`Integer`の代わりに書いたのと同じ意味になります。`Float`も同様です。
-従って、`Ordered`は次のように書いても同じ意味です。
-
-```go
-type Ordered interface {
-	~int | ~int8 | ~int16 | ~int32 | ~int64 | 
-	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
-	~float32 | ~float64 | ~string
+	~int | ~int8 | ~int16 | ~int32 | ~int64 |
+		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
+		~float32 | ~float64 |
+		~string
 }
 ```
 
 これを使って、一般的な`Max`関数を定義できます。
 
-https://gotipplay.golang.org/p/fBQ5QUeLFb3
+https://go.dev/play/p/-WB97e8w2NC
 
 ```go
+package main
+
+import (
+	"cmp"
+	"fmt"
+)
+
 type NewInt int
 
 var x, y NewInt = 3, 2
@@ -690,7 +688,7 @@ func main() {
 	fmt.Println(Max(x, y)) // 3
 }
 
-func Max[T constraints.Ordered](x, y T) T {
+func Max[T cmp.Ordered](x, y T) T {
 	if y > x {
 		return y
 	}
@@ -699,6 +697,8 @@ func Max[T constraints.Ordered](x, y T) T {
 ```
 
 ## `unions`の要素としてどんな型でも書いていいのか
+
+細かい話になりますが、`unions`の要素として使える型については、少し制約があります。
 
 `unions`が複数要素からなるとき、その要素になれるのは
 
@@ -743,6 +743,7 @@ type I interface {
 
 - `~`をつかうと型定義によって作りうる無限の型にインタフェースを実装させることができる
 - `~T`は`T`をunderlying typeに持つすべての型を表す
+
 # core type
 
 underlying typeを一般化した新しい概念であるcore typeと、それがどのように仕様に関わるかについて説明します。
