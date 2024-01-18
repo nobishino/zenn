@@ -100,15 +100,59 @@ readerが読み取った値は驚くべきことに`{X:0, Y:1}`というもの�
 
 このサンプルコードには何の害もありませんが、構造体の意味によっては、そもそも存在してはいけない状態というものがあって、それを意図せず読み取ってしまうかもしれません。
 
-## `string`だと確かめたはずのinterface
-
 ## 文字列を`print`すると`panic`する
 
 ## あるはずのスライスの要素の参照で`panic`する
 
-# その他直感に反するサンプルコード
+## map 
+## 型assertしたはずのinterfaceの動的値がおかしい
+
+```go
+func interfaceCorruption() string {
+	var x any
+
+	done := make(chan struct{})
+	go func() {
+		arr := []any{1, "hello"}
+		for i := 0; ; i++ {
+			select {
+			case <-done:
+				return
+			default:
+				x = arr[i%2]
+			}
+		}
+	}()
+	for {
+		read := x
+		switch r := read.(type) {
+		case int:
+			if r != 1 {
+				return fmt.Sprintf("unexpected int value: %d", r)
+			}
+		case string:
+			if len(r) != 5 {
+				return fmt.Sprintf("unexpected string length :%d", len(r))
+			}
+		case nil:
+		default:
+			close(done)
+			return fmt.Sprintf("strange type detected: %+v", read)
+		}
+	}
+}
+```
+
+
+# その他直感に反する結果
+
+このセクションでは一貫性とは別な観点で直感に反する結果をもたらすdata raceサンプルコードを挙げます。
+
+それぞれのサンプルにはよく使われる名前がついているので、その名前を見出しにしています。興味があれば調べてみてください。
 
 ## Message Passing
+
+## Store Buffer
 
 # 参考資料
 
