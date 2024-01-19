@@ -12,7 +12,9 @@ published: false
 
 プログラム言語としてGoを使いますが、内容的にはGoに限らず当てはまると思います。ただし、data raceに関してはプログラム言語ごとに微妙なアプローチの違いがあるので、それについては最後に少しだけ補足します。
 
-大前提として、ソフトウェア開発では、data raceを一切発生させない状態を目指すべきだと思います。[Data Race Detector](https://go.dev/doc/articles/race_detector)を使って十分なテストを行えば、そのような状態に近づくことができます。しかし、実際にdata raceが存在するとどのようなことが起こりうるのかを詳しく知っている人は少ないのではないでしょうか。そこでこの記事ではそうした例をいくつも挙げることで、data raceをなくすことへのモチベーションを高めたいと思います。
+大前提として、ソフトウェア開発では、data raceを一切発生させない状態を目指すべきだと思います。[Data Race Detector](https://go.dev/doc/articles/race_detector)を使って十分なテストを行えば、そのような状態に近づくことができます。
+
+しかし、実際にdata raceが存在するとどのようなことが起こりうるのかを詳しく知っている人は少ないのではないでしょうか。そこで、data raceによって起こる「驚くような動き」をいくつも挙げることで、data raceをなくすことへのモチベーションを高めたいと思います。
 
 ## 注意: 誤解してほしくないポイント2つ
 
@@ -265,10 +267,6 @@ https://github.com/golang/go/blob/97daa6e94296980b4aa2dac93a938a5edd95ce93/src/r
 
 ## あるはずのスライスの要素の参照で`panic`する
 
-## mapの読み書きで`panic`する
-
-次に`map`型を扱います。実は`map`型は少し特別で、race detectorを使うまでもなく、data raceが発生したらその時点で`panic`するようになっています。
-
 ## 型assertしたはずのinterfaceの動的値がおかしい
 
 inteface型の例として、`any`型の変数の例をあげます。writer側では、異なる型の値を交互に代入してみましょう。reader側では型スイッチ文を使って動的型を確かめてから、動的値が期待通りかどうかチェックします。
@@ -313,6 +311,9 @@ func interfaceCorruption() string {
 
 interface型の値には「型の情報(動的型)」と「値の情報(動的値)」の2つの部分があります。この2つの部分を中途半端に更新した状態をreaderが観測することによって、このような結果が起こります。
 
+## おまけ: mapのdata raceは`panic`するようになっている
+
+最後に`map`型を扱います。実は`map`型は少し特別で、race detectorを使うまでもなく、data raceが発生したらその時点で`panic`するようになっています。
 
 
 # その他直感に反する結果
@@ -325,7 +326,7 @@ interface型の値には「型の情報(動的型)」と「値の情報(動的�
 
 ## Store Buffering
 
-## Independent Reads And Independent Writes
+## Independent Reads of Independent Writes(IRIW)
 
 ## Load Buffering
 
