@@ -2,7 +2,7 @@
 title: "Go言語でdata raceが起きるときに起きる（かもしれない）こと"
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: [Go, Memory Model]
+topics: [Go, Concurrency, MemoryModel]
 published: false
 ---
 
