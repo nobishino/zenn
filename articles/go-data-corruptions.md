@@ -6,6 +6,8 @@ topics: [Go, Memory Model]
 published: false
 ---
 
+# はじめに
+
 この記事は、プログラミングにおいて特に難しいことの1つである「並行処理」に関する記事です。
 
 特に、「並行処理」を行うときに意図せず発生させてしまいやすい「data race」について書きます。data raceがどのような驚くべき問題を引き起こすかを、簡単に動かせるサンプルコードで具体的に見ていきます。
@@ -13,6 +15,13 @@ published: false
 プログラム言語としてGoを使いますが、Goに限らず当てはまる内容も多いと思います。ただし、data raceに関してはプログラム言語ごとに微妙なアプローチの違いがあるので、それについては最後に少しだけ補足します。
 
 大前提として、ソフトウェア開発では、data raceを一切発生させない状態を目指すべきだと思います。[Data Race Detector](https://go.dev/doc/articles/race_detector)を使って十分なテストを行えば、そのような状態に近づくことができます。しかし、実際にdata raceが存在するとどのようなことが起こりうるのかを詳しく知っている人は少ないのではないでしょうか。そこでこの記事ではそうした例をいくつも挙げることで、data raceをなくすことへのモチベーションを高めたいと思います。
+
+## 注意: 誤解してほしくないポイント2つ
+
+記事が長くなるので、最初に誤解してほしくないポイントを2つ書いておきます。
+
+- この記事では「驚くような動き」を挙げていきますが、これはdata raceが存在する状況ではプログラム言語に関わらず発生するものです。Go言語だから発生する訳ではありません。
+- この記事で挙げる「驚くような動き」を心配しなければならないのはdata raceが存在する場合であって、「並行処理を使うといつもこのようなことが起こりうる」訳ではありません。並行処理を使っていても、data raceを発生させていなければ「驚くような動き」は起きません。
 
 # data raceとは何か
 
@@ -102,10 +111,52 @@ readerが読み取った値は驚くべきことに`{X:0, Y:1}`というもの�
 
 ## 文字列を`print`すると`panic`する
 
+この例はbudougumi0617さんのブログ[[Go] stringの比較でヌルポのpanicが発生する（こともある） #横浜Go読書会](https://budougumi0617.github.io/2021/03/31/go-string-null-pointer-panic/)で説明されているものを参考に作成しました。
+
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var s string
+	// writer
+	go func() {
+		arr := [2]string{"", "hello"}
+		for i := 0; ; i++ {
+			s = arr[i%2]
+		}
+	}()
+	// reader
+	for {
+		fmt.Println(s)
+	}
+}
+```
+
+https://go.dev/play/p/KLR5U0rbzEN 
+
+上記のPlaygroundで実行すると、次のように`panic`するのではないでしょうか。
+
+> panic: runtime error: invalid memory address or nil pointer dereference
+> [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x45d33c]
+> goroutine 1 [running]:
+> fmt.(*buffer).writeString(...)
+
+`string`型の値は複数の部分からなっており、文字列の長さを表す部分とバイト列の先頭へのポインタを持っています。
+
+長さを表す部分とそのポインタ部分が一緒に更新されれば問題ないのですが、reader側から中途半端に片方だけ更新された状態を観測してしまうと、nil pointer dereferenceが発生します。
+
 ## あるはずのスライスの要素の参照で`panic`する
 
-## map 
+## mapの読み書きで`panic`する
+
+次に`map`型を扱います。実は`map`型は少し特別で、race detectorを使うまでもなく、data raceが発生したらその時点で`panic`するようになっています。
+
 ## 型assertしたはずのinterfaceの動的値がおかしい
+
+inteface型の例として、`any`型の変数の例をあげます。writer側では、異なる型の値を交互に代入してみましょう。reader側では型スイッチ文を使って動的型を確かめてから、動的値が期待通りかどうかチェックします。
 
 ```go
 func interfaceCorruption() string {
@@ -143,6 +194,10 @@ func interfaceCorruption() string {
 }
 ```
 
+`int`型の`1`と`string`型の`"hello"`だけを交互に代入しているのですから、reader側で`int`と判定すれば値は`1`だし、`string`型と判定すれば長さは`5`になりそうなものですが、次のPlaygroundで実行するとそうならないケースがレポートされます。
+
+これは、interface型の値には「型の情報(動的型)」と「値の情報(動的値)」の2つの部分があり、この2つの部分を中途半端に更新した状態をreaderが観測することによって起こっています。
+
 
 # その他直感に反する結果
 
@@ -156,7 +211,17 @@ func interfaceCorruption() string {
 
 # 参考資料
 
-- 
+## Race Detector関係
+
+- 公式
+- Looking Inside
+- Go Mistakes
+
+## メモリーモデル関係
+
+- The Go Memory Model
+- RSC
+- 発表資料
 
 
 
