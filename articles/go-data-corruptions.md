@@ -271,7 +271,7 @@ fmt.(*buffer).writeString(...)
 
 `string`型の値は複数の部分からなっており、文字列の長さを表す部分とバイト列の先頭へのポインタを持っています。
 
-https://github.com/golang/go/blob/97daa6e94296980b4aa2dac93a938a5edd95ce93/src/runtime/string.go#L232-L2351
+https://github.com/golang/go/blob/97daa6e94296980b4aa2dac93a938a5edd95ce93/src/runtime/string.go#L232-L235
 
 長さを表す部分とそのポインタ部分が一緒に更新されれば問題ないのですが、reader側から中途半端に片方だけ更新された状態を観測してしまうと、nil pointer dereferenceが発生します。
 
