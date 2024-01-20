@@ -99,7 +99,7 @@ https://go.dev/play/p/wmCAMpPYLVV
 
 本当に詳しく知りたい方は、Goの公式ドキュメントである[The Go Memory Model](https://go.dev/ref/mem)と、この2022年のアップデートをするにあたって[Russ Cox氏が書いたブログシリーズ](https://research.swtch.com/mm)を読むのが良いと思います。
 
-もしくは、日本語資料では筆者の作成したスライド「[よくわかるThe Go Memory Model](https://docs.google.com/presentation/d/1UjL5jTqreNrFpulVi6l_H5vY_Bcz9jQriL65gZs1zFM/edit?usp=sharing)」があります。
+もしくは、日本語資料では筆者の作成したスライド「[よくわかるThe Go Memory Model](https://docs.google.com/presentation/d/e/2PACX-1vS2FIFiNgrpRpm1bPO3KpVzJYX4vEFhpyttvBTsTq15BwFmWvW0Q0W4udSf3pJMQyzZJicE5LcR5_cY/pub?start=false&loop=false&delayms=3000)」があります。
 :::
 
 ## data raceと間違われやすいもの
@@ -361,6 +361,10 @@ func interfaceCorruption() string {
 
 https://go.dev/play/p/dT7SDd4becu
 
+```
+unexpected string length :-9223372036854775808
+```
+
 interface型の値には「型の情報(動的型など)」と「値の情報(動的値)」の2つの部分があります。この2つの部分を中途半端に更新した状態をreaderが観測することによって、このような結果が起こります。
 
 **補足**
@@ -547,24 +551,16 @@ DRF-SCという用語についていくつか補足します。
 
 # 参考資料
 
-## Race Detector関係
+筆者が参考にした資料と、参考になりそうな資料を挙げておきます。
 
-- 公式
-- Looking Inside
-- Go Mistakes
-
-## Goのメモリーモデル関係
-
-- The Go Memory Model
-- RSC
-- 発表資料
-
-## メモリーモデル関係
-https://uchan.hateblo.jp/entry/2020/06/19/185152
-
-
-## interface型について
-
-- https://go.dev/blog/laws-of-reflection
-
-
+| タイトルとリンク                                            | 概要                                                                                                    |
+|------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| [The Go Memory Model - The Go Programming Language](https://go.dev/ref/mem) | Goのメモリーモデルです。メモリーモデルとはメモリーへの並行アクセスをしたときに起きることを定めた言語仕様のことで、この記事で扱った内容の基礎となるドキュメントです。|
+| [research!rsc: Memory Models](https://research.swtch.com/mm)                      | GoのメンバーであるRuss Cox氏による、Goに限らないメモリーモデル全般についての解説・論文です。2022年に行われたGoメモリーモデルのアップデートのために書かれたものなのですが、その意義を理解するために必要な前提知識から丁寧に説明しています。|
+| [データ競合と happens-before 関係](https://uchan.hateblo.jp/entry/2020/06/19/185152) | uchan氏による、data race(データ競合)についての詳しい解説です。日本語です。|
+| [よくわかるThe Go Memory Model](https://docs.google.com/presentation/d/e/2PACX-1vS2FIFiNgrpRpm1bPO3KpVzJYX4vEFhpyttvBTsTq15BwFmWvW0Q0W4udSf3pJMQyzZJicE5LcR5_cY/pub?start=false&loop=false&delayms=3000)                          | 筆者によるGoメモリーモデル解説です。                                                                    |
+| [Data Race Detector - The Go Programming Language](https://go.dev/doc/articles/race_detector)   | Go公式によるData Race Detectorの解説です。                                                            |
+| [Looking inside a Race Detector](https://www.infoq.com/presentations/go-race-detector/)                    | Race Detectorの仕組みであるVector Clockについての非常にわかりやすい解説です。                             |
+| [Go Slices: usage and internals - The Go Programming Language](https://go.dev/blog/slices-intro) | Go公式によるスライスの使い方と内部の解説です。                                                          |
+| [The Laws of Reflection - The Go Programming Language](https://go.dev/blog/laws-of-reflection) | Go公式によるreflectionの解説なのですが、interface型についての解説も含んでいます。                      |
+| [research!rsc: Go Data Structures: Interfaces](https://research.swtch.com/interfaces)       | GoのメンバーであるRuss Cox氏によるinterface型についての解説です。                                        |
