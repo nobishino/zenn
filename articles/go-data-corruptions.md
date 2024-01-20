@@ -28,7 +28,7 @@ published: false
 :::message
 この記事で挙げる「驚くような動き」を心配しなければならないのはdata raceが存在する場合であって、「並行処理を使うといつもこのようなことが起こりうる」わけではありません。
 
-並行処理を使っていても、data raceを発生させていなければ「驚くような動き」は起きません。
+つまり、並行処理を使っていても、data raceを発生させていなければ「驚くような動き」は起きません。
 :::
 
 # data raceとは何か
@@ -188,7 +188,8 @@ func structCorruption() string {
 	// writer
 	go func() {
 		for i := 0; ; i++ {
-			p = arr[i%2] // 代入するのは{X: 0, Y: 0}, {X: 1, Y: 1}のどちらかのみ
+			// 代入するのは{X: 0, Y: 0}, {X: 1, Y: 1}のどちらかのみ
+			p = arr[i%2] 
 		}
 	}()
 	
@@ -196,7 +197,9 @@ func structCorruption() string {
 	for {
 		read := p
 		switch read.X + read.Y {
-		case 0, 2: // {X: 0, Y: 0}, {X: 1, Y: 1}のどちらかならばこのケースに入るので何も起きない
+		case 0, 2: 
+			// {X: 0, Y: 0}, {X: 1, Y: 1}のどちらかならば、
+			// このケースに入るので何も起きない。
 		default:
 			return fmt.Sprintf("struct corruption detected: %+v", read)
 		}
@@ -265,7 +268,57 @@ https://github.com/golang/go/blob/97daa6e94296980b4aa2dac93a938a5edd95ce93/src/r
 
 長さを表す部分とそのポインタ部分が一緒に更新されれば問題ないのですが、reader側から中途半端に片方だけ更新された状態を観測してしまうと、nil pointer dereferenceが発生します。
 
-## あるはずのスライスの要素の参照で`panic`する
+## スライスの`len`と`cap`が中途半端に更新される
+
+次のプログラムで、writerは常にlenとcapが等しいようなスライスをsに代入しています。sの初期値(`nil`)も`len(s) == cap(s) == 0`ですから、一見するとこのプログラムの全体にわたって`len(s) == cap(s)`になりそうです。
+
+```go
+func sliceCorruption() {
+	underlying := [5]int{1, 2, 3, 4, 5}
+	var s []int
+
+	go func() { // writer
+		for i := 0; ; i++ {
+			// rは1から5までの整数
+			r := i%5 + 1
+			// len == capであるようなスライスを新たに作り、
+			// sに代入する
+			s = underlying[:r:r]
+		}
+	}()
+	// reader
+	for {
+		// len(s) == cap(s)は常に成り立つと期待する？
+		if len(s) != cap(s) {
+			panic(fmt.Sprintf("len(s) == %d and cap(s) == %d", len(s), cap(s)))
+		}
+	}
+}
+```
+
+次のPlaygroundでこの関数を実行してみます。
+
+https://go.dev/play/p/CSEvhIpGqtv
+
+```
+panic: len(s) == 2 and cap(s) == 1
+
+goroutine 1 [running]:
+main.sliceCorruption()
+	/tmp/sandbox2438933514/prog.go:27 +0x139
+main.main()
+	/tmp/sandbox2438933514/prog.go:6 +0xf
+```
+
+具体的な実行結果は毎回変わりますが、`len`が`cap`と異なるばかりか、`len`が`cap`よりも大きい状態（！）をreaderが観測しました。
+
+**補足**
+
+sliceの実装を見ると、3つのフィールドからなるstructになっています。sliceの要素を保存する配列(underlying arrayと言います)と`len`と`cap`です。
+
+https://github.com/golang/go/blob/master/src/runtime/slice.go#L15-L19
+
+これらが別々のメモリー位置にあることから、data raceが起きているときにはその一部のフィールドだけが更新された状態を観測する可能性があることがわかります。
 
 ## 型assertしたはずのinterfaceの動的値がおかしい
 
@@ -275,18 +328,13 @@ inteface型の例として、`any`型の変数の例をあげます。writer側�
 func interfaceCorruption() string {
 	var x any
 
-	done := make(chan struct{})
-	go func() {
+	go func() { // writer
 		arr := []any{1, "hello"}
 		for i := 0; ; i++ {
-			select {
-			case <-done:
-				return
-			default:
-				x = arr[i%2]
-			}
+			x = arr[i%2]
 		}
 	}()
+	// reader
 	for {
 		read := x
 		switch r := read.(type) {
@@ -300,7 +348,6 @@ func interfaceCorruption() string {
 			}
 		case nil:
 		default:
-			close(done)
 			return fmt.Sprintf("strange type detected: %+v", read)
 		}
 	}
@@ -309,11 +356,75 @@ func interfaceCorruption() string {
 
 `int`型の`1`と`string`型の`"hello"`だけを交互に代入しているのですから、reader側で`int`と判定すれば値は`1`だし、`string`型と判定すれば長さは`5`になりそうなものですが、次のPlaygroundで実行するとそうならないケースがレポートされます。
 
-interface型の値には「型の情報(動的型)」と「値の情報(動的値)」の2つの部分があります。この2つの部分を中途半端に更新した状態をreaderが観測することによって、このような結果が起こります。
+https://go.dev/play/p/dT7SDd4becu
 
-## おまけ: mapのdata raceは`panic`するようになっている
+interface型の値には「型の情報(動的型など)」と「値の情報(動的値)」の2つの部分があります。この2つの部分を中途半端に更新した状態をreaderが観測することによって、このような結果が起こります。
+
+**補足**
+
+Goのruntimeにおけるinterface型の実装はおそらく次の箇所にあります。
+
+https://github.com/golang/go/blob/master/src/runtime/runtime2.go#L205-L208
+
+`data`の部分が動的値に対応して、`tab`の部分が型に関する情報になっています。
+
+## mapのdata raceは`panic`するようになっている?
 
 最後に`map`型を扱います。実は`map`型は少し特別で、race detectorを使うまでもなく、data raceが発生したらその時点で`panic`するようになっています。
+
+例えば、次の関数を実行すると`panic`します。
+
+```go
+func mapCorruption() {
+	// 共有変数
+	m := map[int]int{}
+
+	// writer
+	go func() {
+		for i := 0; ; i++ {
+			m[i] = i
+		}
+	}()
+	// reader
+	for {
+		if m[len(m)] > 10000 {
+			break
+		}
+	}
+}
+```
+
+https://go.dev/play/p/lLXLPicqXQJ
+
+ただし、readerからの`map`へのアクセスの仕方を変えて、要素へのアクセス`m[key]`を行わずに、`m`の大きさである`len(m)`にのみアクセスした場合は、`panic`しませんでした。
+
+```go
+func mapCorruption2() {
+	// 共有変数
+	m := map[int]int{}
+
+	// writer
+	go func() {
+		for i := 0; ; i++ {
+			m[i] = i
+		}
+	}()
+	// reader
+	for {
+		// len(m)にだけアクセスする
+		// 要素にはアクセスしない
+		if len(m) > 10000 {
+			break
+		}
+	}
+}
+```
+
+https://go.dev/play/p/hkgHoVzAOHz
+
+これもdata raceであることに変わりはなく、`-race`つきでローカル実行するとdata raceが報告されます。
+
+`len(m)`と`m`の中身で矛盾があるようなサンプルコードを書こうと思ったのですが、`m`の中身にアクセスしようとすると`panic`してしまいますから、そのようなコードは書けませんでした。
 
 
 # その他直感に反する結果
