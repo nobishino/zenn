@@ -210,9 +210,9 @@ func structCorruption() string {
 }
 ```
 
-このサンプルに限らず、この記事のサンプルコードでは2つのgoroutineを使い、片方で書き込み、もう片方で読み込みを行います。そこで書き込む方をwriter goroutine、読み込む方をreader goroutineと呼ぶことにしましょう。
+このサンプルに限らず、この記事のサンプルコードでは2つのgoroutineを使い、片方で書き込み、もう片方で読み込みを行います。そこで書き込む方をwriter、読み込む方をreaderと呼ぶことにしましょう。
 
-writer goroutineが`p`に代入するのは`Pair{X: 0, Y: 0}`か`Pair{X: 1, Y: 1}`のどちらかです。reader goroutineはこれ以外の値を観測したときにメッセージを返して終了するようになっています。
+writerが`p`に代入するのは`Pair{X: 0, Y: 0}`か`Pair{X: 1, Y: 1}`のどちらかです。readerはこれ以外の値を観測したときにメッセージを返して終了するようになっています。
 
 readerが終了しない限りwriterも終了しないようになっていますから、writerが書き込む2通りの値だけがreaderによって読まれている限り、このプログラムは無限ループするでしょう。実際にはどうなるでしょうか？
 
@@ -222,9 +222,11 @@ https://go.dev/play/p/lWtoA_ikaQG
 
 メッセージを返して終了したと思います。
 
-> struct corruption detected: {X:0 Y:1}
+```
+struct corruption detected: {X:0 Y:1}
 
-> Program exited.
+Program exited.
+```
 
 readerが読み取った値は驚くべきことに`{X:0, Y:1}`というものです。
 
@@ -258,12 +260,14 @@ func main() {
 
 https://go.dev/play/p/0WU8JX9X0x6
 
-上記のPlaygroundで実行すると、次のように`panic`するのではないでしょうか。
+上記のPlaygroundで実行すると、次のように`panic`することがあります。
 
-> panic: runtime error: invalid memory address or nil pointer dereference
-> [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x45d33c]
-> goroutine 1 [running]:
-> fmt.(*buffer).writeString(...)
+```
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x45d33c]
+goroutine 1 [running]:
+fmt.(*buffer).writeString(...)
+```
 
 `string`型の値は複数の部分からなっており、文字列の長さを表す部分とバイト列の先頭へのポインタを持っています。
 
@@ -564,3 +568,12 @@ DRF-SCという用語についていくつか補足します。
 | [Go Slices: usage and internals - The Go Programming Language](https://go.dev/blog/slices-intro) | Go公式によるスライスの使い方と内部の解説です。                                                          |
 | [The Laws of Reflection - The Go Programming Language](https://go.dev/blog/laws-of-reflection) | Go公式によるreflectionの解説なのですが、interface型についての解説も含んでいます。                      |
 | [research!rsc: Go Data Structures: Interfaces](https://research.swtch.com/interfaces)       | GoのメンバーであるRuss Cox氏によるinterface型についての解説です。                                        |
+
+# 最後に
+
+サンプルコードの動作確認をしつつ正確を期して記述しましたが、data raceというテーマ自体がかなり難しいものなので、記述に誤りがないとは言い切れません。何か気づいたことがありましたらGitHubリポジトリのIssueやPull Requestなどでご連絡いただけると助かります。
+
+また、執筆にあたり次の方から情報やフィードバックをいただきました。ありがとうございます。
+もちろん、記述の誤りなどについてのすべての責任は筆者にあります。
+
+- DQNEOさん
