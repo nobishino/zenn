@@ -490,16 +490,6 @@ main.main()
 	/tmp/sandbox1591362111/main.go:7 +0xf
 ```
 
-<!-- 
-## Message Passing
-
-## Independent Reads of Independent Writes(IRIW)
-
-## Load Buffering
-
-## Coherence 
--->
-
 # まとめと開発上の個人的な考え方
 
 この記事では、data raceが存在するときには通常のプログラマーの自然な期待を裏切るような結果が起こりうることを見てきました。
