@@ -37,9 +37,12 @@ published: false
 
 > A data race is defined as a write to a memory location happening concurrently with another read or write to that same location, unless all the accesses involved are atomic data accesses as provided by the sync/atomic package. 
 
-> data raceは、あるメモリー位置への書き込みであって、その同じ位置に対する他の読み込みまたは書き込みと並行に起きるものとして定義されます。ただし、すべてのアクセスが`sync/atomic`パッケージで提供されるアトミックなデータアクセスである場合を除きます。
-
 https://go.dev/ref/mem#overview
+
+これを訳すと概ね次のようになります:
+
+**data raceは、あるメモリー位置への書き込みであって、その同じ位置に対する他の読み込みまたは書き込みと並行に起きるものとして定義されます。** ただし、すべてのアクセスが`sync/atomic`パッケージで提供されるアトミックなデータアクセスである場合を除きます。
+
 
 もっと簡単に言ってしまうと、次の2つのいずれかに当てはまるものはdata raceです。
 
@@ -431,17 +434,63 @@ https://go.dev/play/p/hkgHoVzAOHz
 
 このセクションでは一貫性とは別な観点で直感に反する結果をもたらすdata raceサンプルコードを挙げます。
 
+:::message
+他にも書きたい例があるのですが、動作確認でき次第追加していきます。
+:::
+
 それぞれのサンプルにはよく使われる名前がついているので、その名前を見出しにしています。興味があれば調べてみてください。
 
-## Message Passing
-
 ## Store Buffering
+
+```go
+// メモリーモデル上はpanicする可能性があり実際panicすることがある
+func storeBuffer() {
+	var eg errgroup.Group
+	// 共有変数
+	x, y := 0, 0
+	r1WasZero, r2WasZero := false, false
+	eg.Go(func() error {
+		x = 1
+		r1 := y
+		r1WasZero = r1 == 0
+		return nil
+	})
+	eg.Go(func() error {
+		y = 1
+		r2 := x
+		r2WasZero = r2 == 0
+		return nil
+	})
+	eg.Wait() // エラー処理略
+	if r1WasZero && r2WasZero {
+		panic("Store Buffer Test Failed")
+	}
+}
+```
+
+素直に考えると、`r1 == 0`だったなら`y = 1`よりも先に`x = 1`の書き込みをしていると考えるので、`r2 := x`の時点で`x == 1`になっているはずだと思えます。しかし、次のPlaygroundでこの関数を繰り返し呼び出すと、`panicします。`
+
+https://go.dev/play/p/_XpsxYfh8X5
+
+```
+panic: Store Buffer Test Failed
+
+goroutine 1 [running]:
+main.storeBuffer()
+	/tmp/sandbox1591362111/main.go:29 +0x192
+main.main()
+	/tmp/sandbox1591362111/main.go:7 +0xf
+```
+
+<!-- 
+## Message Passing
 
 ## Independent Reads of Independent Writes(IRIW)
 
 ## Load Buffering
 
-## Coherence
+## Coherence 
+-->
 
 # まとめと開発上の個人的な考え方
 
@@ -463,18 +512,38 @@ data raceが起きていないことについて自信を持つには、Race Det
 ですから、data raceが報告されたらそれが本当のdata raceであることを疑う必要はありません。
 :::
 
-個人的には、data raceを引き起こすかもしれないようなテストケース・テストシナリオをすべてカバーするというのは簡単ではないと思います。ですから、どのようなコードがdata raceになりうるかを理解したメンバーがレビューやモブプロに参加するといった地道な取り組みも同様に重要だと思います。
+個人的には、data raceを引き起こすかもしれないようなテストケース・テストシナリオをすべてカバーするというのは簡単ではないと思います。ですから、例えばチーム開発であれば、どのようなコードがdata raceになりうるかを理解したメンバーがレビューやモブプロに参加するといった地道な取り組みも重要だと思います。
 
-ところで、data raceは絶対に避けるべきものなのでしょうか？Go言語に関する限り、絶対に避けるべきだとは言い切れないと思っています。Go言語のメモリーモデルにおいてdata raceは未定義動作ではなく、起こりうる結果は有限の可能性しかないとされているので、原理的にはすべての起こりうるパターンをプログラマーが確認できるからです。
+ところで、data raceは絶対に避けるべきものなのでしょうか？Go言語に関する限り、絶対に避けるべきだとは言い切れないと思っています。Go言語のメモリーモデルにおいてdata raceは未定義動作ではなく、起こりうる結果は有限通りのパターンしかないとされているので、原理的にはすべての起こりうるパターンをプログラマーが確認できるからです。
 
 しかし、個人的にはdata raceは極力見つけ次第解消したいと思っています。実践的には、data raceは無条件でバグとして取り扱う、くらいのスタンスが良いのではないでしょうか。というのも、この記事で挙げたような短い関数でも驚くような挙動があるので、現実的な大きさにプロジェクトにdata raceが紛れこんでいるとき、それが「無害なdata race」であることを確信するのは非常に難しいと思うからです。
 
 以上をまとめると、個人的にはdata raceについて次のように考えています:
 
-- data raceがあるプログラムは現実的に理解不可能なので、data raceは極力完全に無くしたい
+- data raceがあるプログラムはとても理解が難しくなるので、data raceは極力完全に無くした方が良い
 - data raceをなくすには、Race Detectorを活用し、goroutineに慣れているメンバーを含むレビューやモブプロも行うのが良い
 
 ## 補足: 他言語におけるdata raceの取り扱い
+
+ついさきほど、「並行処理を使っていても、data raceが起きないようにしていれば、この記事で挙げたような不思議な事象は起こりません。」と書きました。この性質をより専門的には、"DRF-SC"と呼んでいます。もちろん、DRF-SCにはもっと正確な定義がありますが、とりあえず「data raceさえなければ素直な動きをするという性質」くらいに捉えて構わないと思います。
+
+多くの現代的プログラム言語(のメモリーモデル)がDRF-SCを満たしていて、例えばGo, C, C++, Rust, Java, JavaScript(ECMAScript)が当てはまります。
+
+一方で、「data raceが起きた場合に何が起こりうるか」の部分は、DRF-SCを満たす言語の間でも違いがあります。
+
+例えばC, C++などはdata raceが発生した場合の動きは未定義動作で、「何が起きてもおかしくない」と言えます。
+
+一方、Go, Java, JavaScriptはそうではなく、data raceは発生した場合の動きも有限通りのパターンとして定義されています。非常に理解が難しいとはいえ、徹底分析すれば起こりうる可能性は列挙できるはずだと言えます。
+
+
+:::message
+DRF-SCという用語についていくつか補足します。
+
+- DRF-SCのことをSC-DRFとも言うようです。
+- DRFの部分は"data-race-free"の略で、「data raceがないこと」の意味です。
+- SCの部分は"Sequentially Consitent"の略で、「逐次一貫的」と訳されます。
+- DRF-SCは、「DRFならばSCである」というように書き下して理解すると覚えやすいと思います。
+:::
 
 # 参考資料
 
@@ -484,11 +553,15 @@ data raceが起きていないことについて自信を持つには、Race Det
 - Looking Inside
 - Go Mistakes
 
-## メモリーモデル関係
+## Goのメモリーモデル関係
 
 - The Go Memory Model
 - RSC
 - 発表資料
+
+## メモリーモデル関係
+https://uchan.hateblo.jp/entry/2020/06/19/185152
+
 
 ## interface型について
 
