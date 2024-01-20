@@ -431,7 +431,7 @@ func mapCorruption2() {
 }
 ```
 
-https://go.dev/play/p/hkgHoVzAOHz
+https://go.dev/play/p/TtBIoccdk2s
 
 これもdata raceであることに変わりはなく、`-race`つきでローカル実行するとdata raceが報告されます。
 
