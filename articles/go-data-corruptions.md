@@ -3,7 +3,7 @@ title: "Go言語でdata raceが起きるときに起きる（かもしれない�
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go, Concurrency, MemoryModel]
-published: false
+published: true
 ---
 
 # はじめに
