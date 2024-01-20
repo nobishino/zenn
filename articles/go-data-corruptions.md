@@ -258,7 +258,7 @@ func main() {
 }
 ```
 
-https://go.dev/play/p/0WU8JX9X0x6
+https://go.dev/play/p/KLR5U0rbzEN
 
 上記のPlaygroundで実行すると、次のように`panic`することがあります。
 
