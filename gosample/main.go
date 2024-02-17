@@ -5,16 +5,16 @@ package main
 import "github.com/nobishino/gocoro/iter"
 
 func main() {
-	for k, v := range seq2() {
-		println(k, v)
+	for v := range seq() {
+		println(v)
 	}
 }
 
-func seq2() iter.Seq2[string, int] {
+func seq() iter.Seq[string] {
 	values := []string{"a", "b", "c"}
-	return func(yield func(string, int) bool) {
+	return func(yield func(string) bool) {
 		for i := range 10 {
-			if !yield(values[i%3], i) {
+			if !yield(values[i%3]) {
 				break
 			}
 		}
