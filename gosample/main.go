@@ -5,12 +5,12 @@ package main
 import "github.com/nobishino/gocoro/iter"
 
 func main() {
-	for k, v := range seq() {
+	for k, v := range seq2() {
 		println(k, v)
 	}
 }
 
-func seq() iter.Seq2[string, int] {
+func seq2() iter.Seq2[string, int] {
 	values := []string{"a", "b", "c"}
 	return func(yield func(string, int) bool) {
 		for i := range 10 {
