@@ -4,7 +4,9 @@ if [ $? -eq 0 ]; then
   echo "gosample/main.go has been changed. construct the commit message..."
   echo $1 > tmp
   echo "" >> tmp
-  gp share ./gosample/main.go ./gosample/go.mod >> tmp
+  pushd gosample
+  gp share main.go go.mod >> ../tmp
+  popd 
   echo "" >> tmp
   echo  "\`\`\`go" >> tmp
   cat gosample/main.go >> tmp
