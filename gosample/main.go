@@ -5,7 +5,9 @@ package main
 import "github.com/nobishino/gocoro/iter"
 
 func main() {
-	for v := range seq() {
+	next, stop := iter.Pull(seq())
+	defer stop()
+	for v, ok := next(); ok; v, ok = next() {
 		println(v)
 	}
 }
