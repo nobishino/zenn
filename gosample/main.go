@@ -5,7 +5,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/nobishino/gocoro/iter"
+	"github.com/nobishino/zenn/gosample/iter"
 )
 
 func main() {
@@ -13,7 +13,10 @@ func main() {
 	s2 := createIntSeq(2, 4, 6, 7)
 
 	for v := range mergeSortedIntSeq(s1, s2) {
-		fmt.Println(v) // 1,2,3,4,5,6,7,8
+		if v >= 7 {
+			break
+		}
+		fmt.Println(v) // 1,2,3,4,5,6
 	}
 
 }
