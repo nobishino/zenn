@@ -43,6 +43,7 @@ func mergeSortedIntSeq(a, b iter.Seq[int]) iter.Seq[int] {
 	}
 }
 
+// 可変長引数を受け取り、それを要素とするシーケンスを返す
 func createIntSeq(xs ...int) iter.Seq[int] {
 	return func(yield func(int) bool) {
 		for _, x := range xs {
