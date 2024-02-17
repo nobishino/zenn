@@ -25,9 +25,8 @@ func mergeSortedIntSeq(a, b iter.Seq[int]) iter.Seq[int] {
 	nextB, stopB := iter.Pull(b)
 	av, aok := nextA()
 	bv, bok := nextB()
-	var more = true
 	return func(yield func(int) bool) {
-		for {
+		for more := true; more; {
 			switch {
 			case aok && (av <= bv || !bok):
 				more = yield(av)
@@ -38,12 +37,9 @@ func mergeSortedIntSeq(a, b iter.Seq[int]) iter.Seq[int] {
 			default:
 				return
 			}
-			if !more {
-				stopA()
-				stopB()
-				return
-			}
 		}
+		stopA()
+		stopB()
 	}
 }
 
