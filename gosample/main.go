@@ -13,7 +13,7 @@ func main() {
 	s2 := createIntSeq(2, 4, 6, 7)
 
 	for v := range mergeSortedIntSeq(s1, s2) {
-		fmt.Println(v) // 1,2,4,5,6,7,8
+		fmt.Println(v) // 1,2,3,4,5,6,7,8
 	}
 
 }
