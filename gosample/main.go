@@ -9,28 +9,40 @@ import (
 )
 
 func main() {
-	s1 := createIntSeq(1, 2, 3, 4, 5)
-	s2 := createIntSeq(1, 2, 3, 5, 4)
-	s3 := createIntSeq(1, 2, 3, 4, 5)
+	s1 := createIntSeq(1, 3, 5, 8)
+	s2 := createIntSeq(2, 4, 6, 7)
 
-	fmt.Println(equalIntValues(s1, s2)) // false
-	fmt.Println(equalIntValues(s1, s3)) // true
+	for v := range mergeSortedIntSeq(s1, s2) {
+		fmt.Println(v) // 1,2,4,5,6,7,8
+	}
+
 }
 
-// a, bからえられる値が全て同じかどうかを判定する
-func equalIntValues(a, b iter.Seq[int]) bool {
+// a, bという2つのシーケンスを受け取り、それをマージしたシーケンスを返す
+// その際、a ,bが昇順ソート済みだと仮定して、そのソート順序を維持する
+func mergeSortedIntSeq(a, b iter.Seq[int]) iter.Seq[int] {
 	nextA, stopA := iter.Pull(a)
-	defer stopA()
 	nextB, stopB := iter.Pull(b)
-	defer stopB()
-	for {
-		av, aok := nextA()
-		bv, bok := nextB()
-		if av != bv || aok != bok {
-			return false
-		}
-		if !aok {
-			return true
+	av, aok := nextA()
+	bv, bok := nextB()
+	var more = true
+	return func(yield func(int) bool) {
+		for {
+			switch {
+			case aok && (av <= bv || !bok):
+				more = yield(av)
+				av, aok = nextA()
+			case bok:
+				more = yield(bv)
+				bv, bok = nextB()
+			default:
+				return
+			}
+			if !more {
+				stopA()
+				stopB()
+				return
+			}
 		}
 	}
 }
