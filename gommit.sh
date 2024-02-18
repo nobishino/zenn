@@ -5,7 +5,7 @@ if [ $? -eq 0 ]; then
   echo $1 > tmp
   echo "" >> tmp
   pushd gosample
-  gp share main.go ./iter/iter.go ./coro/coro.go go.mod >> ../tmp
+  gp share main.go iter.go  >> ../tmp
   popd 
   echo "" >> tmp
   echo  "\`\`\`go" >> tmp

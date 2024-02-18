@@ -4,8 +4,6 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/nobishino/zenn/gosample/iter"
 )
 
 func main() {
@@ -23,9 +21,9 @@ func main() {
 
 // a, bという2つのシーケンスを受け取り、それをマージしたシーケンスを返す
 // その際、a ,bが昇順ソート済みだと仮定して、そのソート順序を維持する
-func mergeSortedIntSeq(a, b iter.Seq[int]) iter.Seq[int] {
-	nextA, stopA := iter.Pull(a)
-	nextB, stopB := iter.Pull(b)
+func mergeSortedIntSeq(a, b Seq[int]) Seq[int] {
+	nextA, stopA := Pull(a)
+	nextB, stopB := Pull(b)
 	av, aok := nextA()
 	bv, bok := nextB()
 	return func(yield func(int) bool) {
@@ -47,7 +45,7 @@ func mergeSortedIntSeq(a, b iter.Seq[int]) iter.Seq[int] {
 }
 
 // 可変長引数を受け取り、それを要素とするシーケンスを返す
-func createIntSeq(xs ...int) iter.Seq[int] {
+func createIntSeq(xs ...int) Seq[int] {
 	return func(yield func(int) bool) {
 		for _, x := range xs {
 			if !yield(x) {
