@@ -4,7 +4,7 @@ title: "Go言語のiterパッケージ入門"
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go, Concurrency, MemoryModel]
-published: true
+published: false
 ---
 
 # メモ:
