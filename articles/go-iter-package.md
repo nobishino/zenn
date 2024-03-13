@@ -1,4 +1,3 @@
-
 ---
 title: "Go言語のiterパッケージ入門"
 emoji: "😽"

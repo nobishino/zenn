@@ -5,7 +5,7 @@ if [ $? -eq 0 ]; then
   echo $1 > tmp
   echo "" >> tmp
   pushd gosample
-  echo "$(gp share main.go go.mod go.sum)/?v=gotip"  >> ../tmp
+  echo "$(gp share main.go go.mod go.sum)?v=gotip"  >> ../tmp
   popd 
   echo "" >> tmp
   echo  "\`\`\`go" >> tmp
