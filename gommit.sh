@@ -5,11 +5,11 @@ if [ $? -eq 0 ]; then
   echo $1 > tmp
   echo "" >> tmp
   pushd gosample
-  echo "$(gp share main.go go.mod go.sum)?v=gotip"  >> ../tmp
+  gp share main.go go.mod go.sum >> ../tmp
   popd 
   echo "" >> tmp
   echo  "\`\`\`go" >> tmp
   cat gosample/main.go >> tmp
   echo  "\`\`\`" >> tmp
-  git commit -am "$(cat tmp)"
+  git commit --am "$(cat tmp)"
 fi

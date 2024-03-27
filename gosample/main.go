@@ -1,46 +1,33 @@
-// GOEXPERIMENT=rangefunc
-// (*)実行するとgo vetがエラーを出しますが、実行はできています
 package main
 
 import (
 	"fmt"
-
-	"github.com/nobishino/gocoro/iter"
 )
 
-func main() {
-	s1 := createIntSeq(1, 2, 3, 4, 5)
-	s2 := createIntSeq(1, 2, 3, 5, 4)
-	s3 := createIntSeq(1, 2, 3, 4, 5)
-
-	fmt.Println(equalIntValues(s1, s2)) // false
-	fmt.Println(equalIntValues(s1, s3)) // true
+type MyStruct struct {
+	X int
+	Y int
 }
 
-// a, bからえられる値が全て同じかどうかを判定する
-func equalIntValues(a, b iter.Seq[int]) bool {
-	nextA, stopA := iter.Pull(a)
-	defer stopA()
-	nextB, stopB := iter.Pull(b)
-	defer stopB()
-	for {
-		av, aok := nextA()
-		bv, bok := nextB()
-		if av != bv || aok != bok {
-			return false
-		}
-		if !aok {
-			return true
-		}
+var a *MyStruct = &as[0]
+
+var as = [2]MyStruct{
+	{0, 0},
+	{1, 1},
+}
+
+func main() {
+	go readerGoroutine(&a)
+	for i := 0; ; i++ {
+		a = &as[i%2] // 設定更新
 	}
 }
 
-func createIntSeq(xs ...int) iter.Seq[int] {
-	return func(yield func(int) bool) {
-		for _, x := range xs {
-			if !yield(x) {
-				break
-			}
+func readerGoroutine(value **MyStruct) {
+	for {
+		v := *value
+		if v.X != v.Y {
+			fmt.Println("Value: ", v.X, v.Y)
 		}
 	}
 }
