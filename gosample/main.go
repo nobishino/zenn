@@ -17,17 +17,17 @@ var as = [2]MyStruct{
 }
 
 func main() {
-	go readerGoroutine(a)
+	go readerGoroutine(&a)
 	for i := 0; ; i++ {
 		a = &as[i%2] // 設定更新
 	}
 }
 
-func readerGoroutine(value *MyStruct) {
+func readerGoroutine(value **MyStruct) {
 	for {
 		v := *value
 		if v.X != v.Y {
-			fmt.Println("Value: ", *value)
+			fmt.Println("Value: ", v.X, v.Y)
 		}
 	}
 }
