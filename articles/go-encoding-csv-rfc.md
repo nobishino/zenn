@@ -1,5 +1,5 @@
 ---
-title: "Goのencoding/csvのオプションとRFC 4180
+title: "Goのencoding/csvとRFC 4180"
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go, CSV, TSV, RFC]
@@ -534,7 +534,7 @@ https://go.dev/play/p/FoSgK1T-Z6G
 
 `encoding/csv`は区切り文字を変更することでTSVのライブラリとしても使用できます。
 
-ただし、その場合も準拠する仕様はあくまでCSVの仕様である[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)です。
+ただし、その場合も準拠する仕様はあくまでCSVの仕様である[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)です。従って、CSVを扱う場合に述べた注意点はTSVの場合にも成り立ちます。
 
 ::: message
 TSVについては（筆者の知る限り）CSVの[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)に相当するような広く知られた仕様がありません。
