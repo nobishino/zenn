@@ -3,7 +3,7 @@ title: "Goのencoding/csvとRFC 4180"
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go, CSV, TSV, RFC]
-published: false
+published: true
 ---
 
 # はじめに
