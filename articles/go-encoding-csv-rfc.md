@@ -203,7 +203,7 @@ Ken,Thompson,ken
 ソフトウェアの介在しない書類事務でも同じような現象があるかもしれません。
 :::
 
-## 仕様3
+## 仕様3: ヘッダー行について
 
 次に3.をみていきます。
 
@@ -477,4 +477,6 @@ https://go.dev/play/p/2hBKDPtcxfL
 
 ただし、その場合も準拠する仕様はあくまでCSVの仕様である[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)です。
 
-他方で、TSVについては（筆者の知る限り）CSVの[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)に相当するような広く知られた仕様がありません。
+::: message
+TSVについては（筆者の知る限り）CSVの[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)に相当するような広く知られた仕様がありません。
+:::
