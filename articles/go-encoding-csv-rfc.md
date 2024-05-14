@@ -1,5 +1,5 @@
 ---
-title: "Goのencoding/csvのオプションとRFC 4180"
+title: "Goのencoding/csvとRFC 4180"
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go, CSV, TSV, RFC]
@@ -131,7 +131,7 @@ func main() {
 
 を見ていくことにします。
 
-[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)の中で、CSVのフォーマットについて記載しているのはSection 2のみで、仕様は7項目しかありませんから、それほど大変ではありません。
+[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)の中で、CSVのフォーマットについて記載しているのはSection 2のみで、仕様は7項目からなっています。
 
 ::: message 
 仕様について日本語への拙訳を記載しますが、直訳ではないこともあることに気をつけてください。
@@ -226,7 +226,7 @@ Ken,Thompson,ken
 
 違反する場合のコード例を出したいのですが、次の使用でまとめて具体例を出したいので、一旦4.に進みます。
 
-## 仕様4
+## 仕様4: フィールドの数などについて
 
 >   4.  Within the header and each record, there may be one or more
 >       fields, separated by commas.  Each line should contain the same
@@ -246,11 +246,13 @@ Ken,Thompson,ken
 https://go.dev/play/p/k0e-16GimEs
 
 ```
-	in := `first_name,last_name,username
+first_name,last_name,username
 "Rob","Pike",rob
-Ken,Thompson// ここだけフィールドが少ない
+Ken,Thompson
 "Robert","Griesemer","gri"`
 ```
+
+3行目だけフィールドが2つしかありません。
 
 > record on line 3: wrong number of fields
 
@@ -336,7 +338,7 @@ Ken,Thompson,ken
 つまり、「最後のフィールドの後にカンマがついている」という理由のエラーは返らないのですが、その後の空文字列がフィールドとみなされてしまうことにより、間接的に「最後のフィールドにカンマをつけられない」というRFCの仕様が満たされています。
 
 
-## 仕様5
+## 仕様5: 二重引用符`"`について
 
 5. をみていきます。
 
@@ -361,7 +363,7 @@ Ken,Thompson,ken
 
 レコードごとに違うばかりか、同一レコードでもフィールドごとに違ったりします。これもRFCには準拠したフォーマットであり、実際に`csv.Reader`はこれを読み取れます。
 
-#### 仕様:  If fields are not enclosed with double quotes, then double quotes may not appear inside the fields.
+### 仕様:  If fields are not enclosed with double quotes, then double quotes may not appear inside the fields.
 
 これに違反するのは次のようなレコードを含む場合です。実際に、`csv.Reader`はこれをエラーにします。
 
@@ -375,8 +377,8 @@ Ken,Thompson,ken
 
 ```go
 // If LazyQuotes is true, a quote may appear in an unquoted field and a
-	// non-doubled quote may appear in a quoted field.
-	LazyQuotes bool
+// non-doubled quote may appear in a quoted field.
+LazyQuotes bool
 ```
 
 https://go.dev/play/p/cwQaKwyR8i0
@@ -417,13 +419,13 @@ Ken,Thompson,ken
 
 逆にいうと、次のようにすればフィールドに改行やカンマを使えます。
 
+https://go.dev/play/p/J2Gvi90-3y7
+
 ```
-"aaa","b CRLF
-bb","ccc" CRLF
+"aaa","b
+bb","ccc"
 zzz,yyy,xxx
 ```
-
-https://go.dev/play/p/1HvJ6QW2Bo0
 
 ## 仕様7: If double-quotes are used to enclose fields, then a double-quote appearing inside a field must be escaped by preceding it with another double quote.
 
@@ -456,7 +458,7 @@ https://go.dev/play/p/2hBKDPtcxfL
 
 
 
-## [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`csv.Writer`の関係
+# [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`csv.Writer`の関係
 
 `csv.Writer`はオプションフィールドが2つしかなく、`Reader`に比べると単純です。
 
