@@ -3,35 +3,23 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	"io"
-	"log"
 	"strings"
 )
 
 func main() {
-	in := `"aaa","b"bb","ccc"
-ddd,ee"e,e"ee,f
+	in := `a,b,c
+1,2,3
+4,"5"five,6
+7,"8",9
 `
 	r := csv.NewReader(strings.NewReader(in))
 	r.LazyQuotes = true
 
-	for {
-		// 1行を[]stringで返す
-		record, err := r.Read()
-		if err == io.EOF {
-			// 終了した時はio.EOFを返す
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println(record, len(record))
+	record, err := r.ReadAll()
+	if err != nil {
+		panic(err)
 	}
-}
+	fmt.Println(len(record))
 
-const csvStr = `first_name,last_name,username
-"Rob","Pike",rob
-Ken,Thompson,ken
-"Robert","Griesemer","gri"
-`
+	fmt.Println(record[2][1])
+}

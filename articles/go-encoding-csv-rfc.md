@@ -131,7 +131,6 @@ func main() {
 
 - 破っている時にどうエラーになるか
 - どのオプションによってそのエラーを抑制できるか
-- エラーを抑制した場合に気をつけるべきことはあるか
 
 を見ていくことにします。
 
@@ -460,6 +459,62 @@ https://go.dev/play/p/RsuP4m66hd6
 
 https://go.dev/play/p/2hBKDPtcxfL
 
+## `LazyQuotes = true`でエラーを抑制する際の注意点
+
+次のCSVファイルはRFC 4180違反で、デフォルトの`csv.Reader`ではエラーになります。
+
+```
+a,b,c
+1,2,3
+4,"5"five,6
+7,"8",9
+```
+
+3行目の`"5"five`が次の仕様に違反しているからです。
+
+> Fields containing line breaks (CRLF), double quotes, and commas should be enclosed in double-quotes.
+
+これは次のように`LazyQuotes = true`で抑制できます。しかし結果の行数を見ると`3`になっており、期待される`4`と異なります。
+
+https://go.dev/play/p/FoSgK1T-Z6G
+
+実は、このとき3行目の2列目は意図通りに（？）解釈されておらず、次のような1つのフィールドとして読み取られています。
+
+```
+5"five,6
+7,"8
+```
+
+どういうことでしょうか？このフィールドは`"`から始まっているので、`"`によってencloseされたフィールドとして扱われます。よってその終わりは`"`であり、その後には`,`が来るはずです。
+よって、最後の行の`"8",`に含まれる最後の`",`に到達して初めて1つのフィールドが終わったものと解釈されているのです。
+
+これだけだと幾つか疑問が残ると思います。
+
+*疑問1: 改行はどうなっているのか？*
+
+`4,"5"five,6`のあとの改行はどうなっているのか？というと、これはRFCにより`"`でencloseされたフィールドでは改行文字をフィールドの一部として使えるので、フィールドの一部として扱われています。
+
+> Fields containing line breaks (CRLF), double quotes, and commas should be enclosed in double-quotes. 
+
+*疑問2: 途中の`"`はどうなっているのか?*
+
+`4,"5"five,6`の`"five`の部分の`"`は、RFCのフォーマットには違反しています。しかし今は`LazyQuotes`でフォーマット制限を緩めているので、エラーになりません。しかも、この`"`の直後には`,`がないのでフィールドの終端とは判断されず、フィールドの一部と判断されます。
+
+*疑問3: 途中の`,`はどうなっているのか?*
+
+`4,"5"five,6`の`five,`の部分のカンマ`,`は、フィールドの一部として扱われています。
+
+> Fields containing line breaks (CRLF), double quotes, and commas should be enclosed in double-quotes. 
+
+今のフィールドは`"`でenclosedなのでRFCの仕様としてもこの`,`がフィールドの一部になるのは正しいです。このカンマが区切り文字であるならば直前に`"`があるはずなので、`",`がセットで出現したときにはじめてこのフィールドが終わったと解釈されます。
+
+このように、`LazyQuotes`は便利なようですがある種の入力に対しては意図しない結果を生む原因にもなるので、`LazyQuotes`を使えば読み込めるからといって使って良いかどうかは個別に判断が必要だと思います。
+
+:::message
+今扱った入力だと、意図しない（？）結果になりかつカラム数がおかしくならないためエラーにもなってくれないという結果になります。
+
+似たようなケースで`LazyQuotes`を`true`にしていると、多くの場合は結果のカラム数がおかしくなって"wrong number of fields"のエラーになると思います。しかしたまたまカラム数が「正しくなってしまう」可能性もあるので、エラーになることを期待すべきではないと思います。
+:::
 
 
 # [[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`csv.Writer`の関係
@@ -484,3 +539,7 @@ https://go.dev/play/p/2hBKDPtcxfL
 ::: message
 TSVについては（筆者の知る限り）CSVの[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)に相当するような広く知られた仕様がありません。
 :::
+
+# この記事へのフィードバックについて
+
+この記事についてフィードバックやご意見がある場合、[GitHubリポジトリ](https://github.com/nobishino/zenn)にissueを立てるか、PRを直接立てていただけると助かります。
