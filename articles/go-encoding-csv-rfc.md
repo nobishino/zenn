@@ -23,17 +23,17 @@ Goのencoding/csvのデフォルト動作を[RFC 4180](https://www.rfc-editor.or
 
 Go1.22時点のパッケージドキュメントには次のようにあります。
 
-> Package csv reads and writes comma-separated values (CSV) files. There are many kinds of CSV files; this package supports the format described in [[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html).
+> Package csv reads and writes comma-separated values (CSV) files. There are many kinds of CSV files; this package supports the format described in [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html).
 
-> csvパッケージはCSVファイルの読み書きを行います。CSVファイルにはたくさんの種類がありますが、このパッケージは[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)で説明されるフォーマットをサポートします。
+> csvパッケージはCSVファイルの読み書きを行います。CSVファイルにはたくさんの種類がありますが、このパッケージは[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)で説明されるフォーマットをサポートします。
 
 https://pkg.go.dev/encoding/csv
 
 これを実現するように、`encoding/csv`は次のような基本デザインになっています。
 
-- CSVのよく知られた仕様である[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)をサポートする。
+- CSVのよく知られた仕様である[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)をサポートする。
   - (概ね)デフォルトでは厳格にRFCに準拠し、オプションで緩和できるようになっている
-- 区切り文字をデフォルトの`,`から変えることでTSVなども扱える。ただしその場合もCSVの仕様である[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)に準拠した動作になる。
+- 区切り文字をデフォルトの`,`から変えることでTSVなども扱える。ただしその場合もCSVの仕様である[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)に準拠した動作になる。
 - APIとしては読み取り用の`csv.Reader`と書き込み用の`csv.Writer`を提供し、これらは`io.Reader, io.Writer`を渡して作る。
   - この点は他のGo標準パッケージたちと同様で、例えば他にはencoding/json, compress/gzipなども同様のデザインになっている
 
@@ -108,24 +108,24 @@ func main() {
 }
 ```
 
-# [[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`encoding/csv`の関係
+# [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`encoding/csv`の関係
 
-はじめに見た通り、`encoding/csv`は[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)をサポートします。
+はじめに見た通り、`encoding/csv`は[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)をサポートします。
 `encoding/csv`はCSVの読み取りと書き込みを行うので、「サポートする」というのは具体的には次のようなことを指しています。
 
-- CSVを読み取るとき、読み取るファイルが[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットに従っていることを期待し、そうでない場合はエラーとする。
+- CSVを読み取るとき、読み取るファイルが[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットに従っていることを期待し、そうでない場合はエラーとする。
     - ただし、いくつかのRFCの仕様は`csv.Reader`のオプションによって緩めることもできる。
-- CSVを書き込むとき、[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットで書き込む。
-    - ただし、デフォルトの改行文字は`\n`であって`\r\n`ではない。([[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)ではCRLF、つまり`\r\n`となっている)   
+- CSVを書き込むとき、[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットで書き込む。
+    - ただし、デフォルトの改行文字は`\n`であって`\r\n`ではない。([RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)ではCRLF、つまり`\r\n`となっている)   
     - フォーマットの一部を`csv.Writer`のオプションで変更できる。
       - 変更できるのは、区切り文字(デフォルトは`,`)と改行文字(デフォルトは`\n`)の2つ
 
-そこで、`csv.Reader`と`csv.Writer`のそれぞれについて[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)との関係を見ていきます。
+そこで、`csv.Reader`と`csv.Writer`のそれぞれについて[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)との関係を見ていきます。
 
 
-# [[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`csv.Reader`の関係
+# [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`csv.Reader`の関係
 
-すでに述べたように、`csv.Reader`は読み取るファイルが[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットに従っていることを期待し、そうでない場合はエラーとします。
+すでに述べたように、`csv.Reader`は読み取るファイルが[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットに従っていることを期待し、そうでない場合はエラーとします。
 
 そこで、RFCの仕様のそれぞれについて、
 
@@ -134,7 +134,7 @@ func main() {
 
 を見ていくことにします。
 
-[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)の中で、CSVのフォーマットについて記載しているのはSection 2のみで、仕様は7項目からなっています。
+[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)の中で、CSVのフォーマットについて記載しているのはSection 2のみで、仕様は7項目からなっています。
 
 ::: message 
 仕様について日本語への拙訳を記載しますが、直訳ではないこともあることに気をつけてください。
@@ -517,27 +517,27 @@ https://go.dev/play/p/FoSgK1T-Z6G
 :::
 
 
-# [[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`csv.Writer`の関係
+# [RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html) の仕様と`csv.Writer`の関係
 
 `csv.Writer`はオプションフィールドが2つしかなく、`Reader`に比べると単純です。
 
-- CSVを書き込むとき、[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットで書き込む。
-    - ただし、デフォルトの改行文字は`\n`であって`\r\n`ではない。([[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)ではCRLF、つまり`\r\n`となっている)   
+- CSVを書き込むとき、[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)のフォーマットで書き込む。
+    - ただし、デフォルトの改行文字は`\n`であって`\r\n`ではない。([RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)ではCRLF、つまり`\r\n`となっている)   
     - フォーマットの一部を`csv.Writer`のオプションで変更できる。
       - 変更できるのは、区切り文字(デフォルトは`,`)と改行文字(デフォルトは`\n`)の2つ
 
 具体的には、`Writer.Comma`で区切り文字をデフォルトから変更できて、`Writer.UseCRLF`で改行文字を`\n`にするか`\r\n`にするか選択できます。
 
-この`Writer.UseCRLF`は、`encoding/csv`のデフォルト動作が[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)と異なっている唯一のポイントです。
+この`Writer.UseCRLF`は、`encoding/csv`のデフォルト動作が[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)と異なっている唯一のポイントです。
 
 # TSVを扱うときの注意点
 
 `encoding/csv`は区切り文字を変更することでTSVのライブラリとしても使用できます。
 
-ただし、その場合も準拠する仕様はあくまでCSVの仕様である[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)です。従って、CSVを扱う場合に述べた注意点はTSVの場合にも成り立ちます。
+ただし、その場合も準拠する仕様はあくまでCSVの仕様である[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)です。従って、CSVを扱う場合に述べた注意点はTSVの場合にも成り立ちます。
 
 ::: message
-TSVについては（筆者の知る限り）CSVの[[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)](https://www.rfc-editor.org/rfc/rfc4180.html)に相当するような広く知られた仕様がありません。
+TSVについては（筆者の知る限り）CSVの[RFC 4180](https://www.rfc-editor.org/rfc/rfc4180.html)に相当するような広く知られた仕様がありません。
 :::
 
 # この記事へのフィードバックについて
