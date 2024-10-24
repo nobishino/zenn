@@ -3,7 +3,7 @@ title: "[Go言語Proposalを読む] net/http: Clientが1xxレスポンスの受�
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go]
-published: false
+published: true
 ---
 
 # [Go言語Proposalを読む] シリーズについて
