@@ -93,6 +93,17 @@ https://datatracker.ietf.org/doc/draft-ietf-httpbis-resumable-upload/ の中に�
 
 元々のproposalは、5回という恣意的な回数制限をhttp.Clientのフィールドで上書きできるようにすることを提案していました。
 
+しかし、1xxレスポンスが果たしている役割を考えると、回数で制限すること自体が理に適っていません。サーバーがレスポンスに応答するのに時間がかかる場合、1xxレスポンスを複数回返すことが有用であり、しかも応答に時間のかかるリクエストはよくあるためです。また、1xxレスポンスの回数や頻度はクライアント側からはわかりません。
+
+他方で、全く制限がないとするのもよくないので、受信したヘッダーサイズの合計が一定値を超えたらエラーとする方針で合意されたようです。(バイナリプロトコルであるHTTP/2ではヘッダーのデコードも潜在的にコストがかかることも言及されています)
+
+より詳しくは次のコメントが参考になります。
+
+- https://github.com/golang/go/issues/65035#issuecomment-2181630303
+- https://github.com/golang/go/issues/65035#issuecomment-2181657288
+- https://github.com/golang/go/issues/65035#issuecomment-2181734108
+
+
 # そのほかProposalから得られる知識
 
 ## `net/http/httptrace`パッケージ
