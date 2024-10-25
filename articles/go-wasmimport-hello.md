@@ -3,7 +3,7 @@ title: "go:wasmimportを使ってHello Worldする"
 emoji: "😽"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Go]
-published: false
+published: true
 ---
 
 # go:wasmimportとは
