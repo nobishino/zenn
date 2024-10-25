@@ -171,7 +171,7 @@ func fd_write(fd int32, iovs unsafe.Pointer, iovsLen size, nwritten unsafe.Point
 func fd_write(fd int32, iovs unsafe.Pointer, iovsLen size, nwritten unsafe.Pointer) Errno
 ```
 
-例えばLinux上で`fmt.Println`を実行したときには、最終的に`write(2)`システムコールが呼ばれます。それと類似して、WASI向けのGoプログラムにおいては、最終的にWasmランタイムが提供する`fd_write`関数を呼び出したいです。
+例えばLinux上で`fmt.Println`を実行したときには、最終的に`write(2)`システムコールが呼ばれます。それと類似して、WASI向けのGoプログラムにおいては、最終的にWasmランタイムが提供する[`fd_write`関数](https://github.com/WebAssembly/WASI/blob/main/legacy/preview1/docs.md#fd_write)を呼び出したいです。
 
 しかし、Wasmランタイムの関数はもちろんGoの関数ではありませんから、それをGoの関数として呼び出せないと`syscall.Write`をGoで書くことができません。
 そこでGoの関数宣言だけを書き、`go:wasmimport`ディレクティブを使って`wasi_snapshot_preview1`モジュールの`fd_write`関数をimportします。すると、Wasmランタイムが提供している該当の関数をGoの関数として、Goのプログラムから呼び出せるようになります。
