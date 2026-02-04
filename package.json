@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/nobishino/zenn#readme",
   "dependencies": {
-    "zenn-cli": "^0.1.151"
+    "zenn-cli": "^0.4.5"
   }
 }

@@ -11,6 +11,7 @@ Go1.18は2022年3月にリリースされました。このリリースはGo言�
 
 ## 更新履歴
 
+- 2026/02/xx [Go1.25](https://go.dev/doc/go1.25)で言語仕様書から"core type"の用語が廃止されたことに対応しました。
 - 2024/01/03: [Go1.21(2023-08-08)](https://go.dev/doc/devel/release#go1.21.0)で`cmp`パッケージが標準ライブラリに追加されたことに対応しました。
 - 2023/02/23: [Go1.20(2023-02-01)](https://go.dev/doc/devel/release#go1.20)の[`comparable`の仕様変更](https://golang.org/doc/go1.20#language)に対応しました。
   - 次の関連資料があります:
@@ -744,188 +745,58 @@ type I interface {
 - `~`をつかうと型定義によって作りうる無限の型にインタフェースを実装させることができる
 - `~T`は`T`をunderlying typeに持つすべての型を表す
 
-# core type
+# できそうでできること・できそうでできないこと
 
-underlying typeを一般化した新しい概念であるcore typeと、それがどのように仕様に関わるかについて説明します。
+ここまでの内容で、Goのジェネリクスでできることの大半は説明しました。このセクションでは、「できそうでできないこと」を説明しましょう。ただ列挙しても良いのですが、より良い理解のため、Goのジェネリクスで「できそうなこと」とはそもそも何なのかを考えてみます。
 
-:::message
-
-この章は特に言語仕様書に関心のある人向けの内容で、通常読む必要はありませんが、続編 [Go言語のジェネリクス入門(2) インスタンス化と型推論](https://zenn.dev/nobishii/articles/type_param_intro_2)の内容の前提になっています。
-
-:::
-
-## 定義
-
-https://tip.golang.org/ref/spec#Core_types
-
-定義はこちらにあるのですが、
-
-- この定義どおりに読むと型セット(type set)の概念が必要なので型セットを使わずに読み替えたい
-- 型パラメータ型のcore typeについて言語仕様書の記述に疑問がある
-
-ことから、筆者が妥当と考えている定義を以下記載します。言語仕様書がアップデートされ次第こちらもできるだけメンテするつもりです。
-
-## core typeが存在する場合としない場合
-
-Go言語の型はcore typeという型を持つ場合と持たない場合があります。型`T`がcore typeを持つのは、次の場合です。
-
-- `T`がインタフェース型でも型パラメータでもないとき
-- `T`がインタフェース型であり、つぎのいずれかに該当するとき
-	- `T`を実装する全ての型のunderlying type`U`が同一であるとき
-	- `T`を実装する全ての型は、同一の要素型`E`のチャネル型であり、かつ、それらが方向付きチャネルを含む場合にはその方向が同一であるとき
-		- つまり、`E`の受信チャネル`<-chan E`と送信チャネル`chan<- E`の両方は含んでいないとき
-- `T`が型パラメータであり、その型制約(常にインタフェース型)がcore typeをもつとき
-
-これ以外のすべての場合、`T`はcore typeを持ちません。
-
-`T`がcore typeをもつ場合、それぞれのケースにおいてcore typeは次のように決まります。
-
-- 型`T`がinterface型でも型パラメータでもないとき、`T`のcore typeは`T`のunderlying typeである
-- 型`T`がinterface型のとき
-  - その`T`を実装する全ての型のunderlying type`U`が同一であるとき、`T`のcore typeは`U`である
-  - その`T`を実装する全ての型のunderlying typeが同一の要素型`E`を持つchannel型であり、
-    - underlying typeが双方向チャネル型のみであれば、その双方向チャネル型`chan E`が`T`のcore typeである
-    - 受信チャネル`<-chan E`か送信チャネル`chan<- E`のどちらか一方のみがunderlying typeに含まれていれば、それが`T`のcore typeである
-- 型`T`が型パラメータ型で、`T`の型制約がcore typeを持つとき、それが`T`のcore typeである
-
-channelの場合には例外的な規定が必要なのでややこしくなっていますが、大雑把に言えば次のような理解で大丈夫です。
-
-### 大雑把なcore typeの理解
-
-- `T`がインタフェース型でも型パラメータでもないとき、`T`のcore typeは`T`のunderlying type
-- `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一であれば`T`はcore typeを持ち、`T`のcore typeは`U`
-- `T`がインタフェース型であり、`T`を実装する全ての型のunderlying type`U`が同一でなければ`T`はcore typeを持たない(これはchannelの例外があり厳密には正しくない)
-- `T`が型パラメータであるとき、`T`のcore typeは`T`の型制約のcore type(core typeが存在するかしないか含めて型制約に従う)
-
-:::message
-
-言語仕様上、型パラメータ`T`のcore typeは文言通りに読むと`T`のunderlying typeである型制約になります。しかし、仕様書の随所で「型パラメータのcore type」という言い方を「制約のcore type」の意味で用いている箇所が見られ、かつその用語法がむしろ便利である（だからこそ厳密ではないのに使われてしまっている）と考えたため、本記事では型パラメータのcore typeは型制約のcore typeであるとしました。
-
-そのような用法の一例を挙げます:
-
-https://tip.golang.org/ref/spec#Composite_literals
-
-> The LiteralType's core type T must be a struct, array, slice, or map type
-
-これは型パラメータ`T`が"LiteralType"に相当する場合にでコンポジットリテラル`T{}`が作れることへの言及であり、`T`のcore typeは明らかに`T`の型制約のcore typeと解釈されています。
-
-一方、core typeの文言上の定義によれば型パラメータ`T`はインタフェース型ではないのでunderlying type = core typeのはずです。
-
-:::
-
-## 具体例
-
-次の型制約はcore typeをもつでしょうか？またその場合core typeは何でしょうか？
+そのために、Goのジェネリクスがどういうものだったかおさらいします。ジェネリックな関数の場合で考えると、型制約として渡されたインターフェースで宣言されているメソッドは、関数のbody(実装)のなかであたかも型パラメータ型のメソッドであるかのように使って良いのでした。これを示すため、この記事の最初のサンプルコードを再掲します:
 
 ```go
-type C1 interface {
-	~[]int
-}
-
-type C2 interface {
-	int | string
-}
-```
-
-- `C1`を実装する全ての型のunderlying typeは`[]int`なので`C1`はcore typeをもち、core typeは`[]int`です。
-- `C2`を実装する型は`int`, `string`なのでunderlying typeは同一でなく`C2`はcore typeをもちません。
-
-## core typeの登場場面
-
-このcore typeですが、次のような場面で登場します。
-
-- composite literals
-- for range
-- 制約型推論(後述)
-
-本章では最初の2つについて説明します。
-
-## composite literals
-
-型パラメータ型を使って、composite literalsを書くことができる場合があります。
-その条件にもcore typeが関係しています。
-
-例えば次のコードは動作します。
-
-https://gotipplay.golang.org/p/RFvZrv_hp6T
-
-```go
-type C interface { // structural type = struct { Field int }
-	struct{ Field int }
-}
-
-func F[T C](T) {
-	_ = T{Field: 1} // composite literalを作れる
-}
-```
-
-しかし次のコードは動作しません。
-
-https://gotipplay.golang.org/p/7UY0hO2-rlj
-
-```go
-type C interface {
-	struct{ Field int } | struct { Field int `tag` }
-}
-
-func F[T C](T) {
-	_ = T{Field: 1}
-}
-```
-
-composite literalを作るのに使う型名が型パラメータ型の名前である場合、その制約はcore typeを持っていなければいけません。
-2つ目の例は、全く同じ構造のstruct型のunionsであるにもかかわらず、struct tagの有無によって型の同一性が満たされず、`C`のcore typeが存在しないため、`T`のcomposite literalは作れません。
-
-## `for range`ループ
-
-前章`for range`ループについて扱いましたが、実は型パラメータ型に対して`for range`ループを回すためには、制約がcore typeを持っていないといけません。
-
-例えば次の例は動作します。
-
-https://gotipplay.golang.org/p/ec6KpsOHgHv
-
-```go
-// 動作する例
-type I interface {
-	[]int 
-}
-
-func f[T I](x T) {
-	for range x {
+// fは型パラメータを持つ関数
+// Tは型パラメータ
+// インタフェースStringerは、Tに対する型制約として使われている
+func f[T Stringer](xs []T) []string {
+	var result []string
+	for _, x := range xs {
+        // xは型制約StringerによりString()メソッドが使える
+		result = append(result, x.String())
 	}
+	return result
+}
+
+type Stringer interface {
+	String() string
+}
+
+type MyInt int
+
+// MyIntはStringerを満たす
+func (i MyInt) String() string {
+	return strconv.Itoa(int(i))
 }
 ```
 
-しかし次の例は（どちらもスライスであるにもかかわらず）動作しません。
+言い換えると、 **「型制約を満たすすべての型について`String()`が使えるならば、型パラメータ`T`に対しても`String()`が使える」** というのがGoのジェネリック関数だと言っても良さそうです。
 
-https://gotipplay.golang.org/p/biQ_41vglso
+もしも、この文を一般化した **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが成り立つなら非常に分かりやすく、ある意味で理想的です。Goのジェネリクスに対して「できそうなこと」だとプログラマーが期待することの多くは、このテーゼが成り立つという期待に基づいていると思います。
 
-```go
-type I interface {
-	[]int | []string
-}
+しかし、2026年2月(Go1.25)現在、このテーゼは必ずしも成り立ちません。"操作X"に様々なものを当てはめて、それをみていきましょう。
 
-func f[T I](x T) {
-	for range x {
-	}
-}
-```
+> an operation involving operands of generic type should be valid if it is valid for any type permitted by the respective type constraint.
 
-./prog.go:11:12: cannot range over x (variable of type T constrained by I) (T has no core type)
+Goの公式ブログ https://go.dev/blog/coretypes においても、
 
-## 制約型推論とcore type
+- メソッド呼び出し
+- 二項演算
+- 単項演算
+- for ~ rangeループ
+- 構造体のフィールドの読み書き
+- インデックス式
+- チャネルの送受信
 
-他にcore typeの関連仕様として欠かせないのは型推論アルゴリズムの一部である「制約型推論」です。
-「制約型推論」が適用されるためには、型制約がcore typeをもつことが必要となっています。これを理解することで、「なんでこれは型推論できるのにこれはできないの？」という疑問にスッキリ答えられるようになるでしょう。
 
-型推論については、続編で解説できればと思います。
 
-## まとめ
 
-- core typeはunderlying typeを拡張したような概念である
-- 「for~rangeループで使える」などの型の性質を型制約で表現したい場合、型制約がcore typeを持つことが必要となる
-- core typeは制約型推論という型推論アルゴリズムにも使われる(詳細は続編で)
-
-## 最後に
+# 最後に
 
 この記事をかくにあたり[#gospecreading](https://gospecreading.connpass.com/)から得られた理解が本質的でした。いつもありがとうございます。
