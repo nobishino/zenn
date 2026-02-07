@@ -784,9 +784,9 @@ func (i MyInt) String() string {
 
 言い換えると、 **「型制約を満たすすべての型について`String()`が使えるならば、型パラメータ`T`に対しても`String()`が使える」** というのがGoのジェネリック関数だと言っても良さそうです。
 
-もしも、この文を一般化した **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが成り立つなら非常に分かりやすく、ある意味で理想的です。Goのジェネリクスに対して「できそうなこと」だとプログラマーが期待することの多くは、このテーゼが成り立つという期待に基づいていると思います。これをこの記事では、ジェネリクスの **「理想のテーゼ」** と呼ぶことにします。
+もしも、この文を一般化した **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが成り立つなら非常に分かりやすく、ある意味で理想的です。Goのジェネリクスに対して「できそうなこと」だとプログラマーが期待することの多くは、このテーゼが成り立つという期待に基づいていると思います。そこでこの記事では、これをジェネリクスの **「理想のテーゼ」** と呼ぶことにします。
 
-しかし、2026年2月(Go1.25)現在、このテーゼは必ずしも成り立ちません。"操作X"に様々なものを当てはめて、それをみていきましょう。
+しかし、2026年2月(Go1.25)現在、この「理想のテーゼ」は必ずしも成り立ちません。"操作X"に様々なものを当てはめて、それをみていきましょう。
 
 
 :::message
@@ -897,30 +897,114 @@ func f[T Constraint]() {
 ```
 https://go.dev/play/p/FJO4JhKl09x
 
-### title
+### 算術演算
+
+型制約`Constraint`を満たすすべての型についてある算術演算が可能ならば、型パラメータ`T`の値に対してもその算術演算が可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+type Constraint interface {
+	int | float32 | float64
+}
+
+func f[T Constraint](t1, t2 T) T {
+	return t1 * t2
+}
+```
+
+https://go.dev/play/p/BDeKlBse44u
+
+:::message
+これはこの記事の前半ですでに扱った内容ですね。
+
+言語仕様上の根拠は次の箇所にあります。
+
+https://go.dev/ref/spec#Arithmetic_operators
+:::
+
+### 比較演算(`==, !=`)と順序演算(`<=`など)
+
+型制約`Constraint`を満たすすべての型が比較可能ならば、型パラメータ`T`の値もその比較可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+package main
+
+func f[T comparable](t1, t2 T) bool { return t1 == t2 }
+
+func main() {
+	var x1, x2 any
+	f(x1, x2)
+}
+```
+https://go.dev/play/p/wagDyQk6xRp
+
+:::message
+比較演算(`==, !=`)とインタフェース型に関して少し難解な仕様があります。
+
+正確に知りたい方は、次の資料があります。
+
+- https://go.dev/blog/comparable 公式ブログ、英語
+- https://zenn.dev/nobishii/articles/basic-interface-is-comparable 
+
+:::
+
+型制約`Constraint`を満たすすべての型が`<`などで順序づけできるならば、`T`の値に対しても順序づけできます。
+
+よって、次のコードはコンパイルできます。
+
+```go
+type Constraint interface {
+	int | string | float32
+}
+
+func f[T Constraint](t1, t2 T) bool { return t1 < t2 }
+```
+
+https://go.dev/play/p/JqPmRpRYgkN
+:::message
+
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Comparison_operators
+:::
+
+### チャネル受信演算
+
+型制約`Constraint`を満たすすべての型が、型`S`の値を受信できるチャネル型ならば、型パラメータ`T`の値からも型`S`の値を受信できます。
+
+よって、次のコードはコンパイルできます。
+
+```go
+// 型Sはこの場合intに相当する
+type MyChanInt <-chan int
+
+type Constraint interface {
+	chan int | <-chan int | MyChanInt
+}
+
+func f[T Constraint](t T) int {
+	return <-t
+}
+```
+https://go.dev/play/p/YKXhTLD6Uwy
+
+:::message
+
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Receive_operator
+:::
+
+### 型変換
 
 よって、次のコードはコンパイルできます。
 
 ```go
 ```
 
-### title
 
-よって、次のコードはコンパイルできます。
-
-```go
-```
-
-### title
-
-よって、次のコードはコンパイルできます。
-
-```go
-```
-
-
-## できない
-
+## 「理想のテーゼ」が成り立たない操作 = できそうでできないこと
 
 ### 定数宣言
 
@@ -1014,7 +1098,67 @@ https://go.dev/play/p/y0ZsHgjBtre
 https://go.dev/ref/spec#Slice_expressions
 
 > If the operand type is a type parameter, unless its type set contains string types, all types in the type set must have the same underlying type, and the slice expression must be valid for an operand of that type. If the type set contains string types it may also contain byte slices with underlying type []byte. In this case, the slice expression must be valid for an operand of string type.
+
+また、この例から分かるように、underlying typeが同一というのは要素型が同一であるよりも強い条件です。
 :::
+
+### 関数呼び出し(型パラメータ型自体が関数型というケース)
+
+型制約`Constraint`を満たすすべての型について、その型が関数型であり、特定の引数`(a)`に対して関数呼び出しが可能だとしても、型パラメータ`F`の値である関数についてその呼び出しが可能だとは限りません。
+
+追加条件として、`F`を満たすすべての型が同一のunderlying typeを持つ必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+type MyIntPointer *int
+
+type Constraint interface {
+	func() *int | func() MyIntPointer
+}
+
+func f[F Constraint]() {
+	var f F
+	var _ *int = f() // 無効: MyIntPointerは*intに代入可能であるにもかかわらず。
+}
+```
+https://go.dev/play/p/gUfpOnaSmKj
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Calls
+
+> If the type of f is a type parameter, all types in its type set must have the same underlying type, which must be a function type, and the function call must be valid for that type.
+:::
+
+
+### 関数呼び出し(型パラメータ型自体が関数型というケース)
+
+型制約`Constraint`を満たすすべての型について、その型が関数型であり、特定の引数`(a)`に対して関数呼び出しが可能だとしても、型パラメータ`F`の値である関数についてその呼び出しが可能だとは限りません。
+
+追加条件として、`F`を満たすすべての型が同一のunderlying typeを持つ必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+type MyIntPointer *int
+
+type Constraint interface {
+	func() *int | func() MyIntPointer
+}
+
+func f[F Constraint]() {
+	var f F
+	var _ *int = f() // 無効: MyIntPointerは*intに代入可能であるにもかかわらず。
+}
+```
+https://go.dev/play/p/gUfpOnaSmKj
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Calls
+
+> If the type of f is a type parameter, all types in its type set must have the same underlying type, which must be a function type, and the function call must be valid for that type.
+:::
+
 
 
 
