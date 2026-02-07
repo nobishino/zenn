@@ -9,6 +9,12 @@ published: true # 公開設定（falseにすると下書き）
 Go1.18は2022年3月にリリースされました。このリリースはGo言語へのジェネリクスの実装を含んでいます。
 この記事ではできるだけ最新の仕様と用語法にもとづいてジェネリクスの言語仕様について解説していきます。
 
+:::message
+この記事のタイトルは最初の投稿時のまま「入門」となっているのですが、元々少し進んだ内容も書いていた上に、更新に伴って進んだ内容が増えてきています。
+
+本当に典型的な使用法と、基本的な考え方を把握したい方は、記事の序盤だけを読むのが良いと思います。
+:::
+
 ## 更新履歴
 
 - 2026/02/xx [Go1.25](https://go.dev/doc/go1.25)で言語仕様書から"core type"の用語が廃止されたことに対応しました。
@@ -745,9 +751,9 @@ type I interface {
 - `~`をつかうと型定義によって作りうる無限の型にインタフェースを実装させることができる
 - `~T`は`T`をunderlying typeに持つすべての型を表す
 
-# できそうでできること・できそうでできないこと
+# できそうでできないこと
 
-ここまでの内容で、Goのジェネリクスでできることの大半は説明しました。このセクションでは、「できそうでできないこと」を説明しましょう。ただ列挙しても良いのですが、より良い理解のため、Goのジェネリクスで「できそうなこと」とはそもそも何なのかを考えてみます。
+ここまでの内容で、Goのジェネリクスでできることの大半は説明しました。このセクションでは、「できそうでできないこと」を説明しましょう。ただ列挙しても良いのですが、より良い理解のため、 **Goのジェネリクスで「できそうなこと」とはそもそも何なのかを考えてみます。** 
 
 そのために、Goのジェネリクスがどういうものだったかおさらいします。ジェネリックな関数の場合で考えると、型制約として渡されたインターフェースで宣言されているメソッドは、関数のbody(実装)のなかであたかも型パラメータ型のメソッドであるかのように使って良いのでした。これを示すため、この記事の最初のサンプルコードを再掲します:
 
@@ -778,22 +784,237 @@ func (i MyInt) String() string {
 
 言い換えると、 **「型制約を満たすすべての型について`String()`が使えるならば、型パラメータ`T`に対しても`String()`が使える」** というのがGoのジェネリック関数だと言っても良さそうです。
 
-もしも、この文を一般化した **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが成り立つなら非常に分かりやすく、ある意味で理想的です。Goのジェネリクスに対して「できそうなこと」だとプログラマーが期待することの多くは、このテーゼが成り立つという期待に基づいていると思います。
+もしも、この文を一般化した **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが成り立つなら非常に分かりやすく、ある意味で理想的です。Goのジェネリクスに対して「できそうなこと」だとプログラマーが期待することの多くは、このテーゼが成り立つという期待に基づいていると思います。これをこの記事では、ジェネリクスの **「理想のテーゼ」** と呼ぶことにします。
 
 しかし、2026年2月(Go1.25)現在、このテーゼは必ずしも成り立ちません。"操作X"に様々なものを当てはめて、それをみていきましょう。
 
+
+:::message
+Goの公式ブログ https://go.dev/blog/coretypes においても、元々のジェネリクスの設計思想は次のようなものであった、と書かれています。
+
 > an operation involving operands of generic type should be valid if it is valid for any type permitted by the respective type constraint.
 
-Goの公式ブログ https://go.dev/blog/coretypes においても、
+> ジェネリックな型のオペランドに係る演算は、その演算が、対応する型制約によって許される全ての型に対して有効ならば、有効であるべきだ。
+:::
 
-- メソッド呼び出し
-- 二項演算
-- 単項演算
-- for ~ rangeループ
-- 構造体のフィールドの読み書き
-- インデックス式
-- チャネルの送受信
+| 操作X | 「理想のテーゼ」が成り立つかどうか | 
+| ---- | ---- |
+| メソッド呼び出し | 成り立つ |
+| 二項演算| 成り立つ |
+| 単項演算| 成り立つ |
+| `nil`の代入 | 成り立つ |
+| 型リテラル型の値の代入 | 成り立つ |
+| for ~ rangeループ| 成り立たない |
+| 構造体のフィールドの読み書き| 成り立たない|
+| インデックス式| 成り立つ |
+| チャネルの送受信| 成り立たない |
 
+以下、これらを具体的にみていきますが、入門段階では細かすぎる仕様だと思うので、気になったときに参照する程度でご利用いただければ良いと思います。
+
+## 「理想のテーゼ」が成り立つ操作
+
+次の表のそれぞれの行にある「操作X」については、 **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが成り立ちます。
+
+TODO: 表
+
+### `nil`の代入
+
+型制約`Constraint`を満たすすべての型について`nil`を代入できるならば、型パラメータ`T`の変数にも`nil`を代入可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+type Constraint interface {
+	[]int | ~[]string | *bool
+}
+
+func f[T Constraint]() {
+	var _ T = nil
+}
+```
+https://go.dev/play/p/cH5ktnw3Yck
+
+
+:::message
+仕様上の根拠は https://go.dev/ref/spec#Assignability にあります。
+:::
+
+### 型リテラルの値の代入
+
+型制約`Constraint`を満たすすべての型について型リテラルで表される型`V`の値が代入可能ならば、型パラメータ`T`の変数にも`V`の値を代入可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+type Constraint interface {
+	DefinedIntSliceA | DefinedIntSliceB
+}
+
+type DefinedIntSliceA []int
+type DefinedIntSliceB []int
+
+func f[T Constraint]() {
+	var _ T = []int{}
+}
+```
+https://go.dev/play/p/R21YGC2O8nV
+
+型制約`Constraint`を満たすすべての型について、その値が型リテラルで表される型`V`の変数に代入可能ならば、型パラメータ`T`の値は`V`の変数に代入可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+type Constraint interface {
+	DefinedIntSliceA | DefinedIntSliceB
+}
+
+type DefinedIntSliceA []int
+type DefinedIntSliceB []int
+
+func f[T Constraint]() {
+	var t T
+	var _ []int = t
+}
+```
+
+https://go.dev/play/p/8ifyI02FINX
+
+### Representability(表現可能性)
+
+型制約`Constraint`を満たすすべての型によって、ある型なし定数`c`が表現可能ならば、その型なし定数`c`は型パラメータ`T`によって表現可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+type Constraint interface {
+	complex128 | float64
+}
+
+func f[T Constraint]() {
+	const c = 1.1
+	var _ T = c // 表現可能なので代入可能である
+}
+```
+https://go.dev/play/p/FJO4JhKl09x
+
+### title
+
+よって、次のコードはコンパイルできます。
+
+```go
+```
+
+### title
+
+よって、次のコードはコンパイルできます。
+
+```go
+```
+
+### title
+
+よって、次のコードはコンパイルできます。
+
+```go
+```
+
+
+## できない
+
+
+### 定数宣言
+
+型制約`Constraint`を満たすすべての型について、その型を持つ定数を定数式`exp`で宣言できるとしても、型パラメータ`T`の型を持つ定数を宣言することはできません。
+
+定数宣言の型として型パラメータ`T`を使うこと自体ができないためです。
+
+よって、次のコードはコンパイルできません。
+
+```go
+type Constraint interface {
+	complex128 | float64
+}
+
+func f[T Constraint]() {
+	const exp = 1.1
+	const _ T = exp
+}
+```
+https://go.dev/play/p/HKUPvDpkLmm
+
+### コンポジットリテラルの使用
+
+型制約`Constraint`を満たすすべての型について、その型のコンポジットリテラルが使えるとしても、型パラメータ`T`のコンポジットリテラルが使えるとは限りません。
+
+追加条件として、`T`を満たすすべての型が、同一のunderlying typeを持つ必要があります。
+
+よって、次のコードはコンパイルできません。
+
+```go
+type Constraint interface {
+	[]int | [1]int
+}
+
+func f[T Constraint]() {
+	var _ = T{}
+}
+```
+
+https://go.dev/play/p/Ogs7lmQL3Cj
+
+
+
+### インデックス式の使用
+
+型制約`Constraint`を満たすすべての型について、その型の式からインデックス式が作れるとしても、型パラメータ`T`の式にインデックス式が使えるとは限りません。
+
+追加条件として、`T`を満たすすべての型が、同一の要素型を持つ必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+type Constraint interface {
+	[1]int | [1]string // どちらもインデックス式が作れるが、要素型がintとstringで異なる
+}
+
+func f[T Constraint]() {
+	var t T
+	_ = t[0] // このようなインデックス式は無効
+}
+```
+https://go.dev/play/p/G1JrWC1UQKm
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Index_expressions
+
+> The element types of all types in P's type set must be identical.
+:::
+
+### スライス式の使用
+
+型制約`Constraint`を満たすすべての型について、その型の式からスライス式が作れるとしても、型パラメータ`T`の式にスライス式が使えるとは限りません。
+
+追加条件として、`T`を満たすすべての型が同一のunderlying typeを持つ必要があります。ただし、`string`型と`[]byte`型はこのルールの適用上は同一視して良いことになっています。
+
+よって、次のコードはコンパイルできません。
+```go
+type Constraint interface {
+	[10]int | [11]int // どちらもインデックス式が作れるが、underlying typeが異なる
+}
+
+func f[T Constraint]() {
+	var t T
+	_ = t[:] // このようなスライス式は無効
+}
+```
+https://go.dev/play/p/y0ZsHgjBtre
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Slice_expressions
+
+> If the operand type is a type parameter, unless its type set contains string types, all types in the type set must have the same underlying type, and the slice expression must be valid for an operand of that type. If the type set contains string types it may also contain byte slices with underlying type []byte. In this case, the slice expression must be valid for an operand of string type.
+:::
 
 
 
