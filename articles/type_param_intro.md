@@ -998,11 +998,73 @@ https://go.dev/ref/spec#Receive_operator
 
 ### 型変換
 
+型変換については3つのパターンを説明します。
+
+型制約`Constraint`を満たすすべての型`V`について、型`V`から別な型`W`への型変換ができるならば、型パラメータ`T`から`W`への型変換が可能です。
+
 よって、次のコードはコンパイルできます。
 
 ```go
-```
+type Constraint interface {
+	int | int32 | int64 // 全てfloat64への型変換が可能
+}
 
+func f[T Constraint](t T) {
+	var _ = float64(t)
+}
+```
+https://go.dev/play/p/CGVytLgeERL
+
+型制約`Constraint`を満たすすべての型`V`について、別な型`W`から`V`への型変換ができるならば、`W`から型パラメータ`T`への型変換が可能です。
+
+よって、次のコードはコンパイルできます。
+```go
+type Constraint interface {
+	int | int32 | int64 // 全てfloat64からの型変換が可能
+}
+
+func f[T Constraint]() {
+	var v float64 = 1.1
+	var _ = T(v)
+}
+```
+https://go.dev/play/p/EghdRMpCycD
+
+型制約`Constraint1`を満たす全ての型`V`と、型制約`Constraint2`を満たす全ての型`W`について、`V`から`W`への型変換が可能ならば、それぞれ対応する型パラメータ`T1`から`T2`への型変換が可能です。
+
+よって、次のコードはコンパイルできます。
+```go
+type Constraint1 interface {
+	int | int32 | int64 // 全てfloat32, float64への型変換が可能
+}
+
+type Constraint2 interface {
+	float32 | float64
+}
+
+func f[T1 Constraint1, T2 Constraint2](t1 T1) T2 {
+	return T2(t1)
+}
+```
+https://go.dev/play/p/u01fTfEmoJc
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Conversions
+:::
+
+### clear関数の適用
+
+型制約`Constraint`を満たす全ての型について、`clear`関数の適用が可能ならば、型パラメータ`T`の値に対しても`clear`関数の適用が可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+
+```
+:::message
+言語仕様上の根拠は次の箇所にあります。
+:::
 
 ## 「理想のテーゼ」が成り立たない操作 = できそうでできないこと
 
@@ -1131,34 +1193,128 @@ https://go.dev/ref/spec#Calls
 :::
 
 
-### 関数呼び出し(型パラメータ型自体が関数型というケース)
+### チャネルへの送信
 
-型制約`Constraint`を満たすすべての型について、その型が関数型であり、特定の引数`(a)`に対して関数呼び出しが可能だとしても、型パラメータ`F`の値である関数についてその呼び出しが可能だとは限りません。
+型制約`Constraint`を満たすすべての型について、その型がチャネル型であり、ある値をその型のチャネルに送信可能だとしても、型パラメータ`T`の値であるチャネルにその値を送信可能であるとは限りません。
 
-追加条件として、`F`を満たすすべての型が同一のunderlying typeを持つ必要があります。
+追加条件として、`Constraint`を満たすすべての型について、その要素型が同一でなければいけません。
 
 よって、次のコードはコンパイルできません。
 ```go
-type MyIntPointer *int
+type MyInt int
+type MyChanInt chan<- MyInt
 
 type Constraint interface {
-	func() *int | func() MyIntPointer
+	chan int | chan<- int | MyChanInt // 要素型がintとMyIntで一致しない
 }
 
-func f[F Constraint]() {
-	var f F
-	var _ *int = f() // 無効: MyIntPointerは*intに代入可能であるにもかかわらず。
+func f[T Constraint](t T) {
+	t <- 1 // 無効
 }
 ```
-https://go.dev/play/p/gUfpOnaSmKj
+https://go.dev/play/p/J2wFa_fZ39n
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
-https://go.dev/ref/spec#Calls
-
-> If the type of f is a type parameter, all types in its type set must have the same underlying type, which must be a function type, and the function call must be valid for that type.
+https://go.dev/ref/spec#Send_statements
 :::
 
+### range句を使ったfor文
+
+型制約`Constraint`を満たすすべての型について、その型の値vを使って`for ... range v`という`for`文が使えたとしても、型パラメータ`T`の値に対して同様にrange句を使ったfor文が使えるとは限りません。
+
+追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+type Constraint interface {
+	string | []byte
+}
+
+func f[T Constraint](t T) {
+	for _, v := range t {
+	}
+}
+```
+
+https://go.dev/play/p/NQsa3XWYU8M
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#For_range
+:::
+
+### append関数による要素の追加
+
+型制約`Constraint`を満たすすべての型について、append関数である値を追加することができたとしても、型パラメータ`T`について同じことができるとは限りません。
+
+追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+type MyInt int
+
+type Constraint interface {
+	[]int | []MyInt
+}
+
+func f[T Constraint](t T) {
+	append(t, 1)
+}
+```
+https://go.dev/play/p/UxrSm8UIz_o
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Appending_and_copying_slices
+:::
+
+
+### 
+
+型制約`Constraint`を満たすすべての型について、
+
+追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+```
+
+https://go.dev/play/p/NQsa3XWYU8M
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+:::
+### 
+
+型制約`Constraint`を満たすすべての型について、
+
+追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+```
+
+https://go.dev/play/p/NQsa3XWYU8M
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+:::
+### 
+
+型制約`Constraint`を満たすすべての型について、
+
+追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+
+よって、次のコードはコンパイルできません。
+```go
+```
+
+https://go.dev/play/p/NQsa3XWYU8M
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+:::
 
 
 
