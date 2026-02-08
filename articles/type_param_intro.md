@@ -17,7 +17,7 @@ Go1.18は2022年3月にリリースされました。このリリースはGo言�
 
 ## 更新履歴
 
-- 2026/02/xx [Go1.25](https://go.dev/doc/go1.25)で言語仕様書から"core type"の用語が廃止されたことに対応しました。
+- 2026/02/xx [Go1.25](https://go.dev/doc/go1.25)で言語仕様書から"core type"の用語が廃止されたことに対応し、関連箇所を大きく加筆しました。
 - 2024/01/03: [Go1.21(2023-08-08)](https://go.dev/doc/devel/release#go1.21.0)で`cmp`パッケージが標準ライブラリに追加されたことに対応しました。
 - 2023/02/23: [Go1.20(2023-02-01)](https://go.dev/doc/devel/release#go1.20)の[`comparable`の仕様変更](https://golang.org/doc/go1.20#language)に対応しました。
   - 次の関連資料があります:
@@ -424,98 +424,11 @@ func Max[T Number] (x, y T) T {
 
 :::
 
-## for~rangeが使えるインタフェース型
-
-型の満たす性質にはいくつか種類があります。ここでいくつか挙げてみましょう。
-
-- あるメソッドを持っているという性質
-- `==, !=`で比較できるという性質
-- `<, >, >=, <=`で順序づけられるという性質
-- `for ~ range`文でループを回すことができるという性質
-- ある名前のフィールドを持っているという性質
-- etc
-
-「あるメソッドを持っているという性質」は従来のインタフェース型で表現できます。`==, !=`で比較可能な性質は、組み込みの`comparable`インタフェースで表現できるのでしたね。そして`<, >`などで順序づけられる性質は`unions`を利用した新しいインタフェースで表現できることをみました。
-
-次に、`for ~ range`でループを回せるという性質をみてみましょう。
-
-面白みのない例ですが、次のコードはコンパイルできます。
-
-https://gotipplay.golang.org/p/ec6KpsOHgHv
-
-```go
-type I interface {
-	[]int 
-}
-
-func f[T I](x T) {
-	for range x {
-	}
-}
-```
-
-`I`を実装する型は`[]int`のみで、かつこの型は`for range`でループすることができる型です。このような場合、`I`を型制約とする型パラメータの値に対して`for range`ループを書くことができます。
-
-::: message
-
-ここで代わりに
-```go
-type I interface {
-	[]int | []string
-}
-```
-とするとコンパイルが通らなくなります。
-
-> ./prog.go:11:12: cannot range over x (variable of type T constrained by I) (T has no core type)
-
-ここで言われているのは`I`が"core type"を持たないということです。この"core type"の説明は次章で行います。
-:::
-
-## `unions`を含むインタフェースは型制約でしか使えない
-
-型制約ではなく通常の変数の型として`unions`を使うと、いわゆるsum typeのようなものが定義できそうに見えます。しかし、現在のところこれは許可されません。
-
-```go
-type IntString interface {
-	int | string
-}
-
-var x IntString // これはできない
-```
-
-つまり、`unions`を使ったインタフェース型は型制約としてしか使えず、通常の変数の型としては使えません。
-
-この制限は将来的に取り除かれる可能性があります。型パラメータの導入だけでも非常に大きな変更であるため、安全を期するためにまずは最低限の機能でリリースし、実際の使われ方からフィードバックを得て判断していくのだと思います。
-
-## フィールドを持つという性質は型制約で扱えない
-
-できそうでできないことを1つ挙げておきます。
-
-「ある名前のフィールドを持つ」という性質を型制約で表現することはできません。
-
-https://gotipplay.golang.org/p/WEM-yelirK1
-
-```go
-type I interface {
-	X
-}
-
-type X struct {
-	SomeField int
-}
-
-func f[T I](x T) {
-	fmt.Println(x.X) // これはできない
-}
-```
-
 ## まとめ
 
 - Goの型パラメータは型制約をインタフェース型によって表現するが、型の性質には「メソッドを持つ」以外の性質もある。その性質の一部は`unions`を利用した新しいインタフェース型によって表現できる。
 - `<, >, <=, >=`による順序付可能性は`unions`を使って順序づけられる型のみを列挙することで表現できる。
-- `for range`ループができる型を使って、その1つの型だけからなる`unions`による型制約を作ると、その型制約に従う型パラメータ型の値について`for range`ループができる。
 - `==, !=`による比較可能性は`comparable`インタフェースで表現する(再掲)。
-- フィールドを持つという性質を型制約で表して、型パラメータ型の値のフィールドを参照することはできない。
 
 # `~`とunderlying type
 
@@ -751,9 +664,24 @@ type I interface {
 - `~`をつかうと型定義によって作りうる無限の型にインタフェースを実装させることができる
 - `~T`は`T`をunderlying typeに持つすべての型を表す
 
-# できそうでできないこと
+# できないこと(1): メソッドは独自の型パラメータを持つことができない
 
-ここまでの内容で、Goのジェネリクスでできることの大半は説明しました。このセクションでは、「できそうでできないこと」を説明しましょう。ただ列挙しても良いのですが、より良い理解のため、 **Goのジェネリクスで「できそうなこと」とはそもそも何なのかを考えてみます。** 
+Go1.25現在のジェネリクスでできないことの一つに、メソッドに独自の型パラメータを定義することがあります。例えば、次のようなコードを書けません。
+
+```go
+type S struct { … }  
+func (*S) m[P any](x P) { … }
+```
+
+これができないのはいくつかの点で不便です。メソッドチェーンのようなAPIを作れなかったり、型によるコードのグループ化の妨げになることがあるからです。
+
+この制約は将来解除される可能性が高いと思います。次のプロポーザルで検討が進んでいるからです。ただし、2026年2月現在では未承認のプロポーザルなので、まだどうなるかはわからないことに留意してください。
+
+https://github.com/golang/go/issues/77273
+
+# できないこと(2)
+
+このセクションでは、その他の「できそうでできないこと」を説明しましょう。ただ列挙しても良いのですが、より良い理解のため、 **Goのジェネリクスで「できそうなこと」とはそもそも何なのかを考えてみます。** 
 
 そのために、Goのジェネリクスがどういうものだったかおさらいします。ジェネリックな関数の場合で考えると、型制約として渡されたインターフェースで宣言されているメソッドは、関数のbody(実装)のなかであたかも型パラメータ型のメソッドであるかのように使って良いのでした。これを示すため、この記事の最初のサンプルコードを再掲します:
 
@@ -797,25 +725,25 @@ Goの公式ブログ https://go.dev/blog/coretypes においても、元々の�
 > ジェネリックな型のオペランドに係る演算は、その演算が、対応する型制約によって許される全ての型に対して有効ならば、有効であるべきだ。
 :::
 
-| 操作X | 「理想のテーゼ」が成り立つかどうか | 
-| ---- | ---- |
-| メソッド呼び出し | 成り立つ |
-| 二項演算| 成り立つ |
-| 単項演算| 成り立つ |
-| `nil`の代入 | 成り立つ |
-| 型リテラル型の値の代入 | 成り立つ |
-| for ~ rangeループ| 成り立たない |
-| 構造体のフィールドの読み書き| 成り立たない|
-| インデックス式| 成り立つ |
-| チャネルの送受信| 成り立たない |
-
 以下、これらを具体的にみていきますが、入門段階では細かすぎる仕様だと思うので、気になったときに参照する程度でご利用いただければ良いと思います。
 
 ## 「理想のテーゼ」が成り立つ操作
 
 次の表のそれぞれの行にある「操作X」については、 **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが成り立ちます。
 
-TODO: 表
+| 操作X | 
+| ---- | 
+| `nil`の代入 |
+| 型リテラルの値の代入 |
+| Representability(表現可能性) |
+| 算術演算 |
+| 比較演算(`==, !=`)と順序演算(`<=`など) |
+| チャネル受信演算 |
+| 型変換 |
+| `clear`関数の適用 |
+| `len`,`cap`関数の適用 |
+| `unsafe.Pointer`と`uintptr`の間の型変換 |
+
 
 ### `nil`の代入
 
@@ -1060,13 +988,117 @@ https://go.dev/ref/spec#Conversions
 よって、次のコードはコンパイルできます。
 
 ```go
+type Constraint interface {
+	[]int | map[int]int | []string
+}
 
+func f[T Constraint](t T) {
+	clear(t)
+}
 ```
+https://go.dev/play/p/pzsv02pBSaH
 :::message
 言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Clear
 :::
 
+### `len`,`cap`関数の適用
+
+型制約`Constraint`を満たす全ての型について、`len`,`cap`関数の適用が可能ならば、型パラメータ`T`の値に対してもこれらの関数の適用が可能です。
+
+よって、次のコードはコンパイルできます。
+
+```go
+type MyInt int
+
+type Constraint interface {
+	map[int]bool | map[MyInt]bool | []MyInt
+}
+
+func f[T Constraint](m T) int {
+	return len(m)
+}
+```
+https://go.dev/play/p/ZO8mpMzLukQ
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Length_and_capacity
+:::
+
+### `unsafe.Pointer`と`uintptr`の間の型変換
+
+- 型制約`Constraint`を満たす全ての型について、`unsafe.Pointer`への型変換ができるならば、型パラメータ`T`の値も`unsafe.Pointer`への型変換ができます。
+- 型制約`Constraint`を満たす全ての型について、`uintptr`への型変換ができるならば、型パラメータ`T`の値も`uintptr`への型変換ができます。
+
+よって、次のコードはコンパイルできます。
+
+```go
+import "unsafe"
+
+type MyUintPtr uintptr
+
+type Constraint interface {
+	uintptr | MyUintPtr
+}
+
+func f[T Constraint](ptr T) unsafe.Pointer {
+	return unsafe.Pointer(ptr)
+}
+```
+
+https://go.dev/play/p/_INs7vJ5TKb
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Package_unsafe
+:::
+
+
 ## 「理想のテーゼ」が成り立たない操作 = できそうでできないこと
+
+次の表のそれぞれの行にある「操作X」については、 **「型制約を満たすすべての型について操作Xが可能ならば、型パラメータ`T`に対しても操作Xが可能である」** というテーゼが **必ずしも成り立ちません。**
+
+| 操作X | 
+| ---- | 
+| フィールドの読み取り |
+| 定数宣言 |
+| コンポジットリテラルの使用 |
+| インデックス式の使用 |
+| スライス式の使用 |
+| 関数呼び出し(型パラメータ型自体が関数型というケース) |
+| チャネルへの送信 |
+| range句を使ったfor文 |
+| append関数による要素の追加 |
+| channelの`close`関数 |
+| 複素数に関する操作 |
+| mapの`delete`関数による特定エントリーの削除 |
+| `make`関数による作成 |
+
+### フィールドの読み取り
+
+型制約`Constraint`を満たすすべての型について、その値`x`のフィールドのセレクタ式`x.F`が有効だとしても、型パラメータ`T`の値`t`について`t.F`は有効ではありません。
+
+よって、次のコードはコンパイルできません。
+
+```go
+type AB struct {
+	A int
+	B int
+}
+type ABC struct {
+	AB
+	C int
+}
+
+type Constraint interface {
+	AB | ABC
+}
+
+func f[T Constraint](t T) int {
+	return t.A
+}
+
+```
+https://go.dev/play/p/IUcO6kAVYu3
 
 ### 定数宣言
 
@@ -1270,50 +1302,103 @@ https://go.dev/ref/spec#Appending_and_copying_slices
 :::
 
 
-### 
+### channelの`close`関数
 
-型制約`Constraint`を満たすすべての型について、
+型制約`Constraint`を満たすすべての型について、その値を`close`関数に渡すことができるとしても、型パラメータ`T`の値を`close`関数に渡せるとは限りません。
 
-追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+追加条件として、`Constraint`を満たす全ての型の要素型が同一である必要があります。
 
 よって、次のコードはコンパイルできません。
 ```go
-```
+type Constraint interface {
+	chan int | chan string
+}
 
-https://go.dev/play/p/NQsa3XWYU8M
+func f[T Constraint](ch T) {
+	close(ch)
+}
+```
+https://go.dev/play/p/5huphqnb64r
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Close
 :::
-### 
 
-型制約`Constraint`を満たすすべての型について、
+### 複素数に関する操作
 
-追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+型制約`Constraint`を満たすすべての型について、その値を`real`,`imag`,`complex`のそれぞれの関数に渡せるとしても、型パラメータ`T`の値をこれらの関数に渡すことはできません。
+
+これらの関数はそもそも型パラメータ型を受け取らないようになっているからです。
 
 よって、次のコードはコンパイルできません。
 ```go
+type Constraint interface {
+	float32 | float64
+}
+
+func f[T Constraint](v T) {
+	_ = complex(v, v)
+}
 ```
 
-https://go.dev/play/p/NQsa3XWYU8M
+https://go.dev/play/p/7PMcp7Q91oM
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Complex_numbers
 :::
-### 
 
-型制約`Constraint`を満たすすべての型について、
+### mapの`delete`関数による特定エントリーの削除
 
-追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
+型制約`Constraint`を満たすすべての型について、その値`m`とあるキー値`k`について`delete(m,k)`によるエントリー削除ができるとしても、型パラメータ`T`の値`m`に対して`delete(m,k)`ができるとは限りません。
+
+追加条件として、`Constarint`を満たす全ての型についてキーの型が同一である必要があります。
 
 よって、次のコードはコンパイルできません。
-```go
-```
 
-https://go.dev/play/p/NQsa3XWYU8M
+```go
+type MyInt int
+
+type Constraint interface {
+	map[int]bool | map[MyInt]bool
+}
+
+func f[T Constraint](m T) {
+	delete(m, 1)
+}
+```
+https://go.dev/play/p/__j2DhnYrUn
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Deletion_of_map_elements
+:::
+
+### `make`関数による作成
+
+型制約`Constraint`を満たすすべての型について、その値を`make`関数で作れるとしても、型パラメータ`T`についてその値を`make`関数で作れるとは限りません。
+
+追加条件として、次のいずれかに当てはまる必要があるからです。
+- `Constraint`を満たす全ての型のunderlying typeが同一のスライス型またはmap型である
+- `Constraint`を満たす全ての型がチャネル型であり、その要素の型が同一で、方向が矛盾しない
+
+よって、次のコードはコンパイルできません。
+```go
+type Constraint interface {
+	MyChan | chan<- int
+}
+
+func f[T Constraint]() {
+	_ = make(T)
+}
+```
+
+https://go.dev/play/p/QTggKJPwmlW
+
+:::message
+言語仕様上の根拠は次の箇所にあります。
+https://go.dev/ref/spec#Making_slices_maps_and_channels
 :::
 
 
