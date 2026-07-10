@@ -14,7 +14,6 @@ transcript/
 ├── 5.synchronization.md        # 第5章 同期演算(Synchronization)を読み解く
 ├── 6.go119-sync-atomic.md      # 第6章 Go1.19メモリーモデルとsync/atomicパッケージ
 ├── 7.gomm-summary.md           # 第7章 まとめ
-├── 8.gomm-appendix.md          # 付録: Message Passing Testの詳しい解き方
 └── images/                     # スライドから抽出した画像
     ├── glossary.png                  # 用語集のスクリーンショット (image1)
     ├── messagepassing-experiment.png # Message Passing Test実験結果 (image2)
