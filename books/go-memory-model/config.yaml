@@ -1,5 +1,5 @@
 title: "よくわかるThe Go Memory Model 〜行間を図解で埋め尽くす〜"
-summary: "Go Conference 2023 A3-Lの発表「よくわかるThe Go Memory Model」の書籍版です。並行処理の難しさと逐次一貫モデルの破綻から出発して、happens-before関係と観測可能性というメモリーモデルの中心概念を図解で説明し、Go 1.19で記述が追加されたsync/atomicのメモリーモデルまでを解説します。"
+summary: "Go Conference 2023 A3-Lの発表「よくわかるThe Go Memory Model」の書籍版です。並行処理の難しさと逐次一貫モデルの破綻から出発して、happens-before関係と観測可能性というメモリーモデルの中心概念を図解で説明し、channelやMutexなど個々の同期演算の解釈、そしてGo 1.19で記述が追加されたsync/atomicのメモリーモデルまでを解説します。"
 topics: ["go", "goroutine", "concurrency", "memorymodel"]
 published: false
 price: 0

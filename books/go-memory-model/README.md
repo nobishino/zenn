@@ -10,9 +10,10 @@ transcript/
 ├── 1.gomm-motivation.md        # 第1章 発表のモチベーションと発表の流れ
 ├── 2.sequential-consistency.md # 第2章 並行処理の難しさと逐次一貫モデルの破綻
 ├── 3.happens-before-relation.md# 第3章 観測可能性とhappens-before関係
-├── 4.go119-sync-atomic.md      # 第4章 Go1.19メモリーモデルとsync/atomicパッケージ
-├── 5.gomm-summary.md           # 第5章 まとめ
-├── 6.gomm-appendix.md          # 付録（おまけスライド）
+├── 4.synchronization.md        # 第4章 同期演算(Synchronization)を読み解く
+├── 5.go119-sync-atomic.md      # 第5章 Go1.19メモリーモデルとsync/atomicパッケージ
+├── 6.gomm-summary.md           # 第6章 まとめ
+├── 7.gomm-appendix.md          # 付録（おまけスライド）
 └── images/                     # スライドから抽出した画像
     ├── glossary.png                  # 用語集のスクリーンショット (image1)
     ├── messagepassing-experiment.png # Message Passing Test実験結果 (image2)
