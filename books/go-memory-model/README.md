@@ -1,36 +1,29 @@
-# transcript — Zenn book版「よくわかるThe Go Memory Model」
+# Zenn book「よくわかるThe Go Memory Model 〜行間を図解で埋め尽くす〜」
 
-`slide.pptx`（Go Conference 2023 A3-L発表スライド）をZennのbook形式に文字起こししたものです。本文はスライドのスピーカーノートをもとにし、ノートのないスライドは記載内容から本文を起こしています。
+Go Conference 2023 (A3-L) の発表「よくわかるThe Go Memory Model」を書籍化したZenn bookです。当初はスライドのスピーカーノートの文字起こしとして出発し、その後、書籍として独立した章（第4章・第5章）の追加や全体の添削を行っています。
 
 ## 構成
 
 ```
-transcript/
-├── config.yaml                 # book設定
-├── 1.gomm-motivation.md        # 第1章 発表のモチベーションと発表の流れ
-├── 2.sequential-consistency.md # 第2章 並行処理の難しさと逐次一貫モデルの破綻
-├── 3.happens-before-relation.md# 第3章 観測可能性とhappens-before関係
-├── 4.synchronized-before.md    # 第4章 happens beforeの正体：sequenced beforeとsynchronized before
-├── 5.synchronization.md        # 第5章 同期演算(Synchronization)を読み解く
-├── 6.go119-sync-atomic.md      # 第6章 Go1.19メモリーモデルとsync/atomicパッケージ
-├── 7.gomm-summary.md           # 第7章 まとめ
-└── images/                     # スライドから抽出した画像
-    ├── glossary.png                  # 用語集のスクリーンショット (image1)
-    ├── messagepassing-experiment.png # Message Passing Test実験結果 (image2)
-    ├── gopher.png                    # Gopherくんのイラスト (image3)
-    └── atomics-experiment.png        # atomic版実験の様子 (image5)
+go-memory-model/
+├── config.yaml                  # book設定（published: falseの間は非公開）
+├── 1.gomm-motivation.md         # 第1章 本書のモチベーションと流れ
+├── 2.sequential-consistency.md  # 第2章 並行処理の難しさと逐次一貫モデルの破綻
+├── 3.happens-before-relation.md # 第3章 観測可能性とhappens-before関係
+├── 4.synchronized-before.md     # 第4章 happens beforeの正体：sequenced beforeとsynchronized before
+├── 5.synchronization.md         # 第5章 同期演算(Synchronization)を読み解く
+├── 6.go119-sync-atomic.md       # 第6章 Go1.19メモリーモデルとsync/atomicパッケージ
+├── 7.gomm-summary.md            # 第7章 まとめ
+├── README.md                    # このファイル（Zenn上には表示されない）
+└── review-note.md               # 通読レビューの記録（Zenn上には表示されない）
 ```
 
-## Zennで公開する手順
+章のファイルは`<番号>.<slug>.md`の命名で、番号順に表示されます。
 
-ZennのGitHub連携リポジトリに配置する場合:
+## 編集上のメモ
 
-1. このディレクトリを `books/<slug>/` にコピーする（例: `books/go-memory-model/`）
-2. `images/` の中身はリポジトリ**ルート**の `/images/` に置く必要があります（Zennの画像パス仕様）。本文中の参照は `/images/xxx.png` になっているので、`transcript/images/*.png` をリポジトリルートの `images/` にコピーしてください
-3. 公開するときは `config.yaml` の `published: false` を `true` に変更
-
-## 補足
-
-- スライド上で図形として描かれていた図（happens-beforeグラフ、概念相関図など）は、画像として抽出できないためmermaid図・テキスト図で再現しています
-- Venn図（並行処理の難しさの2レベル）はテキストアートで再現しています
-- スピーカーノート中の進行メモ（【予定ペース】など）は本文から除いています
+- 本文中の画像はリポジトリ**ルート**の `/images/` に置きます（Zennの画像パス仕様）。本文からは `/images/xxx.png` で参照します
+- 原文引用には「拙訳:」を添える形式で統一しています
+- 図はmermaid記法で描いています。happens-before関係を示す矢印は太字（`==>`）で強調します
+- サンプルコードは完全な`package main`プログラムとしてGo Playgroundにshareし、コードブロック直後に「👉 Go Playgroundで実行する」リンクを添えます
+- 公開するときは `config.yaml` の `published: false` を `true` に変更します
