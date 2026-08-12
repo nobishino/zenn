@@ -311,11 +311,6 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
-    "b315692c32b4903b": {
-      "url": "https://go.dev/play/p/SD32zvoKwfb",
-      "file": "books/go-memory-model/2.sequential-consistency.md",
-      "sharedAt": "2026-08-13"
-    },
     "b4a12dd82bcdf6fc": {
       "url": "https://go.dev/play/p/8myDAKgpUvr",
       "file": "articles/type_param_intro.md",
@@ -329,6 +324,11 @@
     "ba18f29429d2b8d8": {
       "url": "https://go.dev/play/p/dLY7oILp7rl",
       "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "baf3fa5f9d1b6233": {
+      "url": "https://go.dev/play/p/NEEpOLzM1Hz",
+      "file": "books/go-memory-model/2.sequential-consistency.md",
       "sharedAt": "2026-08-13"
     },
     "bc7eb65146743515": {
