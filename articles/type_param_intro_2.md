@@ -93,7 +93,7 @@ func main() {
 }
 ```
 
-https://gotipplay.golang.org/p/ZRx0SE4Q1Yi
+https://go.dev/play/p/ZRx0SE4Q1Yi
 
 `T`が型推論により自動決定されているので、あたかも`Print`というジェネリックな関数をそのまま使っているようにも見えます。
 しかし、**実際には型推論がされていてもいなくてもインスタンス化は必ず行われています。**
@@ -307,6 +307,8 @@ type C interface {
 }
 ```
 
+https://go.dev/play/p/B2aQu23h3Sw
+
 :::
 
 仕様書にある例を使って説明します。
@@ -452,6 +454,8 @@ type X chan int
 type Y chan MyInt
 ```
 
+https://go.dev/play/p/848e6xMxR_y
+
 このように定義した`X, Y`は等価ではありません。
 
 ## 等価性とunificationの例
@@ -542,6 +546,8 @@ func FromStrings[T Setter](s []string) []T {
 }
 ```
 
+https://go.dev/play/p/QmO1uGI4QDE
+
 これを次のように使いたいのですが、これはコンパイルできません。
 
 ```go
@@ -613,6 +619,8 @@ func FromStrings2[T any, PT Setter2[T]](s []string) []T {
 	return result
 }
 ```
+
+https://go.dev/play/p/3T-HxNN06L5
 
 これを利用して`F`を書き直せます:
 

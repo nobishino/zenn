@@ -101,7 +101,7 @@ func main() { a += "\x60"; println(a + a) }
 var a = `
 ```
 
-https://go.dev/play/p/UGAQqcNJk5d
+https://go.dev/play/p/vSV_LnsSIEK
 
 何をしているかわかるでしょうか？`"\x60"`はasciiコードの60番、つまりバッククオーテーションを表します。`println(a + a)`がこの`main.go`と一致するということは、この *`main.go`は前半と後半で全く同じ文字列を2回繰り返す文字列になっている*わけです。
 

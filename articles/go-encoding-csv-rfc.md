@@ -47,6 +47,8 @@ https://pkg.go.dev/encoding/csv
 
 https://pkg.go.dev/encoding/csv#example-Reader
 
+https://go.dev/play/p/FUs1VGUMihJ
+
 ```go
 func main() {
 	in := `first_name,last_name,username
@@ -78,6 +80,8 @@ Ken,Thompson,ken
 
 
 https://pkg.go.dev/encoding/csv#example-Writer
+
+https://go.dev/play/p/_m4UYa2JR-5
 
 ```go
 func main() {

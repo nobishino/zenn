@@ -24,7 +24,7 @@ https://github.com/golang/go/issues/56548
 - このproposalが実装されると、basic interfaceは`comparable`型制約を満たすことができるようになる
 - 特別な場合として、`any`は`comparable`型制約を満たすようになるので、次のようなコードが書けるようになる(今は書けない)
 
-https://go.dev/play/p/_TyieBbyzXx
+https://go.dev/play/p/ApQfJl4ocYu
 
 ```go
 func f[T comparable](T) {}
@@ -75,7 +75,7 @@ Go1.18では、あらゆる型制約`C`について、
 
 だけが`comparable`の型集合に属します。これを示すのが次のサンプルコードです。
 
-https://go.dev/play/p/ULeOmhRP6s3
+https://go.dev/play/p/bC-CcdM6ywL
 
 ```go
 func f[T comparable](T) {}
@@ -123,7 +123,7 @@ Proposal採用後は次のようになります。
 
 また、先程のサンプルコードはすべてコンパイルできるようになります(執筆時点ではできません)
 
-https://go.dev/play/p/ULeOmhRP6s3
+https://go.dev/play/p/oUCM73okc6p
 
 ```go
 func f[T comparable](T) {}
@@ -238,6 +238,8 @@ type comparable interface {
 
 ### より複雑な制約
 
+https://go.dev/play/p/KmiNJqclI1A
+
 ```go
 type C interface {
 	comparable
@@ -258,6 +260,8 @@ proposal採用後は、ある型`T`が`panic`せずに`==, !=`で比較できる
 これにはauthorのgriesemerさんが次のような方法を提示しています。
 
 https://github.com/golang/go/issues/56548#issuecomment-1317673963
+
+https://go.dev/play/p/uvcDC34uYh7
 
 ```go
 // we want to ensure that T is strictly comparable

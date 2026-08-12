@@ -64,6 +64,8 @@ func main() {
 }
 ```
 
+https://go.dev/play/p/fC8spIZnTY1
+
 まず、オリジナルのライブコーディング同様に、これを`syscall.Write`を使うようにリファクタリングします。
 
 ```go
@@ -71,6 +73,8 @@ func main() {
 	syscall.Write(1, []byte("Hello world\n"))
 }
 ```
+
+https://go.dev/play/p/Vnr97M6-m83
 
 :::message
 この引数で使っている`1`はファイルディスクリプタと呼ばれるもので、`1`だと標準出力(`os.Stdout`)の意味になります。

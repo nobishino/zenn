@@ -75,6 +75,8 @@ func main() {
 }
 ```
 
+https://go.dev/play/p/uScAmOMA6FL
+
 ## interface型同士の比較は`panic`を引き起こす場合がある
 
 ここで厄介なのは、interface型同士の比較は`panic`を引き起こす場合があることです。
@@ -93,6 +95,8 @@ func main() {
 	fmt.Println(e == e) // panic
 }
 ```
+
+https://go.dev/play/p/lkHLc5Qoo0A
 
 つまり、言語仕様上の「comparableな値」はinterface型の値も含みますが、そのような値を比較したときはpanicを引き起こすことがあります。
 
@@ -131,6 +135,8 @@ func main() {
 func f[T comparable](x T) {}
 ```
 
+https://go.dev/play/p/zmcIED1JnqL
+
 つまり、**comparable(型制約)はcomparable(言語仕様)と比べて、ふつうのinterface型を一切含まない分だけ狭い概念になっています。**
 
 :::message
@@ -165,6 +171,8 @@ func f[T C](t T) {
 
 func g[S comparable](s S) {}
 ```
+
+https://go.dev/play/p/aSyn81BIVRC
 
 :::message
 unionsについて詳しくは[Go言語のジェネリクス入門(1)](https://zenn.dev/nobishii/articles/type_param_intro#unions)を参照してください。

@@ -30,6 +30,8 @@ type MyMyInt MyInt
 // MyMyInt もdefined type
 ```
 
+https://go.dev/play/p/5VG1Hhl6AmC
+
 後者の例は`int`, `string`, `bool`, `float64`などの型です。
 
 
@@ -57,6 +59,8 @@ type S []int
 type T int
 // S, T, []int, intという4つの型があるが、どれがdefined typeか？
 ```
+
+https://go.dev/play/p/B9PXlXRbZNb
 
 **定義(再掲)**
 

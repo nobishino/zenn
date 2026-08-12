@@ -108,7 +108,7 @@ func (i MyInt) String() string {
 	return strconv.Itoa(int(i))
 }
 ```
-https://go.dev/play/p/NWxONCa85DL
+https://go.dev/play/p/9QPNO6kq277
 
 関数`f`の宣言時に`f[T Stringer]`という四角カッコの文法要素がついていますね。これが型パラメータと一緒に導入される新しい文法です。この意味は、
 
@@ -150,7 +150,7 @@ func main() {
 }
 ```
 
-https://go.dev/play/p/jCS7vhCe_XC
+https://go.dev/play/p/0ew3FXqTSUo
 
 :::message
 
@@ -264,6 +264,8 @@ https://go.dev/play/p/ht_akn1eCGy
 type Set[T comparable] map[T]struct{}
 ```
 
+https://go.dev/play/p/LtDPwXKQgyK
+
 ここで、`comparable`という新しいインタフェース型が型制約に使われています。なぜ`any`ではダメなのでしょうか？
 
 それは、`T`を`map`のkeyとして使いたいからです。`map`はkeyの値に重複がないように値を保管していくデータ構造なので、重複しているかどうかを判定できる必要があります。その判定には`==`及び`!=`演算子による比較が用いられます。Go言語ではこの2つの演算子により比較できる型と比較できない型があるため、「比較可能なすべての型により満たされるインタフェース」が必要なのです。
@@ -292,6 +294,8 @@ func f(xs []Stringer) []string {
 }
 ```
 
+https://go.dev/play/p/OEB_ekVjFpk
+
 また、次のように`Stringer`を実装する型を用意します。
 
 ```go
@@ -302,6 +306,8 @@ func(i MyInt) String() string {
     return strconv.Itoa(int(i))
 }
 ```
+
+https://go.dev/play/p/9YEEYJEeTC-
 
 このとき次のように、`MyInt`のスライスを`f`に渡すことはできるでしょうか？
 
@@ -419,6 +425,8 @@ type Number interface {
 }
 ```
 
+https://go.dev/play/p/7lnFo6D1DtS
+
 この`Number`というインタフェースは、`int, int32, int64, float32, float64`という5種類の型によって **「満たされ」ます**。かつ、これ以外の型によっては満たされません。
 この文法要素`int | int32 | int64 | float32 | float64`のことを`unions`や`union element`と呼びます。
 
@@ -431,6 +439,8 @@ type Int interface {
     int
 }
 ```
+
+https://go.dev/play/p/EHOP1ljvR8k
 
 この`Int`インタフェースを実装するのは`int`型のみです。
 
@@ -450,6 +460,8 @@ func Max[T Number] (x, y T) T {
 	return y
 }
 ```
+
+https://go.dev/play/p/umd-vW_nWtw
 
 ::: message
 
@@ -482,6 +494,8 @@ func Max[T Number] (x, y T) T {
 }
 ```
 
+https://go.dev/play/p/umd-vW_nWtw
+
 では、次のように定義した`NewInt`や`NewNewInt`に対して`Max`関数を使用できるでしょうか？
 
 ```go
@@ -489,6 +503,8 @@ type NewInt int
 
 type NewNewInt NewInt
 ```
+
+https://go.dev/play/p/MZTSjdYaQmJ
 
 「できない」というのが答えです。`int, NewInt, NewNewInt`はそれぞれ相異なる型であり、したがって`NewInt`と`NewNewInt`は`Number`インタフェースを実装しないからです。
 
@@ -512,6 +528,8 @@ type Number interface {
     ~int | ~int32 | ~int64 | ~float32 | ~float64
 }
 ```
+
+https://go.dev/play/p/dLY7oILp7rl
 
 このように定義すると、「`int, int32, int64, float32, float64`のうちいずれかをunderlying typeとする型」すべてが`Number`を実装するようになります。
 
@@ -571,6 +589,8 @@ type IntSlice []int // IntSliceのunderlying typeは[]int
 // []intのunderlying typeは[]int
 ```
 
+https://go.dev/play/p/03qacW-WKVw
+
 大まかにいうと、`type A B`という形の型定義を左から右に遡ってゆき、それ以上遡れないところにある型がunderlying typeです。
 
 ### 厳密な定義(Go 1.17)
@@ -620,6 +640,8 @@ type Ordered interface {
 		~string
 }
 ```
+
+https://go.dev/play/p/3p5f080M08r
 
 これを使って、一般的な`Max`関数を定義できます。
 
@@ -673,6 +695,9 @@ type I interface { // 許可されないインタフェースを埋め込んだ�
 	fmt.Stringer // メソッド定義を含むインタフェースなので許可されない
 }
 ```
+
+https://go.dev/play/p/XPivAvKCDmp
+
 :::
 
 :::message
@@ -683,6 +708,9 @@ type I interface {
 	fmt.Stringer // 単一要素のunionsにインタフェースを使うのは、インタフェースの埋め込みと同じこと
 }
 ```
+
+https://go.dev/play/p/GTKUve2ytiR
+
 :::
 
 :::message
@@ -730,6 +758,8 @@ func (i MyInt) String() string {
 	return strconv.Itoa(int(i))
 }
 ```
+
+https://go.dev/play/p/6JZ_7rvBG3a
 
 言い換えると、 **「型制約を満たすすべての型について`String()`が使えるならば、型パラメータ`T`に対しても`String()`が使える」** というのがGoのジェネリック関数だと言っても良さそうです。
 
@@ -866,7 +896,7 @@ func f[T Constraint]() {
 	var _ T = c // 表現可能なので代入可能である
 }
 ```
-https://go.dev/play/p/FJO4JhKl09x
+https://go.dev/play/p/OywqB2RkxJE
 
 ### 算術演算
 
@@ -934,7 +964,7 @@ type Constraint interface {
 func f[T Constraint](t1, t2 T) bool { return t1 < t2 }
 ```
 
-https://go.dev/play/p/JqPmRpRYgkN
+https://go.dev/play/p/5ptCFJvil1P
 :::message
 
 言語仕様上の根拠は次の箇所にあります。
@@ -959,7 +989,7 @@ func f[T Constraint](t T) int {
 	return <-t
 }
 ```
-https://go.dev/play/p/YKXhTLD6Uwy
+https://go.dev/play/p/1kA8R3bl24I
 
 :::message
 
@@ -1039,7 +1069,7 @@ func f[T Constraint](t T) {
 	clear(t)
 }
 ```
-https://go.dev/play/p/pzsv02pBSaH
+https://go.dev/play/p/C2Xjc3g8aYl
 :::message
 言語仕様上の根拠は次の箇所にあります。
 https://go.dev/ref/spec#Clear
@@ -1062,7 +1092,7 @@ func f[T Constraint](m T) int {
 	return len(m)
 }
 ```
-https://go.dev/play/p/ZO8mpMzLukQ
+https://go.dev/play/p/GJHBMWHQnCi
 :::message
 言語仕様上の根拠は次の箇所にあります。
 https://go.dev/ref/spec#Length_and_capacity
@@ -1089,7 +1119,7 @@ func f[T Constraint](ptr T) unsafe.Pointer {
 }
 ```
 
-https://go.dev/play/p/_INs7vJ5TKb
+https://go.dev/play/p/ocgnqs1oPqD
 :::message
 言語仕様上の根拠は次の箇所にあります。
 https://go.dev/ref/spec#Package_unsafe
@@ -1358,7 +1388,7 @@ func f[T Constraint](ch T) {
 	close(ch)
 }
 ```
-https://go.dev/play/p/5huphqnb64r
+https://go.dev/play/p/8myDAKgpUvr
 
 :::message
 言語仕様上の根拠は次の箇所にあります。

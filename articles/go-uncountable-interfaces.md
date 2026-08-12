@@ -18,6 +18,8 @@ type C interface {
 }
 ```
 
+https://go.dev/play/p/3G_fheQNef4
+
 :::message
 unionsについて詳しくは[Go言語のジェネリクス入門(1)](https://zenn.dev/nobishii/articles/type_param_intro#unions)を参照してください。
 :::

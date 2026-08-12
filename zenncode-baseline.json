@@ -1,0 +1,531 @@
+{
+  "_comment": "Snippets that do not verify today. Regenerate with `zenncode baseline`. Entries are matched by hash, so an edited snippet must pass on its own.",
+  "generated": "2026-08-13T03:50:02+09:00",
+  "entries": [
+    {
+      "file": "articles/3-means-of-go-comparable.md",
+      "line": 187,
+      "hash": "49472f89a552329c",
+      "stage": "build",
+      "reason": "sample.go:6:9: undefined: Value"
+    },
+    {
+      "file": "articles/basic-interface-is-comparable.md",
+      "line": 157,
+      "hash": "59d27e0710131871",
+      "stage": "build",
+      "reason": "sample.go:7:3: []int does not satisfy comparable"
+    },
+    {
+      "file": "articles/basic-interface-is-comparable.md",
+      "line": 211,
+      "hash": "0ddf99f985d52507",
+      "stage": "build",
+      "reason": "sample.go:4:6: invalid recursive type: comparable refers to itself"
+    },
+    {
+      "file": "articles/basic-interface-is-comparable.md",
+      "line": 297,
+      "hash": "9296e9ac358509e7",
+      "stage": "build",
+      "reason": "sample.go:5:22: undefined: T"
+    },
+    {
+      "file": "articles/go-data-corruptions.md",
+      "line": 170,
+      "raw": "7e3e348110be3f4e",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found variable"
+    },
+    {
+      "file": "articles/go-data-corruptions.md",
+      "line": 461,
+      "hash": "4d16d41a46b1e73f",
+      "stage": "build",
+      "reason": "go: finding module for package golang.org/x/sync/errgroup"
+    },
+    {
+      "file": "articles/go-encoding-csv-rfc.md",
+      "line": 365,
+      "raw": "d19cb7cb8e1960fa",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found first_name"
+    },
+    {
+      "file": "articles/go-encoding-csv-rfc.md",
+      "line": 378,
+      "raw": "aa5ec082202e3851",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found \"Rob\"; 1:15: string literal not terminated"
+    },
+    {
+      "file": "articles/go-encoding-csv-rfc.md",
+      "line": 386,
+      "raw": "005449d9f9e5c358",
+      "stage": "normalize",
+      "reason": "3:1: expected declaration, found LazyQuotes"
+    },
+    {
+      "file": "articles/go-uncountable-interfaces.md",
+      "line": 106,
+      "raw": "061ae1fee7cc4c4a",
+      "stage": "normalize",
+      "reason": "1:6: expected 'IDENT', found 'struct'; 3:5: expected declaration, found MyInt"
+    },
+    {
+      "file": "articles/go-uncountable-interfaces.md",
+      "line": 152,
+      "raw": "f1accab0d1cc7fcd",
+      "stage": "normalize",
+      "reason": "6:9: illegal character U+003F '?'"
+    },
+    {
+      "file": "articles/go-uncountable-interfaces.md",
+      "line": 183,
+      "raw": "5345d25e17442471",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'interface'"
+    },
+    {
+      "file": "articles/go-wasmimport-hello.md",
+      "line": 21,
+      "hash": "5aeb877d1cb3cbcd",
+      "stage": "build",
+      "reason": "sample.go:4:6: missing function body"
+    },
+    {
+      "file": "articles/go-wasmimport-hello.md",
+      "line": 101,
+      "hash": "89afda1ccc652e35",
+      "stage": "build",
+      "reason": "package zenncodesample: build constraints exclude all Go files in /private."
+    },
+    {
+      "file": "articles/go-wasmimport-hello.md",
+      "line": 172,
+      "hash": "a63e00cf582419e0",
+      "stage": "build",
+      "reason": "sample.go:7:54: undefined: size"
+    },
+    {
+      "file": "articles/goquiz_20230817.md",
+      "line": 11,
+      "hash": "a1b059f403d16938",
+      "stage": "build",
+      "reason": "sample.go:8:6: cannot use x (variable of type int) as T value in assignment"
+    },
+    {
+      "file": "articles/goquiz_20230817.md",
+      "line": 41,
+      "hash": "a1b059f403d16938",
+      "stage": "build",
+      "reason": "sample.go:8:6: cannot use x (variable of type int) as T value in assignment"
+    },
+    {
+      "file": "articles/goquiz_20230817.md",
+      "line": 61,
+      "hash": "33db2b63106432a7",
+      "stage": "build",
+      "reason": "sample.go:11:6: cannot use x (variable of type int) as T value in assignment"
+    },
+    {
+      "file": "articles/goquiz_20230817.md",
+      "line": 238,
+      "hash": "a1b059f403d16938",
+      "stage": "build",
+      "reason": "sample.go:8:6: cannot use x (variable of type int) as T value in assignment"
+    },
+    {
+      "file": "articles/learn_go_quine_for_great_good.md",
+      "line": 126,
+      "hash": "4a97403adae96f41",
+      "stage": "build",
+      "reason": "sample.go:8:12: pattern main.go: no matching files found"
+    },
+    {
+      "file": "articles/my_draft_2021.md",
+      "line": 21,
+      "raw": "647bdd377c52d514",
+      "stage": "normalize",
+      "reason": "3:14: expected type, found '{'; 5:1: expected declaration, found '}'"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 174,
+      "hash": "abca9b36678402c6",
+      "stage": "build",
+      "reason": "sample.go:3:10: undefined: Stack"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 182,
+      "raw": "6607095ff07b7c8e",
+      "stage": "normalize",
+      "reason": "1:2: expected declaration, found s"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 198,
+      "raw": "c87868a86ed208b7",
+      "stage": "normalize",
+      "reason": "2:27: method must have no type parameters"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 207,
+      "raw": "77e2b4aa2b8855aa",
+      "stage": "normalize",
+      "reason": "2:51: missing parameter name"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 314,
+      "raw": "554f110d38327b37",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found xs"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 323,
+      "hash": "5091fd45be53f55d",
+      "stage": "build",
+      "reason": "sample.go:5:5: declared and not used: vs"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 336,
+      "raw": "dce2ae3e9745d0b3",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'if'"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 351,
+      "hash": "7e31dff46b8e6edb",
+      "stage": "build",
+      "reason": "sample.go:6:10: undefined: Stringer"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 398,
+      "raw": "ff788d4df34971a3",
+      "stage": "normalize",
+      "reason": "1:26: expected ';', found T; 2:2: expected declaration, found 'if'"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 517,
+      "hash": "97114402e680be75",
+      "stage": "build",
+      "reason": "sample.go:5:44: undefined: NewInt"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 544,
+      "raw": "e4f38b843821bef7",
+      "stage": "normalize",
+      "reason": "12:9: expected ';', found NewInt"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1153,
+      "hash": "4499b6b6a84a4c48",
+      "stage": "build",
+      "reason": "sample.go:17:11: t.A undefined (type T has no field or method A)"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1182,
+      "hash": "cc387294258a3609",
+      "stage": "build",
+      "reason": "sample.go:9:10: invalid constant type T"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1202,
+      "hash": "c936709aa4f72f4b",
+      "stage": "build",
+      "reason": "sample.go:8:10: invalid composite literal type T (no common underlying type)"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1223,
+      "hash": "a1250d32ec2fe227",
+      "stage": "build",
+      "reason": "sample.go:9:7: cannot index t (variable of type T constrained by Constraint)"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1249,
+      "hash": "4a20cb5eec7b3652",
+      "stage": "build",
+      "reason": "sample.go:9:6: cannot slice t (variable of type T constrained by Constraint): [10]int and [11]int have different underlying types"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1277,
+      "hash": "2ea12c6e34014012",
+      "stage": "build",
+      "reason": "sample.go:11:15: invalid operation: cannot call f (variable of type F constrained by Constraint): func() *int and func() MyIntPointer have different underlying types"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1306,
+      "hash": "0a9b9c1c4204954b",
+      "stage": "build",
+      "reason": "sample.go:11:2: invalid operation: cannot send to t (variable of type T constrained by Constraint): channels chan\u003c- int and MyChanInt have different element types"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1332,
+      "hash": "707c563969aa51c4",
+      "stage": "build",
+      "reason": "sample.go:8:20: cannot range over t (variable of type T constrained by Constraint): string and []byte have different underlying types"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1356,
+      "hash": "154ff18ae92a73f9",
+      "stage": "build",
+      "reason": "sample.go:10:9: invalid append: mismatched slice element types int and MyInt in t (variable of type T constrained by Constraint)"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1405,
+      "hash": "bd441af481d6e33e",
+      "stage": "build",
+      "reason": "sample.go:8:14: v (variable of type T constrained by Constraint) not supported as argument to built-in complex for go1.18 (see go.dev/issue/50937)"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1430,
+      "hash": "4086433da1cd4495",
+      "stage": "build",
+      "reason": "sample.go:10:9: invalid argument: maps of m (variable of type T constrained by Constraint) must have identical key types"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 1457,
+      "hash": "595d9c8427064f5a",
+      "stage": "build",
+      "reason": "sample.go:10:11: invalid argument: cannot make T: channels MyChan and chan\u003c- int have conflicting directions"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 102,
+      "hash": "2a91be422eaa1f21",
+      "stage": "build",
+      "reason": "sample.go:4:2: undefined: Print"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 142,
+      "hash": "405df10b73e58385",
+      "stage": "build",
+      "reason": "sample.go:7:12: int does not satisfy fmt.Stringer (missing method String)"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 168,
+      "hash": "606c93a32dc61c26",
+      "stage": "build",
+      "reason": "sample.go:5:3: chan int does not satisfy \u003c-chan int (chan int missing in \u003c-chan int)"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 223,
+      "raw": "3260ba65640f2a07",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found x"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 271,
+      "raw": "6fdcd2057facaf5f",
+      "stage": "normalize",
+      "reason": "1:21: expected statement, found '...'; 4:6: expected '}', found 'EOF'"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 318,
+      "hash": "d755b842c34263c4",
+      "stage": "build",
+      "reason": "sample.go:12:8: not enough type arguments for type T: have 1, want 3"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 403,
+      "hash": "32789adc75716527",
+      "stage": "build",
+      "reason": "sample.go:6:4: in call to f, type []map[int]bool of make([]map[int]bool, 0) does not match *T (cannot infer T)"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 467,
+      "hash": "38119e49dfc48409",
+      "stage": "build",
+      "reason": "sample.go:12:8: not enough type arguments for type X: have 1, want 2"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 553,
+      "hash": "5e6ac68c732e8236",
+      "stage": "build",
+      "reason": "sample.go:13:10: undefined: FromStrings"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 575,
+      "hash": "9a99cb8f328e9537",
+      "stage": "build",
+      "reason": "sample.go:4:10: undefined: FromStrings"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 589,
+      "hash": "3d50b3a0089fca7c",
+      "stage": "build",
+      "reason": "sample.go:3:20: undefined: Setter"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 627,
+      "hash": "91160b59171ca147",
+      "stage": "build",
+      "reason": "sample.go:6:10: undefined: FromStrings2"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 640,
+      "hash": "174d30bffd2df7fd",
+      "stage": "build",
+      "reason": "sample.go:6:10: undefined: FromStrings2"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 656,
+      "hash": "6d794c00a37ea377",
+      "stage": "build",
+      "reason": "sample.go:5:3: undefined: Settable"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 88,
+      "hash": "479a67fd74e7a5b7",
+      "stage": "build",
+      "reason": "sample.go:6:9: undefined: Stringer"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 124,
+      "raw": "e99fa590768092a3",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'interface'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 154,
+      "raw": "2d9ab58baa680aad",
+      "stage": "normalize",
+      "reason": "8:13: expected type, found '{'; 10:1: expected declaration, found '}'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 175,
+      "hash": "84b970d4867ff9e5",
+      "stage": "build",
+      "reason": "sample.go:4:2: undefined: Number"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 188,
+      "raw": "1972b7ee035ca3f9",
+      "stage": "normalize",
+      "reason": "1:13: expected type, found '{'; 3:1: expected declaration, found '}'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 206,
+      "raw": "885762fdb6921aab",
+      "stage": "normalize",
+      "reason": "2:1: expected declaration, found '~'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 221,
+      "raw": "1eca7af632210ca8",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found '~'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 231,
+      "hash": "3dcdc95d442af269",
+      "stage": "build",
+      "reason": "sample.go:4:19: undefined: MyFloat"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 243,
+      "hash": "ea0389dbb5c38cc4",
+      "stage": "build",
+      "reason": "sample.go:4:19: undefined: MyFloat"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 255,
+      "hash": "ea0389dbb5c38cc4",
+      "stage": "build",
+      "reason": "sample.go:4:19: undefined: MyFloat"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 265,
+      "raw": "38b2027aa0ea195f",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'interface'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 291,
+      "raw": "277207219ddf64b1",
+      "stage": "normalize",
+      "reason": "2:18: expected ~ term or type, found '...'; 3:13: expected '}', found ')'; 4:5: expected declaration, found MethodB"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 312,
+      "raw": "f368d486e8aa80b6",
+      "stage": "normalize",
+      "reason": "2:18: expected ~ term or type, found '...'; 3:13: expected '}', found ')'; 4:5: expected declaration, found MethodB; 10:18: expected ~ term or type, found '...'; 11:13: expected '}', found ')'; 12:5: ..."
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 342,
+      "hash": "8326b9d896b2735d",
+      "stage": "build",
+      "reason": "sample.go:6:9: undefined: Stringer"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 366,
+      "raw": "899fa35fdd2366a8",
+      "stage": "normalize",
+      "reason": "3:32: expected statement, found '...'; 4:33: expected '}', found 'EOF'"
+    },
+    {
+      "file": "books/go-memory-model/4.synchronized-before.md",
+      "line": 52,
+      "raw": "a222078cf6ed77f3",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found a"
+    },
+    {
+      "file": "books/go-memory-model/5.synchronization.md",
+      "line": 40,
+      "raw": "79b6cf33ccbf4331",
+      "stage": "normalize",
+      "reason": "23:1: expected declaration, found '--'; 28:1: imports must appear before other declarations"
+    }
+  ]
+}
