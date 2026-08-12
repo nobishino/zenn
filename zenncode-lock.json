@@ -66,11 +66,6 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
-    "329425a2da448c56": {
-      "url": "https://go.dev/play/p/8JKeNDsFdaD",
-      "file": "books/go-memory-model/2.sequential-consistency.md",
-      "sharedAt": "2026-08-13"
-    },
     "36785d0b85dbdaba": {
       "url": "https://go.dev/play/p/zmcIED1JnqL",
       "file": "articles/3-means-of-go-comparable.md",
@@ -144,6 +139,11 @@
     "61dca429c8b6a666": {
       "url": "https://go.dev/play/p/wmCAMpPYLVV",
       "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "63f10e21a12d289d": {
+      "url": "https://go.dev/play/p/VKwEd34R2RC",
+      "file": "books/go-memory-model/2.sequential-consistency.md",
       "sharedAt": "2026-08-13"
     },
     "653ca0491997b7ae": {
