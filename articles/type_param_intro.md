@@ -155,13 +155,18 @@ func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
 func main() {
 	s := New[string]()
 	s.Push("hello")
-	s.Push("world")
+	s.Push("world!")
+
 	fmt.Println(s.Pop()) // world
+	// 文字列のStackから文字列の長さのStackを作る
+	t := s.Map(func(word string) int { return len(word) }) 
+
 	fmt.Println(s.Pop()) // hello
+	fmt.Println(t.Pop()) // 5
 }
 ```
 
-https://go.dev/play/p/jWqGyXkiFqV
+https://go.dev/play/p/iTw3URINgZw
 
 :::message
 
@@ -206,7 +211,6 @@ Go1.27からは、これに加えて**メソッド自身が新しい型パラメ
 
 例えば、`Stack[T]`の各要素を別の型に変換する`Map`メソッドは次のように書けます。
 
-<!-- zenncode: playground=none -->
 ```go
 func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
 	result := make(Stack[U], 0, len(s))
@@ -221,7 +225,6 @@ func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
 
 Go1.26まではメソッド自身が型パラメータを宣言することはできなかったため、同じような処理を書くには次のようにパッケージレベルのジェネリック関数にする必要がありました。
 
-<!-- zenncode: playground=none -->
 ```go
 func Map[T, U any](s Stack[T], f func(T) U) Stack[U] {
 	result := make(Stack[U], 0, len(s))
@@ -695,7 +698,6 @@ func Max[T cmp.Ordered](x, y T) T {
 
 シグネチャは次のようになっています。
 
-<!-- zenncode: playground=none -->
 ```go
 func (r *Rand) N[Int intType](n Int) Int
 ```

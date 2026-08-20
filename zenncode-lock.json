@@ -86,11 +86,6 @@
       "file": "articles/goquiz_20230817.md",
       "sharedAt": "2026-08-13"
     },
-    "356d1bf55a75f96f": {
-      "url": "https://go.dev/play/p/jWqGyXkiFqV",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-20"
-    },
     "36785d0b85dbdaba": {
       "url": "https://go.dev/play/p/zmcIED1JnqL",
       "file": "articles/3-means-of-go-comparable.md",
@@ -375,6 +370,11 @@
       "url": "https://go.dev/play/p/NEEpOLzM1Hz",
       "file": "books/go-memory-model/2.sequential-consistency.md",
       "sharedAt": "2026-08-13"
+    },
+    "bc616fe33c34abc5": {
+      "url": "https://go.dev/play/p/iTw3URINgZw",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-20"
     },
     "bc7eb65146743515": {
       "url": "https://go.dev/play/p/FUs1VGUMihJ",
