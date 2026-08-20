@@ -19,6 +19,12 @@ make test        # zenncode 自身のテスト
 
 記事を書いたら `make fix` → `make verify` が緑、が通常の流れ。
 
+`make test` と `make verify` は push と pull request のたびに GitHub Actions でも
+走る（[.github/workflows/zenncode.yml](../../.github/workflows/zenncode.yml)）。
+`verify` はネットワークを使わないので、CI が赤いときは記事かツールの問題。
+別に週次で最新の Go を使った検証も回していて（[zenncode-latest.yml](../../.github/workflows/zenncode-latest.yml)）、
+そちらは PR のゲートではなく「Go が上がって記事が古くなった」ことに気づくためのもの。
+
 パス引数はリポジトリルートからの相対パスで書く（ツールは `articles/` を含む
 祖先ディレクトリを自動で探してそこへ移動する）。
 
