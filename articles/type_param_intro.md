@@ -873,7 +873,7 @@ https://go.dev/play/p/cH5ktnw3Yck
 
 ### 型リテラルの値の代入
 
-型制約`Constraint`を満たすすべての型について型リテラルで表される型`V`の値が代入可能ならば、型パラメータ`T`の変数にも`V`の値が代入可能です。
+型制約`Constraint`を満たすすべての型について型リテラルで表される型`V`の値が代入可能ならば、型パラメータ`T`の変数にも`V`の値を代入可能です。
 
 よって、次のコードはコンパイルできます。
 
@@ -924,7 +924,7 @@ type Constraint interface {
 
 func f[T Constraint]() {
 	const c = 1.1
-	const _ T = c // 表現可能なので代入可能である
+	var _ T = c // 表現可能なので代入可能である
 }
 ```
 https://go.dev/play/p/OywqB2RkxJE
