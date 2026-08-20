@@ -79,7 +79,10 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 		for i, r := range group {
 			// A file= block shows a copy of code that lives in the
 			// repository; bring the copy up to date before anything else.
-			if r.src != nil && r.src.drifted(r.block.Code) {
+			// Only when the drift is the sole problem, though: pasting a
+			// package that does not build into an article would spread the
+			// breakage instead of reporting it.
+			if r.src != nil && r.stage == "file" && r.src.drifted(r.block.Code) {
 				actions = append(actions, action{res: r, kind: actionSync})
 			}
 			if r.kept() {

@@ -337,17 +337,43 @@ func cmdBaseline(paths []string, jobs int) error {
 	if err != nil {
 		return err
 	}
-	var entries []baseline.Entry
+	// A run over a subset of the articles only speaks for the files it saw,
+	// so the entries for every other file are carried over untouched.
+	// Rewriting the whole baseline from a partial run would silently forget
+	// the rest of the repository's known failures.
+	old, err := baseline.Load(baselineName)
+	if err != nil {
+		return err
+	}
+	var fresh []baseline.Entry
+	scanned := map[string]bool{}
 	for _, r := range results {
+		scanned[r.block.File] = true
 		if r.status == statusFailed {
-			entries = append(entries, r.entry())
+			fresh = append(fresh, r.entry())
 		}
 	}
+	entries, kept := mergeBaseline(old.Entries, scanned, fresh)
 	if err := baseline.Save(baselineName, entries); err != nil {
 		return err
 	}
-	fmt.Printf("wrote %s: %d of %d snippets recorded as failing\n", baselineName, len(entries), len(results))
+	fmt.Printf("wrote %s: %d of %d snippets recorded as failing, %d entries kept from files not scanned\n",
+		baselineName, len(entries)-kept, len(results), kept)
 	return nil
+}
+
+// mergeBaseline combines the failures just recorded with the entries for
+// files this run did not look at, and reports how many of the latter there
+// were. It is what keeps `zenncode baseline articles/one.md` from forgetting
+// everything known about the other articles.
+func mergeBaseline(old []baseline.Entry, scanned map[string]bool, fresh []baseline.Entry) (entries []baseline.Entry, kept int) {
+	for _, e := range old {
+		if !scanned[e.File] {
+			entries = append(entries, e)
+			kept++
+		}
+	}
+	return append(entries, fresh...), kept
 }
 
 func cmdList(paths []string, jobs int, verbose bool) error {
@@ -558,7 +584,11 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 		if exp.kind == expectCompileError {
 			// Code that does not even parse does not compile, which is what
 			// the article claims. There is no program to share, so this
-			// block gets no playground link.
+			// block gets no playground link. A named diagnostic still has
+			// to appear, or `error=` would pass on any typo.
+			if exp.errRe != nil && !exp.errRe.MatchString(err.Error()) {
+				return r.fail("expect", fmt.Sprintf("the parse error does not match %s:\n%s", exp.errRe, locate(b, err)))
+			}
 			r.status = statusOK
 			return r
 		}
