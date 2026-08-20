@@ -76,9 +76,7 @@ Go1.18では、あらゆる型制約`C`について、
 
 だけが`comparable`の型集合に属します。これを示すのが次のサンプルコードです。
 
-https://go.dev/play/p/bC-CcdM6ywL
-
-<!-- zenncode: expect=run -->
+<!-- zenncode: goversion=1.18 expect=compile-error error="requires go1.20 or later" playground=none -->
 ```go
 func f[T comparable](T) {}
 
