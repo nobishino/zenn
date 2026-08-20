@@ -90,7 +90,6 @@ https://go.dev/play/p/uScAmOMA6FL
 
 <!-- zenncode: expect=panic panic="comparing uncomparable type" -->
 ```go
-// https://go.dev/play/p/gNmPDq0pl2X
 func main() {
 	var e interface{}
 	e = map[int]int{}
@@ -98,7 +97,7 @@ func main() {
 }
 ```
 
-https://go.dev/play/p/lkHLc5Qoo0A
+https://go.dev/play/p/7K4sZZsAHnI
 
 つまり、言語仕様上の「comparableな値」はinterface型の値も含みますが、そのような値を比較したときはpanicを引き起こすことがあります。
 

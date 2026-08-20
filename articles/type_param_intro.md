@@ -144,6 +144,14 @@ func (s *Stack[T]) Pop() T {
 	return v
 }
 
+func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
+	result := make(Stack[U], 0, len(s))
+	for _, x := range s {
+		result = append(result, f(x))
+	}
+	return result
+}
+
 func main() {
 	s := New[string]()
 	s.Push("hello")
@@ -153,7 +161,7 @@ func main() {
 }
 ```
 
-https://go.dev/play/p/0ew3FXqTSUo
+https://go.dev/play/p/jWqGyXkiFqV
 
 :::message
 
@@ -198,6 +206,7 @@ Go1.27からは、これに加えて**メソッド自身が新しい型パラメ
 
 例えば、`Stack[T]`の各要素を別の型に変換する`Map`メソッドは次のように書けます。
 
+<!-- zenncode: playground=none -->
 ```go
 func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
 	result := make(Stack[U], 0, len(s))
@@ -212,6 +221,7 @@ func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
 
 Go1.26まではメソッド自身が型パラメータを宣言することはできなかったため、同じような処理を書くには次のようにパッケージレベルのジェネリック関数にする必要がありました。
 
+<!-- zenncode: playground=none -->
 ```go
 func Map[T, U any](s Stack[T], f func(T) U) Stack[U] {
 	result := make(Stack[U], 0, len(s))
@@ -685,6 +695,7 @@ func Max[T cmp.Ordered](x, y T) T {
 
 シグネチャは次のようになっています。
 
+<!-- zenncode: playground=none -->
 ```go
 func (r *Rand) N[Int intType](n Int) Int
 ```
@@ -693,10 +704,16 @@ func (r *Rand) N[Int intType](n Int) Int
 
 例えば`time.Duration`のunderlying typeは`int64`なので、次のように書くことができます。
 
+<!-- zenncode: expect=run -->
 ```go
-r := rand.New(rand.NewPCG(1, 2))
-d := r.N(100 * time.Millisecond) // dの型もtime.Duration
+func main(){
+	r := rand.New(rand.NewPCG(1, 2))
+	d := r.N(100 * time.Millisecond) // dの型もtime.Duration
+	fmt.Printf("戻り値dの型は%T", d)
+}
 ```
+
+https://go.dev/play/p/nv-LZKgqVJh
 
 引数`100 * time.Millisecond`の型から型パラメータ`Int`は`time.Duration`だと推論され、返り値の型にも同じ`Int`が使われるため、返り値`d`も`time.Duration`になります。
 

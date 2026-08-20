@@ -86,6 +86,11 @@
       "file": "articles/goquiz_20230817.md",
       "sharedAt": "2026-08-13"
     },
+    "356d1bf55a75f96f": {
+      "url": "https://go.dev/play/p/jWqGyXkiFqV",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-20"
+    },
     "36785d0b85dbdaba": {
       "url": "https://go.dev/play/p/zmcIED1JnqL",
       "file": "articles/3-means-of-go-comparable.md",
@@ -156,6 +161,11 @@
       "file": "articles/type_set_proposal_2.md",
       "sharedAt": "2026-08-13"
     },
+    "4e687072bde76a00": {
+      "url": "https://go.dev/play/p/7K4sZZsAHnI",
+      "file": "articles/3-means-of-go-comparable.md",
+      "sharedAt": "2026-08-20"
+    },
     "51ba5232b9ce721f": {
       "url": "https://go.dev/play/p/OywqB2RkxJE",
       "file": "articles/type_param_intro.md",
@@ -189,11 +199,6 @@
     "61dca429c8b6a666": {
       "url": "https://go.dev/play/p/wmCAMpPYLVV",
       "file": "articles/go-data-corruptions.md",
-      "sharedAt": "2026-08-13"
-    },
-    "63f10e21a12d289d": {
-      "url": "https://go.dev/play/p/VKwEd34R2RC",
-      "file": "books/go-memory-model/2.sequential-consistency.md",
       "sharedAt": "2026-08-13"
     },
     "653ca0491997b7ae": {
@@ -239,11 +244,6 @@
     "71bc3972893c914c": {
       "url": "https://go.dev/play/p/KmiNJqclI1A",
       "file": "articles/basic-interface-is-comparable.md",
-      "sharedAt": "2026-08-13"
-    },
-    "723f539ea4b48dcd": {
-      "url": "https://go.dev/play/p/lkHLc5Qoo0A",
-      "file": "articles/3-means-of-go-comparable.md",
       "sharedAt": "2026-08-13"
     },
     "743e6b863e475fda": {
@@ -306,6 +306,11 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
+    "9d8e495f9fdc2476": {
+      "url": "https://go.dev/play/p/nv-LZKgqVJh",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-20"
+    },
     "a0365b89b7be81da": {
       "url": "https://go.dev/play/p/3T-HxNN06L5",
       "file": "articles/type_param_intro_2.md",
@@ -338,11 +343,6 @@
     },
     "aab0a4a95adf1d06": {
       "url": "https://go.dev/play/p/6JZ_7rvBG3a",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
-    "ad950b852dbd2ef0": {
-      "url": "https://go.dev/play/p/0ew3FXqTSUo",
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
@@ -394,11 +394,6 @@
     "bfd0a75d2e22bfdd": {
       "url": "https://go.dev/play/p/ocgnqs1oPqD",
       "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
-    "bffad2fa05774945": {
-      "url": "https://go.dev/play/p/bC-CcdM6ywL",
-      "file": "articles/basic-interface-is-comparable.md",
       "sharedAt": "2026-08-13"
     },
     "c05277158460ab7d": {
