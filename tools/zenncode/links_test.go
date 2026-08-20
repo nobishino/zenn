@@ -67,6 +67,22 @@ func TestPlanLinksAmbiguousFollowsConvention(t *testing.T) {
 	}
 }
 
+func TestPlanLinksAmbiguityIsReported(t *testing.T) {
+	// The first link has prose under it, so only block 0 can own it. The
+	// second sits directly between two blocks and was assigned by convention.
+	src := fence + "\nhttps://go.dev/play/p/aaa\n\ntext\n\n" + fence + "\nhttps://go.dev/play/p/bbb\n\n" + fence
+	plan := planLinks(goBlocks(t, src))
+	if plan.ambiguous(0) {
+		t.Error("block 0's link has no block above it and is not ambiguous")
+	}
+	if !plan.ambiguous(1) {
+		t.Error("block 1's link sits between two blocks and is a guess")
+	}
+	if plan.ambiguous(2) {
+		t.Error("block 2 owns no link at all")
+	}
+}
+
 func TestPlanLinksNone(t *testing.T) {
 	plan := planLinks(goBlocks(t, fence+"\ntext\n\n"+fence))
 	if plan.conv != defaultSide {

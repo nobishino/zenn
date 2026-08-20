@@ -147,10 +147,14 @@ type result struct {
 // verified, and only when there is a program to share -- a snippet that does
 // not even parse has none.
 func (r result) linkable() bool {
-	return r.status == statusOK &&
-		r.prog.Hash() != "" &&
-		r.block.Directive.Get("playground") != "none"
+	return r.status == statusOK && r.prog.Hash() != "" && !r.unlinked()
 }
+
+// unlinked reports whether the article asked for this block to carry no
+// playground link, with `playground=none`. Unlike the other reasons a snippet
+// goes unlinked, this one is a decision by the author rather than a verdict on
+// the code, so it also means an existing link should go away.
+func (r result) unlinked() bool { return r.block.Directive.Get("playground") == "none" }
 
 // fail records a failure and returns the result, so a caller can write
 // `return r.fail(...)` at each point a snippet can go wrong.
@@ -241,6 +245,17 @@ func cmdVerify(paths []string, jobs int, verbose bool) error {
 	return nil
 }
 
+// unlinkMsg explains a link that `playground=none` says should not be there.
+// An ambiguous link is one written between two code blocks, where the tool
+// only guessed which block it belongs to; that guess is not good enough to
+// delete on, so the author is asked to do it.
+func unlinkMsg(ambiguous bool) string {
+	if ambiguous {
+		return "this block asks for no playground link, but this link could belong to either neighbouring block; remove it by hand if it is this one's"
+	}
+	return "this block asks for no playground link; run `make fix` to remove it"
+}
+
 // linkIssue is a mismatch between an article's playground link and the code
 // next to it.
 type linkIssue struct {
@@ -255,6 +270,12 @@ func checkLinks(results []result, lk *lock.File) []linkIssue {
 	for _, group := range groupByFile(results) {
 		plan := planLinks(blocksOf(group))
 		for i, r := range group {
+			if r.unlinked() {
+				if link := plan.link(i); link.Found() {
+					issues = append(issues, linkIssue{posOf(r.block, link.Line), unlinkMsg(plan.ambiguous(i))})
+				}
+				continue
+			}
 			if !r.linkable() {
 				continue
 			}
@@ -448,6 +469,11 @@ var plannedKeys = map[string]string{
 }
 
 func validateDirective(d mdscan.Directive) error {
+	if d.Has("playground") {
+		if v := d.Get("playground"); v != "none" {
+			return fmt.Errorf("playground=%s: the only supported value is none", v)
+		}
+	}
 	for key := range d.Opts {
 		if supportedKeys[key] {
 			continue

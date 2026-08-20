@@ -26,11 +26,19 @@ const defaultSide = sideBelow
 type filePlan struct {
 	conv  side
 	owned map[int]mdscan.Link // index into the article's Go blocks
+	guess map[int]bool        // owners decided by convention rather than position
 	tmpl  mdscan.Link         // the style new links are written in
 }
 
 // link returns the link owned by the i'th Go block of the article.
 func (p filePlan) link(i int) mdscan.Link { return p.owned[i] }
+
+// ambiguous reports whether the i'th block's link was assigned by the
+// article's convention because it sits between two code blocks and could
+// belong to either. Rewriting such a link in place is harmless, but deleting
+// it is not: the guess may be wrong, and the neighbouring block would silently
+// lose its link.
+func (p filePlan) ambiguous(i int) bool { return p.guess[i] }
 
 // render writes url the way this article writes its links: bare, or wrapped
 // the way the links already there are wrapped.
@@ -87,7 +95,7 @@ func planLinks(blocks []mdscan.Block) filePlan {
 		conv = sideBelow
 	}
 
-	plan := filePlan{conv: conv, owned: map[int]mdscan.Link{}}
+	plan := filePlan{conv: conv, owned: map[int]mdscan.Link{}, guess: map[int]bool{}}
 	for line, c := range cands {
 		owner := -1
 		switch {
@@ -98,6 +106,7 @@ func planLinks(blocks []mdscan.Block) filePlan {
 			} else {
 				owner = c.below
 			}
+			plan.guess[owner] = true
 		case c.above >= 0:
 			owner = c.above
 		case c.below >= 0:

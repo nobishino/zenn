@@ -16,6 +16,7 @@ const (
 	opReplace opKind = iota
 	opInsertAfter
 	opInsertBefore
+	opRemove
 )
 
 type op struct {
@@ -64,6 +65,13 @@ func (d *Doc) InsertParagraphBefore(n int, text string) {
 	d.ops = append(d.ops, op{opInsertBefore, n, text})
 }
 
+// RemoveParagraph deletes line n along with the blank line that separated it
+// from what follows, so removing a one-line paragraph leaves the text around
+// it spaced as it was.
+func (d *Doc) RemoveParagraph(n int) {
+	d.ops = append(d.ops, op{opRemove, n, ""})
+}
+
 // Dirty reports whether any edit is pending.
 func (d *Doc) Dirty() bool { return len(d.ops) > 0 }
 
@@ -96,6 +104,21 @@ func (d *Doc) Bytes() []byte {
 				ins = append([]string{""}, ins...)
 			}
 			lines = splice(lines, i, ins)
+		case opRemove:
+			if i < 0 || i >= len(lines) {
+				break
+			}
+			lo, hi := i, i+1
+			switch {
+			case i+1 < len(lines) && blank(lines[i+1]):
+				// Take the blank line below with it; the one above stays as
+				// the separator between the surrounding paragraphs.
+				hi++
+			case i-1 >= 0 && blank(lines[i-1]):
+				// Nothing below to take, so take the blank above instead.
+				lo--
+			}
+			lines = append(lines[:lo:lo], lines[hi:]...)
 		}
 	}
 

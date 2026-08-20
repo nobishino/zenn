@@ -26,12 +26,15 @@ type actionKind int
 const (
 	actionAdd actionKind = iota
 	actionUpdate
+	actionRemove
 )
 
 func (a action) String() string {
 	switch a.kind {
 	case actionUpdate:
 		return fmt.Sprintf("%s: update link %s -> %s", posOf(a.res.block, a.link.Line), a.link.URL, a.url)
+	case actionRemove:
+		return fmt.Sprintf("%s: remove link %s (playground=none)", posOf(a.res.block, a.link.Line), a.link.URL)
 	default:
 		return fmt.Sprintf("%s: add link (%s) %s", a.res.block.Pos(), a.side, a.url)
 	}
@@ -71,6 +74,15 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 		var actions []action
 
 		for i, r := range group {
+			if r.unlinked() {
+				// The article dropped this block's link. Take it out, unless
+				// the link sits between two blocks and might be the other
+				// one's; verify reports that case for a human to settle.
+				if link := plan.link(i); link.Found() && !plan.ambiguous(i) {
+					actions = append(actions, action{res: r, kind: actionRemove, link: link})
+				}
+				continue
+			}
 			if !r.linkable() {
 				continue
 			}
@@ -130,6 +142,11 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 	if fullRun {
 		live := map[string]bool{}
 		for _, r := range results {
+			// A block that asks for no link needs no URL, so its entry is
+			// dead weight -- unless the same code appears elsewhere linked.
+			if r.unlinked() {
+				continue
+			}
 			if h := r.prog.Hash(); h != "" {
 				live[h] = true
 			}
@@ -138,7 +155,7 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 	}
 
 	if dryRun {
-		fmt.Printf("\n%d links to write in %d files (dry run; nothing shared or written)\n", changed, files)
+		fmt.Printf("\n%d link changes in %d files (dry run; nothing shared or written)\n", changed, files)
 		return nil
 	}
 	if lk.Dirty() {
@@ -146,7 +163,7 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 			return err
 		}
 	}
-	fmt.Printf("\n%d links written in %d files, %d snippets shared, %d stale lock entries pruned\n",
+	fmt.Printf("\n%d link changes in %d files, %d snippets shared, %d stale lock entries pruned\n",
 		changed, files, shared, pruned)
 	return nil
 }
@@ -160,6 +177,8 @@ func applyActions(path string, actions []action) error {
 	doc := mdedit.New(src)
 	for _, a := range actions {
 		switch {
+		case a.kind == actionRemove:
+			doc.RemoveParagraph(a.link.Line)
 		case a.kind == actionUpdate:
 			doc.Replace(a.link.Line, a.text)
 		case a.side == sideAbove:
