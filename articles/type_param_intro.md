@@ -38,7 +38,7 @@ Goの歴史の中でジェネリクスは比較的新しい機能で、その後
 - 2026/08/20 [Go1.27(2026-08-19)](https://go.dev/doc/go1.27)でジェネリックメソッド(メソッドに対して型パラメータを宣言すること)が使えるようになったことに対応しました。
 - 2026/02/10 [Go1.25(2025-08-12)](https://go.dev/doc/go1.25)で言語仕様書から"core type"の用語が廃止されたことに対応し、関連箇所を大きく加筆しました。
 - 2024/01/03: [Go1.21(2023-08-08)](https://go.dev/doc/devel/release#go1.21.0)で`cmp`パッケージが標準ライブラリに追加されたことに対応しました。
-- 2023/02/23: [Go1.20(2023-02-01)](https://go.dev/doc/devel/release#go1.20)の[`comparable`の仕様変更](https://golang.org/doc/devel/release#go1.20)に対応しました。
+- 2023/02/23: [Go1.20(2023-02-01)](https://go.dev/doc/devel/release#go1.20)の[`comparable`の仕様変更](https://golang.org/doc/go1.20#language)に対応しました。
   - 次の関連資料があります:
     - [The Go Blog - All your comparable types](https://go.dev/blog/comparable) Griesemer氏によるGo公式ブログです。
 	- [Go言語のBasic Interfaceはcomparableを満たすようになる(でも実装するようにはならない)](https://zenn.dev/nobishii/articles/basic-interface-is-comparable) 上記の内容に対する筆者の解説記事です。Go1.20リリース前に書いたので用語が使えてないところがあります。
@@ -873,7 +873,7 @@ https://go.dev/play/p/cH5ktnw3Yck
 
 ### 型リテラルの値の代入
 
-型制約`Constraint`を満たすすべての型について型リテラルで表される型`V`の値が代入可能ならば、型パラメータ`T`の変数にも`V`の値を代入可能です。
+型制約`Constraint`を満たすすべての型について型リテラルで表される型`V`の値が代入可能ならば、型パラメータ`T`の変数にも`V`の値が代入可能です。
 
 よって、次のコードはコンパイルできます。
 
@@ -924,7 +924,7 @@ type Constraint interface {
 
 func f[T Constraint]() {
 	const c = 1.1
-	var _ T = c // 表現可能なので代入可能である
+	const _ T = c // 表現可能なので代入可能である
 }
 ```
 https://go.dev/play/p/OywqB2RkxJE
