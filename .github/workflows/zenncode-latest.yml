@@ -1,0 +1,31 @@
+name: zenncode (latest Go)
+
+# 最新の Go で記事のサンプルを検証する。狙いは PR のゲートではなく、
+# 「Go のバージョンが上がってサンプルが古くなっても気づけない」を防ぐこと。
+# ここが赤くなったら、記事が現在の Go に追いついていないというお知らせ。
+on:
+  schedule:
+    - cron: "0 22 * * 0" # 毎週月曜 07:00 JST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          cache-dependency-path: |
+            tools/zenncode/go.sum
+            gosample/go.sum
+
+      - name: 検証に使った Go
+        run: go version
+
+      - name: サンプルコードの検証とリンクの照合
+        run: make verify

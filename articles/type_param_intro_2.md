@@ -72,6 +72,7 @@ Go言語仕様書は非常に読みやすい言語仕様書ですが、それで
 次の例では、`Print[T any]`関数の`T`という型パラメータに`string`という型引数が代入されることで、`Print`関数のインスタンス化が行われています。
 
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -93,7 +94,7 @@ func main() {
 }
 ```
 
-https://gotipplay.golang.org/p/ZRx0SE4Q1Yi
+https://go.dev/play/p/ZRx0SE4Q1Yi
 
 `T`が型推論により自動決定されているので、あたかも`Print`というジェネリックな関数をそのまま使っているようにも見えます。
 しかし、**実際には型推論がされていてもいなくてもインスタンス化は必ず行われています。**
@@ -137,8 +138,9 @@ https://tip.golang.org/ref/spec#Type_declarations
 
 ### 具体例(インスタンス化の失敗)
 
-https://gotipplay.golang.org/p/FUdYlX-a6oH
+https://go.dev/play/p/YBg9HmvbCku
 
+<!-- zenncode: expect=compile-error -->
 ```go
 package main
 
@@ -163,8 +165,9 @@ type s = S[int]
 
 ### 型推論が成功してもインスタンス化が失敗することはある
 
-https://gotipplay.golang.org/p/t4n8HllorSt
+https://go.dev/play/p/t4n8HllorSt
 
+<!-- zenncode: expect=compile-error -->
 ```go
 package main
 
@@ -307,12 +310,15 @@ type C interface {
 }
 ```
 
+https://go.dev/play/p/B2aQu23h3Sw
+
 :::
 
 仕様書にある例を使って説明します。
 
 https://gotipplay.golang.org/p/G77uiNe_taU
 
+<!-- zenncode: playground=keep -->
 ```go
 type T[A any, B []C, C *A] struct {
 	A A
@@ -396,8 +402,9 @@ unificationが失敗する例をあげておきます。
 
 型推論の中でunificationが失敗すれば、コンパイルエラーとなります。
 
-https://gotipplay.golang.org/p/C1kepqzqWKJ
+https://go.dev/play/p/C1kepqzqWKJ
 
+<!-- zenncode: expect=compile-error -->
 ```go
 func f[T any](x *T) {}
 
@@ -452,6 +459,8 @@ type X chan int
 type Y chan MyInt
 ```
 
+https://go.dev/play/p/848e6xMxR_y
+
 このように定義した`X, Y`は等価ではありません。
 
 ## 等価性とunificationの例
@@ -460,6 +469,7 @@ type Y chan MyInt
 
 https://gotipplay.golang.org/p/ckSANEXiR9c
 
+<!-- zenncode: playground=keep -->
 ```go
 package main
 
@@ -542,8 +552,11 @@ func FromStrings[T Setter](s []string) []T {
 }
 ```
 
+https://go.dev/play/p/QmO1uGI4QDE
+
 これを次のように使いたいのですが、これはコンパイルできません。
 
+<!-- zenncode: playground=keep -->
 ```go
 type Settable int
 
@@ -566,6 +579,7 @@ https://gotipplay.golang.org/p/g2GkggqE7e0
 
 では、`*Settable`型を渡すとどうなるでしょうか。
 
+<!-- zenncode: playground=keep -->
 ```go
 func F() {
 	nums := FromStrings[*Settable]([]string{"1", "2"})
@@ -614,8 +628,11 @@ func FromStrings2[T any, PT Setter2[T]](s []string) []T {
 }
 ```
 
+https://go.dev/play/p/3T-HxNN06L5
+
 これを利用して`F`を書き直せます:
 
+<!-- zenncode: playground=keep -->
 ```go
 func F2() {
 	nums := FromStrings2[Settable, *Settable]([]string{"1", "2"})
@@ -629,6 +646,7 @@ https://gotipplay.golang.org/p/VFxDjHrE7N6
 
 そこで、制約型推論を活用して次のようにすることができます。
 
+<!-- zenncode: playground=keep -->
 ```go
 func F3() {
 	nums := FromStrings2[Settable]([]string{"1", "2"})

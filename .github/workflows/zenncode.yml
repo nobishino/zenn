@@ -1,0 +1,35 @@
+name: zenncode
+
+# 記事中の Go サンプルコードをコンパイルし、Playground リンクが本文のコードと
+# 一致していることを確認する。verify はネットワークを使わない(lock ファイルを
+# 見るだけ)ので、ここで落ちるのは記事かツールの問題だけ。
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          # サンプルのコンパイル結果は Go のバージョンによって変わりうる。
+          # zenncode-baseline.json はこの系列の toolchain で生成してあるので、
+          # ここを上げるときは `make baseline` の差分を確認すること。
+          # 最新の Go での検証は zenncode-latest.yml が週次で行う。
+          go-version: "1.27.x"
+          cache-dependency-path: |
+            tools/zenncode/go.sum
+            gosample/go.sum
+
+      - name: zenncode 自身のテスト
+        run: make test
+
+      - name: サンプルコードの検証とリンクの照合
+        run: make verify

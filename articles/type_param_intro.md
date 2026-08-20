@@ -78,6 +78,7 @@ Goのジェネリクスの基本事項については[Type Parameters Proposal](
 
 まず「型パラメータを持つ関数」の具体例を見てみましょう。
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	fmt.Println(f([]MyInt{1, 2, 3, 4}))
@@ -108,7 +109,7 @@ func (i MyInt) String() string {
 	return strconv.Itoa(int(i))
 }
 ```
-https://go.dev/play/p/NWxONCa85DL
+https://go.dev/play/p/9QPNO6kq277
 
 関数`f`の宣言時に`f[T Stringer]`という四角カッコの文法要素がついていますね。これが型パラメータと一緒に導入される新しい文法です。この意味は、
 
@@ -123,6 +124,7 @@ https://go.dev/play/p/NWxONCa85DL
 
 一例として、データ構造「スタック」を実装してみます。
 
+<!-- zenncode: expect=run -->
 ```go
 type Stack[T any] []T
 
@@ -150,7 +152,7 @@ func main() {
 }
 ```
 
-https://go.dev/play/p/jCS7vhCe_XC
+https://go.dev/play/p/0ew3FXqTSUo
 
 :::message
 
@@ -204,6 +206,7 @@ func (s *Stack[T]) ZipWith[S,U any](x *Stack[S], func(T, S) U) *Stack[U] {
 
 こういうことをしたければメソッドではない関数として定義する必要があります。
 
+<!-- zenncode: playground=keep -->
 ```go
 // これは書ける
 func ZipWith[S,T,U any](x *Stack[T], y *Stack[S], func(T, S) U) *Stack[U] {
@@ -225,6 +228,7 @@ https://github.com/golang/go/issues/77273
 
 これはある型の値をただ集めた「集合」として使えるデータ型です。Goにおいては、次のように`map`のキーだけを使う方法で実装すると簡単です。そのキーとして使う型を「ジェネリック」にしたいです。
 
+<!-- zenncode: expect=run -->
 ```go
 type Set[T comparable] map[T]struct{}
 
@@ -260,6 +264,7 @@ func main() {
 https://go.dev/play/p/ht_akn1eCGy
 型定義に注目してください。
 
+<!-- zenncode: playground=none -->
 ```go
 type Set[T comparable] map[T]struct{}
 ```
@@ -292,6 +297,8 @@ func f(xs []Stringer) []string {
 }
 ```
 
+https://go.dev/play/p/OEB_ekVjFpk
+
 また、次のように`Stringer`を実装する型を用意します。
 
 ```go
@@ -302,6 +309,8 @@ func(i MyInt) String() string {
     return strconv.Itoa(int(i))
 }
 ```
+
+https://go.dev/play/p/9YEEYJEeTC-
 
 このとき次のように、`MyInt`のスライスを`f`に渡すことはできるでしょうか？
 
@@ -413,6 +422,7 @@ Go1.17までは、できませんでした。なぜなら、Go1.17までのイ�
 
 そこでGo言語は、「インタフェース型」として次のようなものも定義できるように機能を拡張することにしました。
 
+<!-- zenncode: playground=none -->
 ```go
 type Number interface {
     int | int32 | int64 | float32 | float64
@@ -426,6 +436,7 @@ type Number interface {
 
 `|`を使わずに一つだけの型を書けば、その**一つの型によってのみ満たされるインタフェース**を定義できます。
 
+<!-- zenncode: playground=none -->
 ```go
 type Int interface {
     int
@@ -450,6 +461,8 @@ func Max[T Number] (x, y T) T {
 	return y
 }
 ```
+
+https://go.dev/play/p/umd-vW_nWtw
 
 ::: message
 
@@ -482,8 +495,11 @@ func Max[T Number] (x, y T) T {
 }
 ```
 
+https://go.dev/play/p/umd-vW_nWtw
+
 では、次のように定義した`NewInt`や`NewNewInt`に対して`Max`関数を使用できるでしょうか？
 
+<!-- zenncode: playground=none -->
 ```go
 type NewInt int
 
@@ -507,6 +523,7 @@ type Number interface {
 
 しかし、「`int`を元にして型定義で作られる新しい型」は無限にあるので、それら全てが`Number`を実装するようにしたいです。そのための文法として、Go言語は`~`を導入しました。
 
+<!-- zenncode: playground=none -->
 ```go
 type Number interface { 
     ~int | ~int32 | ~int64 | ~float32 | ~float64
@@ -559,6 +576,7 @@ Go言語の全ての型は、それに対応する"underlying type"という型�
 
 まず具体例を見てみます。
 
+<!-- zenncode: playground=none -->
 ```go
 type NewInt int // NewIntのunderlying typeはint
 
@@ -603,6 +621,7 @@ https://go.dev/ref/spec##Types によると、
 
 実装は次のようになっています。
 
+<!-- zenncode: playground=none -->
 ```go
 // Ordered is a constraint that permits any ordered type: any type
 // that supports the operators < <= >= >.
@@ -625,6 +644,7 @@ type Ordered interface {
 
 https://go.dev/play/p/-WB97e8w2NC
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -668,21 +688,25 @@ func Max[T cmp.Ordered](x, y T) T {
 
 となります。例えば次のインタフェースも複数要素`unions`の要素になれません。
 
+<!-- zenncode: playground=none -->
 ```go
 type I interface { // 許可されないインタフェースを埋め込んだインタフェースなので許可されない
 	fmt.Stringer // メソッド定義を含むインタフェースなので許可されない
 }
 ```
+
 :::
 
 :::message
 ここで「複数要素の」と断ったのは、単一要素、つまり`|`を含まない`unions`にインタフェース型を使うのは、従来からあるインタフェース型の「埋め込み」と同じことだからです。
 
+<!-- zenncode: playground=none -->
 ```go
 type I interface {
 	fmt.Stringer // 単一要素のunionsにインタフェースを使うのは、インタフェースの埋め込みと同じこと
 }
 ```
+
 :::
 
 :::message
@@ -730,6 +754,8 @@ func (i MyInt) String() string {
 	return strconv.Itoa(int(i))
 }
 ```
+
+https://go.dev/play/p/6JZ_7rvBG3a
 
 言い換えると、 **「型制約を満たすすべての型について`String()`が使えるならば、型パラメータ`T`に対しても`String()`が使える」** というのがGoのジェネリック関数だと言っても良さそうです。
 
@@ -866,7 +892,7 @@ func f[T Constraint]() {
 	var _ T = c // 表現可能なので代入可能である
 }
 ```
-https://go.dev/play/p/FJO4JhKl09x
+https://go.dev/play/p/OywqB2RkxJE
 
 ### 算術演算
 
@@ -900,6 +926,7 @@ https://go.dev/ref/spec#Arithmetic_operators
 
 よって、次のコードはコンパイルできます。
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -934,7 +961,7 @@ type Constraint interface {
 func f[T Constraint](t1, t2 T) bool { return t1 < t2 }
 ```
 
-https://go.dev/play/p/JqPmRpRYgkN
+https://go.dev/play/p/5ptCFJvil1P
 :::message
 
 言語仕様上の根拠は次の箇所にあります。
@@ -959,7 +986,7 @@ func f[T Constraint](t T) int {
 	return <-t
 }
 ```
-https://go.dev/play/p/YKXhTLD6Uwy
+https://go.dev/play/p/1kA8R3bl24I
 
 :::message
 
@@ -1039,7 +1066,7 @@ func f[T Constraint](t T) {
 	clear(t)
 }
 ```
-https://go.dev/play/p/pzsv02pBSaH
+https://go.dev/play/p/C2Xjc3g8aYl
 :::message
 言語仕様上の根拠は次の箇所にあります。
 https://go.dev/ref/spec#Clear
@@ -1062,7 +1089,7 @@ func f[T Constraint](m T) int {
 	return len(m)
 }
 ```
-https://go.dev/play/p/ZO8mpMzLukQ
+https://go.dev/play/p/GJHBMWHQnCi
 :::message
 言語仕様上の根拠は次の箇所にあります。
 https://go.dev/ref/spec#Length_and_capacity
@@ -1089,7 +1116,7 @@ func f[T Constraint](ptr T) unsafe.Pointer {
 }
 ```
 
-https://go.dev/play/p/_INs7vJ5TKb
+https://go.dev/play/p/ocgnqs1oPqD
 :::message
 言語仕様上の根拠は次の箇所にあります。
 https://go.dev/ref/spec#Package_unsafe
@@ -1120,6 +1147,7 @@ https://go.dev/ref/spec#Package_unsafe
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type AB struct {
 	A int
@@ -1139,7 +1167,7 @@ func f[T Constraint](t T) int {
 }
 
 ```
-https://go.dev/play/p/IUcO6kAVYu3
+https://go.dev/play/p/fy6Y3gH4rXX
 
 ### 定数宣言
 
@@ -1149,6 +1177,7 @@ https://go.dev/play/p/IUcO6kAVYu3
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	complex128 | float64
@@ -1169,6 +1198,7 @@ https://go.dev/play/p/HKUPvDpkLmm
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	[]int | [1]int
@@ -1190,6 +1220,7 @@ https://go.dev/play/p/Ogs7lmQL3Cj
 追加条件として、`T`を満たすすべての型が、同一の要素型を持つ必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	[1]int | [1]string // どちらもインデックス式が作れるが、要素型がintとstringで異なる
@@ -1200,7 +1231,7 @@ func f[T Constraint]() {
 	_ = t[0] // このようなインデックス式は無効
 }
 ```
-https://go.dev/play/p/G1JrWC1UQKm
+https://go.dev/play/p/nI_viZ2ZdxN
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1216,6 +1247,7 @@ https://go.dev/ref/spec#Index_expressions
 追加条件として、`T`を満たすすべての型が同一のunderlying typeを持つ必要があります。ただし、`string`型と`[]byte`型はこのルールの適用上は同一視して良いことになっています。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	[10]int | [11]int // どちらもインデックス式が作れるが、underlying typeが異なる
@@ -1226,7 +1258,7 @@ func f[T Constraint]() {
 	_ = t[:] // このようなスライス式は無効
 }
 ```
-https://go.dev/play/p/y0ZsHgjBtre
+https://go.dev/play/p/zKyq1fyqjN2
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1244,6 +1276,7 @@ https://go.dev/ref/spec#Slice_expressions
 追加条件として、`Constraint`を満たすすべての型が同一のunderlying typeを持つ必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyIntPointer *int
 
@@ -1273,6 +1306,7 @@ https://go.dev/ref/spec#Calls
 追加条件として、`Constraint`を満たすすべての型について、その要素型が同一でなければいけません。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyInt int
 type MyChanInt chan<- MyInt
@@ -1299,6 +1333,7 @@ https://go.dev/ref/spec#Send_statements
 追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	string | []byte // E = byteとすればどちらもfor文でbyteを取り出せる型である
@@ -1323,6 +1358,7 @@ https://go.dev/ref/spec#For_range
 追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyInt int
 
@@ -1358,7 +1394,7 @@ func f[T Constraint](ch T) {
 	close(ch)
 }
 ```
-https://go.dev/play/p/5huphqnb64r
+https://go.dev/play/p/8myDAKgpUvr
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1372,6 +1408,7 @@ https://go.dev/ref/spec#Close
 これらの関数はそもそも型パラメータ型を受け取らないようになっているからです。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	float32 | float64
@@ -1382,7 +1419,7 @@ func f[T Constraint](v T) {
 }
 ```
 
-https://go.dev/play/p/7PMcp7Q91oM
+https://go.dev/play/p/4omaGria95F
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1397,6 +1434,7 @@ https://go.dev/ref/spec#Complex_numbers
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyInt int
 
@@ -1408,7 +1446,7 @@ func f[T Constraint](m T) {
 	delete(m, 1)
 }
 ```
-https://go.dev/play/p/__j2DhnYrUn
+https://go.dev/play/p/lMDa1Euvqk0
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1424,6 +1462,7 @@ https://go.dev/ref/spec#Deletion_of_map_elements
 - `Constraint`を満たす全ての型がチャネル型であり、その要素の型が同一で、方向が矛盾しない
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	MyChan | chan<- int
@@ -1436,7 +1475,7 @@ func f[T Constraint]() {
 }
 ```
 
-https://go.dev/play/p/QTggKJPwmlW
+https://go.dev/play/p/Q0Tgw4lc0Bu
 
 :::message
 言語仕様上の根拠は次の箇所にあります。

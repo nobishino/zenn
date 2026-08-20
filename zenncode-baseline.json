@@ -1,0 +1,377 @@
+{
+  "_comment": "Snippets that do not verify today. Regenerate with `zenncode baseline`. Entries are matched by hash, so an edited snippet must pass on its own.",
+  "generated": "2026-08-20T13:34:42+09:00",
+  "entries": [
+    {
+      "file": "articles/3-means-of-go-comparable.md",
+      "line": 190,
+      "hash": "49472f89a552329c",
+      "stage": "build",
+      "reason": "sample.go:6:9: undefined: Value"
+    },
+    {
+      "file": "articles/basic-interface-is-comparable.md",
+      "line": 215,
+      "hash": "0ddf99f985d52507",
+      "stage": "build",
+      "reason": "sample.go:4:6: invalid recursive type: comparable refers to itself"
+    },
+    {
+      "file": "articles/basic-interface-is-comparable.md",
+      "line": 301,
+      "hash": "9296e9ac358509e7",
+      "stage": "build",
+      "reason": "sample.go:5:22: undefined: T"
+    },
+    {
+      "file": "articles/go-data-corruptions.md",
+      "line": 170,
+      "raw": "7e3e348110be3f4e",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found variable"
+    },
+    {
+      "file": "articles/go-data-corruptions.md",
+      "line": 461,
+      "hash": "4d16d41a46b1e73f",
+      "stage": "build",
+      "reason": "go: finding module for package golang.org/x/sync/errgroup"
+    },
+    {
+      "file": "articles/go-encoding-csv-rfc.md",
+      "line": 370,
+      "raw": "d19cb7cb8e1960fa",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found first_name"
+    },
+    {
+      "file": "articles/go-encoding-csv-rfc.md",
+      "line": 383,
+      "raw": "aa5ec082202e3851",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found \"Rob\"; 1:15: string literal not terminated"
+    },
+    {
+      "file": "articles/go-encoding-csv-rfc.md",
+      "line": 391,
+      "raw": "005449d9f9e5c358",
+      "stage": "normalize",
+      "reason": "3:1: expected declaration, found LazyQuotes"
+    },
+    {
+      "file": "articles/go-uncountable-interfaces.md",
+      "line": 106,
+      "raw": "061ae1fee7cc4c4a",
+      "stage": "normalize",
+      "reason": "1:6: expected 'IDENT', found 'struct'; 3:5: expected declaration, found MyInt"
+    },
+    {
+      "file": "articles/go-uncountable-interfaces.md",
+      "line": 152,
+      "raw": "f1accab0d1cc7fcd",
+      "stage": "normalize",
+      "reason": "6:9: illegal character U+003F '?'"
+    },
+    {
+      "file": "articles/go-uncountable-interfaces.md",
+      "line": 183,
+      "raw": "5345d25e17442471",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'interface'"
+    },
+    {
+      "file": "articles/go-wasmimport-hello.md",
+      "line": 177,
+      "hash": "a63e00cf582419e0",
+      "stage": "build",
+      "reason": "sample.go:7:54: undefined: size"
+    },
+    {
+      "file": "articles/learn_go_quine_for_great_good.md",
+      "line": 128,
+      "hash": "4a97403adae96f41",
+      "stage": "build",
+      "reason": "sample.go:8:12: pattern main.go: no matching files found"
+    },
+    {
+      "file": "articles/my_draft_2021.md",
+      "line": 21,
+      "raw": "647bdd377c52d514",
+      "stage": "normalize",
+      "reason": "3:14: expected type, found '{'; 5:1: expected declaration, found '}'"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 176,
+      "hash": "abca9b36678402c6",
+      "stage": "build",
+      "reason": "sample.go:3:10: undefined: Stack"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 184,
+      "raw": "6607095ff07b7c8e",
+      "stage": "normalize",
+      "reason": "1:2: expected declaration, found s"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 200,
+      "raw": "c87868a86ed208b7",
+      "stage": "normalize",
+      "reason": "2:50: missing parameter name"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 209,
+      "raw": "77e2b4aa2b8855aa",
+      "stage": "normalize",
+      "reason": "2:51: missing parameter name"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 316,
+      "raw": "554f110d38327b37",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found xs"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 325,
+      "hash": "5091fd45be53f55d",
+      "stage": "build",
+      "reason": "sample.go:5:5: declared and not used: vs"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 338,
+      "raw": "dce2ae3e9745d0b3",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'if'"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 353,
+      "hash": "7e31dff46b8e6edb",
+      "stage": "build",
+      "reason": "sample.go:6:10: undefined: Stringer"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 400,
+      "raw": "ff788d4df34971a3",
+      "stage": "normalize",
+      "reason": "1:26: expected ';', found T; 2:2: expected declaration, found 'if'"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 516,
+      "hash": "97114402e680be75",
+      "stage": "build",
+      "reason": "sample.go:5:44: undefined: NewInt"
+    },
+    {
+      "file": "articles/type_param_intro.md",
+      "line": 542,
+      "raw": "e4f38b843821bef7",
+      "stage": "normalize",
+      "reason": "12:9: expected ';', found NewInt"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 103,
+      "hash": "2a91be422eaa1f21",
+      "stage": "build",
+      "reason": "sample.go:4:2: undefined: Print"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 226,
+      "raw": "3260ba65640f2a07",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found x"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 274,
+      "raw": "6fdcd2057facaf5f",
+      "stage": "normalize",
+      "reason": "1:21: expected statement, found '...'; 4:6: expected '}', found 'EOF'"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 321,
+      "hash": "d755b842c34263c4",
+      "stage": "build",
+      "reason": "sample.go:12:8: not enough type arguments for type T: have 1, want 3"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 471,
+      "hash": "38119e49dfc48409",
+      "stage": "build",
+      "reason": "sample.go:12:8: not enough type arguments for type X: have 1, want 2"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 557,
+      "hash": "5e6ac68c732e8236",
+      "stage": "build",
+      "reason": "sample.go:13:10: undefined: FromStrings"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 579,
+      "hash": "9a99cb8f328e9537",
+      "stage": "build",
+      "reason": "sample.go:4:10: undefined: FromStrings"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 593,
+      "hash": "3d50b3a0089fca7c",
+      "stage": "build",
+      "reason": "sample.go:3:20: undefined: Setter"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 631,
+      "hash": "91160b59171ca147",
+      "stage": "build",
+      "reason": "sample.go:6:10: undefined: FromStrings2"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 644,
+      "hash": "174d30bffd2df7fd",
+      "stage": "build",
+      "reason": "sample.go:6:10: undefined: FromStrings2"
+    },
+    {
+      "file": "articles/type_param_intro_2.md",
+      "line": 660,
+      "hash": "6d794c00a37ea377",
+      "stage": "build",
+      "reason": "sample.go:5:3: undefined: Settable"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 88,
+      "hash": "479a67fd74e7a5b7",
+      "stage": "build",
+      "reason": "sample.go:6:9: undefined: Stringer"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 124,
+      "raw": "e99fa590768092a3",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'interface'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 154,
+      "raw": "2d9ab58baa680aad",
+      "stage": "normalize",
+      "reason": "8:13: expected type, found '{'; 10:1: expected declaration, found '}'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 175,
+      "hash": "84b970d4867ff9e5",
+      "stage": "build",
+      "reason": "sample.go:4:2: undefined: Number"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 188,
+      "raw": "1972b7ee035ca3f9",
+      "stage": "normalize",
+      "reason": "1:13: expected type, found '{'; 3:1: expected declaration, found '}'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 206,
+      "raw": "885762fdb6921aab",
+      "stage": "normalize",
+      "reason": "2:1: expected declaration, found '~'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 221,
+      "raw": "1eca7af632210ca8",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found '~'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 231,
+      "hash": "3dcdc95d442af269",
+      "stage": "build",
+      "reason": "sample.go:4:19: undefined: MyFloat"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 243,
+      "hash": "ea0389dbb5c38cc4",
+      "stage": "build",
+      "reason": "sample.go:4:19: undefined: MyFloat"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 255,
+      "hash": "ea0389dbb5c38cc4",
+      "stage": "build",
+      "reason": "sample.go:4:19: undefined: MyFloat"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 265,
+      "raw": "38b2027aa0ea195f",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found 'interface'"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 291,
+      "raw": "277207219ddf64b1",
+      "stage": "normalize",
+      "reason": "2:18: expected ~ term or type, found '...'; 3:13: expected '}', found ')'; 4:5: expected declaration, found MethodB"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 312,
+      "raw": "f368d486e8aa80b6",
+      "stage": "normalize",
+      "reason": "2:18: expected ~ term or type, found '...'; 3:13: expected '}', found ')'; 4:5: expected declaration, found MethodB; 10:18: expected ~ term or type, found '...'; 11:13: expected '}', found ')'; 12:5: ..."
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 342,
+      "hash": "8326b9d896b2735d",
+      "stage": "build",
+      "reason": "sample.go:6:9: undefined: Stringer"
+    },
+    {
+      "file": "articles/type_set_proposal_2.md",
+      "line": 366,
+      "raw": "899fa35fdd2366a8",
+      "stage": "normalize",
+      "reason": "3:32: expected statement, found '...'; 4:33: expected '}', found 'EOF'"
+    },
+    {
+      "file": "books/go-memory-model/4.synchronized-before.md",
+      "line": 52,
+      "raw": "a222078cf6ed77f3",
+      "stage": "normalize",
+      "reason": "1:1: expected declaration, found a"
+    },
+    {
+      "file": "books/go-memory-model/5.synchronization.md",
+      "line": 40,
+      "raw": "79b6cf33ccbf4331",
+      "stage": "normalize",
+      "reason": "23:1: expected declaration, found '--'; 28:1: imports must appear before other declarations"
+    }
+  ]
+}

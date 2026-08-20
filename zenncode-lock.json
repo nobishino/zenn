@@ -1,0 +1,495 @@
+{
+  "_comment": "Playground links by snippet hash. Written by `zenncode fix`, read by `zenncode verify`. The hash covers the normalized program, so editing a snippet retires its entry.",
+  "entries": {
+    "00ed39585cfab6e4": {
+      "url": "https://go.dev/play/p/CGVytLgeERL",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "031b835133685d6b": {
+      "url": "https://go.dev/play/p/of4pHMd7CHH",
+      "file": "books/go-memory-model/3.happens-before-relation.md",
+      "sharedAt": "2026-08-13"
+    },
+    "0342e36c52ad89ae": {
+      "url": "https://go.dev/play/p/vSV_LnsSIEK",
+      "file": "articles/learn_go_quine_for_great_good.md",
+      "sharedAt": "2026-08-13"
+    },
+    "069b171205797f58": {
+      "url": "https://go.dev/play/p/7aV0gncOpR_O",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "081ac15ad8d0cb41": {
+      "url": "https://go.dev/play/p/uO9kkpA4IyQ",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "0949b6dd64214286": {
+      "url": "https://go.dev/play/p/rMrbuLDlgyR",
+      "file": "articles/go-encoding-csv-rfc.md",
+      "sharedAt": "2026-08-13"
+    },
+    "0a9b9c1c4204954b": {
+      "url": "https://go.dev/play/p/J2wFa_fZ39n",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "0c85cbeb9198595b": {
+      "url": "https://go.dev/play/p/fC8spIZnTY1",
+      "file": "articles/go-wasmimport-hello.md",
+      "sharedAt": "2026-08-13"
+    },
+    "0f2e496c1e585937": {
+      "url": "https://go.dev/play/p/hRjXeFDpniK",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "154ff18ae92a73f9": {
+      "url": "https://go.dev/play/p/UxrSm8UIz_o",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "16781faa12f2ac4d": {
+      "url": "https://go.dev/play/p/1kxE-rQrfe7",
+      "file": "books/go-memory-model/3.happens-before-relation.md",
+      "sharedAt": "2026-08-13"
+    },
+    "1820bf90502207c9": {
+      "url": "https://go.dev/play/p/JgWzL2T_pDc",
+      "file": "articles/efc351e426586d.md",
+      "sharedAt": "2026-08-13"
+    },
+    "18c6083c35ca1890": {
+      "url": "https://go.dev/play/p/u01fTfEmoJc",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "2d90a679a8ce25da": {
+      "url": "https://go.dev/play/p/BDeKlBse44u",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "2ea12c6e34014012": {
+      "url": "https://go.dev/play/p/gUfpOnaSmKj",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "32789adc75716527": {
+      "url": "https://go.dev/play/p/C1kepqzqWKJ",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "33db2b63106432a7": {
+      "url": "https://go.dev/play/p/RpjA7qB2I6s",
+      "file": "articles/goquiz_20230817.md",
+      "sharedAt": "2026-08-13"
+    },
+    "36785d0b85dbdaba": {
+      "url": "https://go.dev/play/p/zmcIED1JnqL",
+      "file": "articles/3-means-of-go-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "37154aabebb99e3e": {
+      "url": "https://go.dev/play/p/KLR5U0rbzEN",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "3be03a5f777ec0ae": {
+      "url": "https://go.dev/play/p/GJHBMWHQnCi",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "3c0517c36cb82460": {
+      "url": "https://go.dev/play/p/wagDyQk6xRp",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "3cee68b0f8f2a7cf": {
+      "url": "https://go.dev/play/p/MzEM7mle7wX",
+      "file": "articles/go-encoding-csv-rfc.md",
+      "sharedAt": "2026-08-13"
+    },
+    "3f6b90610c6768e5": {
+      "url": "https://go.dev/play/p/INrWpyVmi0Q",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "405df10b73e58385": {
+      "url": "https://go.dev/play/p/YBg9HmvbCku",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "4086433da1cd4495": {
+      "url": "https://go.dev/play/p/lMDa1Euvqk0",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "4316d3cc8295f1c1": {
+      "url": "https://go.dev/play/p/uScAmOMA6FL",
+      "file": "articles/3-means-of-go-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "4499b6b6a84a4c48": {
+      "url": "https://go.dev/play/p/fy6Y3gH4rXX",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "4a20cb5eec7b3652": {
+      "url": "https://go.dev/play/p/zKyq1fyqjN2",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "4bf2f838a3c9a49a": {
+      "url": "https://go.dev/play/p/6g9njwU5Y7H",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "4ce915fff0044e94": {
+      "url": "https://go.dev/play/p/umd-vW_nWtw",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "4d3492dd071501a1": {
+      "url": "https://go.dev/play/p/mGZiXfsU4Ce",
+      "file": "articles/type_set_proposal_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "51ba5232b9ce721f": {
+      "url": "https://go.dev/play/p/OywqB2RkxJE",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "53d886395b13039f": {
+      "url": "https://go.dev/play/p/ruPgcxLx1kr",
+      "file": "articles/learn_go_quine_for_great_good.md",
+      "sharedAt": "2026-08-13"
+    },
+    "587b44d9d5478cf9": {
+      "url": "https://go.dev/play/p/ApQfJl4ocYu",
+      "file": "articles/basic-interface-is-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "595d9c8427064f5a": {
+      "url": "https://go.dev/play/p/Q0Tgw4lc0Bu",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "59d27e0710131871": {
+      "url": "https://go.dev/play/p/0EALht3IeJo",
+      "file": "articles/basic-interface-is-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "606c93a32dc61c26": {
+      "url": "https://go.dev/play/p/t4n8HllorSt",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "61dca429c8b6a666": {
+      "url": "https://go.dev/play/p/wmCAMpPYLVV",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "63f10e21a12d289d": {
+      "url": "https://go.dev/play/p/VKwEd34R2RC",
+      "file": "books/go-memory-model/2.sequential-consistency.md",
+      "sharedAt": "2026-08-13"
+    },
+    "653ca0491997b7ae": {
+      "url": "https://go.dev/play/p/3UUxl_Codpd",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "660f1f973779c265": {
+      "url": "https://go.dev/play/p/ht_akn1eCGy",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "66e75e641d5c0469": {
+      "url": "https://go.dev/play/p/q57da13RzUE",
+      "file": "articles/go-encoding-csv-rfc.md",
+      "sharedAt": "2026-08-13"
+    },
+    "6818e9ae4b56fc0d": {
+      "url": "https://go.dev/play/p/-WB97e8w2NC",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "6a2fb628244bed17": {
+      "url": "https://go.dev/play/p/_m4UYa2JR-5",
+      "file": "articles/go-encoding-csv-rfc.md",
+      "sharedAt": "2026-08-13"
+    },
+    "6c066a1ed8310699": {
+      "url": "https://go.dev/play/p/goEYaakTEat",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "6c71ec7d21fe3153": {
+      "url": "https://go.dev/play/p/2M_bQ1145Nc",
+      "file": "books/go-memory-model/6.go119-sync-atomic.md",
+      "sharedAt": "2026-08-13"
+    },
+    "707c563969aa51c4": {
+      "url": "https://go.dev/play/p/og_cj81k-NM",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "71bc3972893c914c": {
+      "url": "https://go.dev/play/p/KmiNJqclI1A",
+      "file": "articles/basic-interface-is-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "723f539ea4b48dcd": {
+      "url": "https://go.dev/play/p/lkHLc5Qoo0A",
+      "file": "articles/3-means-of-go-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "743e6b863e475fda": {
+      "url": "https://go.dev/play/p/wtuAR68yt8B",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "75a49c6269d7d55b": {
+      "url": "https://go.dev/play/p/848e6xMxR_y",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "78c91367f9cc7515": {
+      "url": "https://go.dev/play/p/uvcDC34uYh7",
+      "file": "articles/basic-interface-is-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "7e4b0902579d3f5c": {
+      "url": "https://go.dev/play/p/ZRx0SE4Q1Yi",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "7efa069fe7023731": {
+      "url": "https://go.dev/play/p/cH5ktnw3Yck",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "801e70c4d69dd8e7": {
+      "url": "https://go.dev/play/p/R21YGC2O8nV",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "87e14880e50c4de7": {
+      "url": "https://go.dev/play/p/KjWqYddWG2L",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "8afc1e28cd1a63d0": {
+      "url": "https://go.dev/play/p/aSyn81BIVRC",
+      "file": "articles/3-means-of-go-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "8f25c2efd3c9bc8d": {
+      "url": "https://go.dev/play/p/bt6jm-Y56-q",
+      "file": "books/go-memory-model/6.go119-sync-atomic.md",
+      "sharedAt": "2026-08-13"
+    },
+    "92e3ae35ae1c8937": {
+      "url": "https://go.dev/play/p/Ndl0m55GLLS",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "944688c1466d31c5": {
+      "url": "https://go.dev/play/p/Va4dy8exaJg",
+      "file": "articles/go-data-corruptions.md",
+      "sharedAt": "2026-08-13"
+    },
+    "98dfd3d046789de6": {
+      "url": "https://go.dev/play/p/C2Xjc3g8aYl",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "a0365b89b7be81da": {
+      "url": "https://go.dev/play/p/3T-HxNN06L5",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "a1250d32ec2fe227": {
+      "url": "https://go.dev/play/p/nI_viZ2ZdxN",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "a1b059f403d16938": {
+      "url": "https://go.dev/play/p/Qe8Bsbgk6EU",
+      "file": "articles/goquiz_20230817.md",
+      "sharedAt": "2026-08-13"
+    },
+    "a4c1a580bc0118d5": {
+      "url": "https://go.dev/play/p/3G_fheQNef4",
+      "file": "articles/go-uncountable-interfaces.md",
+      "sharedAt": "2026-08-13"
+    },
+    "a81a40f1930d33f8": {
+      "url": "https://go.dev/play/p/9YEEYJEeTC-",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "aa717c08c6c74c3d": {
+      "url": "https://go.dev/play/p/QmO1uGI4QDE",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "aab0a4a95adf1d06": {
+      "url": "https://go.dev/play/p/6JZ_7rvBG3a",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "ad950b852dbd2ef0": {
+      "url": "https://go.dev/play/p/0ew3FXqTSUo",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "af8e4121d5b850b6": {
+      "url": "https://go.dev/play/p/FPpEkgg_bn3",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "b0870e45b37c3784": {
+      "url": "https://go.dev/play/p/oUCM73okc6p",
+      "file": "articles/basic-interface-is-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "b16d9d7c6b22d10e": {
+      "url": "https://go.dev/play/p/5ptCFJvil1P",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "b4a12dd82bcdf6fc": {
+      "url": "https://go.dev/play/p/8myDAKgpUvr",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "b711bcf2a7f0b00a": {
+      "url": "https://go.dev/play/p/1kA8R3bl24I",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "baf3fa5f9d1b6233": {
+      "url": "https://go.dev/play/p/NEEpOLzM1Hz",
+      "file": "books/go-memory-model/2.sequential-consistency.md",
+      "sharedAt": "2026-08-13"
+    },
+    "bc7eb65146743515": {
+      "url": "https://go.dev/play/p/FUs1VGUMihJ",
+      "file": "articles/go-encoding-csv-rfc.md",
+      "sharedAt": "2026-08-13"
+    },
+    "bcbe014a4596dfb6": {
+      "url": "https://go.dev/play/p/gh2pGIabFre",
+      "file": "books/go-memory-model/2.sequential-consistency.md",
+      "sharedAt": "2026-08-20"
+    },
+    "bd441af481d6e33e": {
+      "url": "https://go.dev/play/p/4omaGria95F",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "bfd0a75d2e22bfdd": {
+      "url": "https://go.dev/play/p/ocgnqs1oPqD",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "bffad2fa05774945": {
+      "url": "https://go.dev/play/p/bC-CcdM6ywL",
+      "file": "articles/basic-interface-is-comparable.md",
+      "sharedAt": "2026-08-13"
+    },
+    "c05277158460ab7d": {
+      "url": "https://go.dev/play/p/Vnr97M6-m83",
+      "file": "articles/go-wasmimport-hello.md",
+      "sharedAt": "2026-08-13"
+    },
+    "c0b3e3f74642a16b": {
+      "url": "https://go.dev/play/p/B2aQu23h3Sw",
+      "file": "articles/type_param_intro_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "c510a45152e3c37a": {
+      "url": "https://go.dev/play/p/x9U0qqWujwc",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "c936709aa4f72f4b": {
+      "url": "https://go.dev/play/p/Ogs7lmQL3Cj",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "cc387294258a3609": {
+      "url": "https://go.dev/play/p/HKUPvDpkLmm",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "d02a187d864f7219": {
+      "url": "https://go.dev/play/p/ZXYCvSdGxPb",
+      "file": "books/go-memory-model/6.go119-sync-atomic.md",
+      "sharedAt": "2026-08-13"
+    },
+    "d2c0fb9e07a57214": {
+      "url": "https://go.dev/play/p/eq0KItEfkY6",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "d847e1a9785e97cc": {
+      "url": "https://go.dev/play/p/SjsjmHNPWiQ",
+      "file": "articles/type_set_proposal_2.md",
+      "sharedAt": "2026-08-13"
+    },
+    "e36f3c7c6f165158": {
+      "url": "https://go.dev/play/p/OEB_ekVjFpk",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "ea24979e26ad4d67": {
+      "url": "https://go.dev/play/p/EghdRMpCycD",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "edd780409ac4b018": {
+      "url": "https://go.dev/play/p/HCaYrQD3YE0",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "ef029beee00f26e0": {
+      "url": "https://go.dev/play/p/B8i_dTYr8PW",
+      "file": "books/go-memory-model/5.synchronization.md",
+      "sharedAt": "2026-08-13"
+    },
+    "ef050bdec6d3e34d": {
+      "url": "https://go.dev/play/p/5VG1Hhl6AmC",
+      "file": "articles/defined_types.md",
+      "sharedAt": "2026-08-13"
+    },
+    "f040789c02596431": {
+      "url": "https://go.dev/play/p/8ifyI02FINX",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "f52dd39711226fdd": {
+      "url": "https://go.dev/play/p/B9PXlXRbZNb",
+      "file": "articles/defined_types.md",
+      "sharedAt": "2026-08-13"
+    },
+    "f56da4adbfaa8775": {
+      "url": "https://go.dev/play/p/i5UAGjIntwU",
+      "file": "articles/goquiz_20230817.md",
+      "sharedAt": "2026-08-13"
+    },
+    "fa83735e2ee9a0ee": {
+      "url": "https://go.dev/play/p/9QPNO6kq277",
+      "file": "articles/type_param_intro.md",
+      "sharedAt": "2026-08-13"
+    },
+    "fb1af04b1e087ba8": {
+      "url": "https://go.dev/play/p/cwQaKwyR8i0",
+      "file": "articles/go-encoding-csv-rfc.md",
+      "sharedAt": "2026-08-13"
+    }
+  }
+}

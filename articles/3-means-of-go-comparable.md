@@ -59,6 +59,7 @@ Go言語には次の3箇所で"comparable"ということばが現れますが�
 これを例示したのが、次のサンプルプログラムです。
 
 
+<!-- zenncode: expect=run -->
 ```go
 // https://go.dev/play/p/0du6Ya70CtL
 func main() {
@@ -75,6 +76,8 @@ func main() {
 }
 ```
 
+https://go.dev/play/p/uScAmOMA6FL
+
 ## interface型同士の比較は`panic`を引き起こす場合がある
 
 ここで厄介なのは、interface型同士の比較は`panic`を引き起こす場合があることです。
@@ -85,6 +88,7 @@ func main() {
 
 例えば次のサンプルプログラムを実行するとrun-time panicになります。
 
+<!-- zenncode: expect=panic panic="comparing uncomparable type" -->
 ```go
 // https://go.dev/play/p/gNmPDq0pl2X
 func main() {
@@ -93,6 +97,8 @@ func main() {
 	fmt.Println(e == e) // panic
 }
 ```
+
+https://go.dev/play/p/lkHLc5Qoo0A
 
 つまり、言語仕様上の「comparableな値」はinterface型の値も含みますが、そのような値を比較したときはpanicを引き起こすことがあります。
 
@@ -118,6 +124,7 @@ comparable型制約について詳しくは[Go言語のジェネリクス入門(
 
 ややこしく書いてあるのはunions（後述)を考慮した記述なのでこの記事の本筋とは関係ありません。重要なのは、comparable(言語仕様)と違い、`X`がふつうのinterface型であるとき、comparable(型制約)は`X`を**含まない**ということです。これを示すのが次のサンプルプログラムです。
 
+<!-- zenncode: expect=run -->
 ```go
 // https://go.dev/play/p/WzCU9sh__fD
 func main() {
@@ -130,6 +137,8 @@ func main() {
 
 func f[T comparable](x T) {}
 ```
+
+https://go.dev/play/p/zmcIED1JnqL
 
 つまり、**comparable(型制約)はcomparable(言語仕様)と比べて、ふつうのinterface型を一切含まない分だけ狭い概念になっています。**
 
@@ -165,6 +174,8 @@ func f[T C](t T) {
 
 func g[S comparable](s S) {}
 ```
+
+https://go.dev/play/p/aSyn81BIVRC
 
 :::message
 unionsについて詳しくは[Go言語のジェネリクス入門(1)](https://zenn.dev/nobishii/articles/type_param_intro#unions)を参照してください。

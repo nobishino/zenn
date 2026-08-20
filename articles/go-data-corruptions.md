@@ -212,6 +212,8 @@ func structCorruption() string {
 }
 ```
 
+https://go.dev/play/p/uO9kkpA4IyQ
+
 このサンプルに限らず、この記事のサンプルコードでは2つのgoroutineを使い、片方で書き込み、もう片方で読み込みを行います。そこで書き込む方をwriter、読み込む方をreaderと呼ぶことにしましょう。
 
 writerが`p`に代入するのは`Pair{X: 0, Y: 0}`か`Pair{X: 1, Y: 1}`のどちらかです。readerはこれ以外の値を観測したときにメッセージを返して終了するようになっています。
@@ -305,6 +307,8 @@ func sliceCorruption() {
 }
 ```
 
+https://go.dev/play/p/Va4dy8exaJg
+
 次のPlaygroundでこの関数を実行してみます。
 
 https://go.dev/play/p/CSEvhIpGqtv
@@ -363,6 +367,8 @@ func interfaceCorruption() string {
 }
 ```
 
+https://go.dev/play/p/3UUxl_Codpd
+
 `int`型の`1`と`string`型の`"hello"`だけを交互に代入しているのですから、reader側で`int`と判定すれば値は`1`だし、`string`型と判定すれば長さは`5`になりそうなものですが、次のPlaygroundで実行するとそうならないケースがレポートされます。
 
 https://go.dev/play/p/dT7SDd4becu
@@ -407,7 +413,7 @@ func mapCorruption() {
 }
 ```
 
-https://go.dev/play/p/lLXLPicqXQJ
+https://go.dev/play/p/INrWpyVmi0Q
 
 ただし、readerからの`map`へのアクセスの仕方を変えて、要素へのアクセス`m[key]`を行わずに、`m`の大きさである`len(m)`にのみアクセスした場合は、`panic`しませんでした。
 
@@ -433,7 +439,7 @@ func mapCorruption2() {
 }
 ```
 
-https://go.dev/play/p/TtBIoccdk2s
+https://go.dev/play/p/Ndl0m55GLLS
 
 これもdata raceであることに変わりはなく、`-race`つきでローカル実行するとdata raceが報告されます。
 

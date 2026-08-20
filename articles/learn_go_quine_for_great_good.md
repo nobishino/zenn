@@ -38,6 +38,7 @@ https://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AF%E3%82%A4%E3%83%B3_(%E3%83%97%E3
 
 まず、筆者が最初に書いたQuineです。大きさは200 Bytesです。
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -89,6 +90,7 @@ https://go.dev/play/p/Ht7aRBmaLWt
 
 次に紹介するのは [@cia-rana](https://github.com/cia-rana)さんによる異なるアプローチのQuineです。
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -101,7 +103,7 @@ func main() { a += "\x60"; println(a + a) }
 var a = `
 ```
 
-https://go.dev/play/p/UGAQqcNJk5d
+https://go.dev/play/p/vSV_LnsSIEK
 
 何をしているかわかるでしょうか？`"\x60"`はasciiコードの60番、つまりバッククオーテーションを表します。`println(a + a)`がこの`main.go`と一致するということは、この *`main.go`は前半と後半で全く同じ文字列を2回繰り返す文字列になっている*わけです。
 
@@ -123,6 +125,7 @@ https://twitter.com/DQNEO/status/1594939354874798082
 
 最後に禁じ手っぽいものを紹介します（？）。[@tenntenn](https://github.com/tenntenn)さんからいただきました。
 
+<!-- zenncode: playground=keep -->
 ```go
 package main
 

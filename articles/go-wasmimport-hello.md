@@ -18,6 +18,7 @@ https://golang.org/doc/go1.21#wasm
 
 例えば次のように、"importmodule"と"importname"を指定して使います。
 
+<!-- zenncode: goos=wasip1 goarch=wasm -->
 ```go
 //go:wasmimport a_module f
 func g()
@@ -58,19 +59,25 @@ https://docs.google.com/presentation/d/10ru3LdbofJqgdmD8pprZuZyWbGvOFC8rKxb6q5Q4
 
 実際にやってみましょう。出発点は次のコードです。
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
     fmt.Println("Hello, Wasm")
 }
 ```
 
+https://go.dev/play/p/fC8spIZnTY1
+
 まず、オリジナルのライブコーディング同様に、これを`syscall.Write`を使うようにリファクタリングします。
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	syscall.Write(1, []byte("Hello world\n"))
 }
 ```
+
+https://go.dev/play/p/Vnr97M6-m83
 
 :::message
 この引数で使っている`1`はファイルディスクリプタと呼ばれるもので、`1`だと標準出力(`os.Stdout`)の意味になります。
@@ -94,6 +101,7 @@ func main() {
 
 少しコード量が多くなりますが、`syscall`パッケージへの依存が消えたことがわかると思います。
 
+<!-- zenncode: goos=wasip1 goarch=wasm -->
 ```go
 //go:build wasip1 && wasm
 
@@ -165,6 +173,7 @@ func fd_write(fd int32, iovs unsafe.Pointer, iovsLen size, nwritten unsafe.Point
 
 コード量は多いですが、重要なのは、結局次の関数が呼び出されているということです:
 
+<!-- zenncode: goos=wasip1 goarch=wasm -->
 ```go
 //go:wasmimport wasi_snapshot_preview1 fd_write
 //go:noescape

@@ -47,6 +47,9 @@ https://pkg.go.dev/encoding/csv
 
 https://pkg.go.dev/encoding/csv#example-Reader
 
+https://go.dev/play/p/FUs1VGUMihJ
+
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	in := `first_name,last_name,username
@@ -79,6 +82,9 @@ Ken,Thompson,ken
 
 https://pkg.go.dev/encoding/csv#example-Writer
 
+https://go.dev/play/p/_m4UYa2JR-5
+
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	records := [][]string{
@@ -173,6 +179,7 @@ https://www.rfc-editor.org/rfc/rfc4180.html#section-2
 
 https://go.dev/play/p/q57da13RzUE
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	in := `first_name,last_name,username
@@ -264,6 +271,7 @@ Ken,Thompson
 
 https://go.dev/play/p/rMrbuLDlgyR
 
+<!-- zenncode: expect=run -->
 ```go
 
 func main() {
@@ -306,6 +314,7 @@ Goの`csv.Reader`もこれに従った動作をしますが、この動作は`cs
 
 https://go.dev/play/p/MzEM7mle7wX
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	in := `first_name,last_name,username
@@ -387,6 +396,7 @@ LazyQuotes bool
 
 https://go.dev/play/p/cwQaKwyR8i0
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	in := `first_name,last_name,username

@@ -81,6 +81,8 @@ type C2 interface {
 }
 ```
 
+https://go.dev/play/p/mGZiXfsU4Ce
+
 対して、次の例は禁止されます。
 
 ```go
@@ -356,6 +358,8 @@ type Invalid2 interface {
     ToInt() int
 }
 ```
+
+https://go.dev/play/p/SjsjmHNPWiQ
 
 この「同値変形」は見るからに怪しいですが、実際に誤りです。誤りであることを言うには、`Invalid1`に含まれるが`Invalid2`に含まれない型、あるいは逆に`Invalid2`に含まれるが`Invalid1`に含まれない型を具体的に構成すれば良いです。ちょっと考えてみると、
 
