@@ -3,9 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"go/parser"
+	"go/token"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/nobishino/zenn/tools/zenncode/internal/check"
@@ -27,8 +28,6 @@ type fileSource struct {
 	Code   string // the file's contents
 	IsMain bool   // the file declares package main
 }
-
-var packageMainRe = regexp.MustCompile(`(?m)^package main\s*$`)
 
 // loadFileSource reads the file a block is mirrored from. Paths are written
 // relative to the repository root, which is the working directory by the time
@@ -55,8 +54,18 @@ func loadFileSource(rel string) (fileSource, error) {
 		Rel:    clean,
 		Dir:    filepath.Dir(clean),
 		Code:   code,
-		IsMain: packageMainRe.MatchString(code),
+		IsMain: isCommand(clean, data),
 	}, nil
+}
+
+// isCommand reports whether the file declares package main. The package
+// clause is parsed rather than matched as text, so a file carrying an import
+// comment (`package main // import "example/cmd"`) is still recognized as a
+// command; getting this wrong would leave expect=run with no binary to run.
+// A file that does not parse is nobody's command.
+func isCommand(path string, src []byte) bool {
+	f, err := parser.ParseFile(token.NewFileSet(), path, src, parser.PackageClauseOnly)
+	return err == nil && f.Name.Name == "main"
 }
 
 // drifted reports whether the block shows something other than the file.

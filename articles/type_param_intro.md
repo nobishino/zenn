@@ -206,6 +206,7 @@ func (s *Stack[T]) ZipWith[S,U any](x *Stack[S], func(T, S) U) *Stack[U] {
 
 こういうことをしたければメソッドではない関数として定義する必要があります。
 
+<!-- zenncode: playground=keep -->
 ```go
 // これは書ける
 func ZipWith[S,T,U any](x *Stack[T], y *Stack[S], func(T, S) U) *Stack[U] {

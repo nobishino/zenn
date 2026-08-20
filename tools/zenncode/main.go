@@ -306,6 +306,15 @@ func checkLinks(results []result, lk *lock.File) []linkIssue {
 				continue
 			}
 			if !r.linkable() {
+				// The snippet did not verify, so there is no code this link
+				// can be checked against -- which is exactly the state this
+				// command exists to surface. Saying so is the only honest
+				// option: the tool cannot tell whether the link still shows
+				// what the article claims.
+				if link := plan.link(i); link.Found() {
+					issues = append(issues, linkIssue{posOf(r.block, link.Line),
+						"this block does not verify, so its link is unchecked; fix the block, or mark it `playground=keep` if the link is deliberate"})
+				}
 				continue
 			}
 			link := plan.link(i)
@@ -521,6 +530,16 @@ var supportedKeys = map[string]bool{
 
 // plannedKeys are designed but not implemented. Rejecting them keeps a
 // directive from silently doing nothing in an article.
+// isBoolWord reports whether v is one of the spellings Directive.Bool knows,
+// the empty string standing for a key written on its own.
+func isBoolWord(v string) bool {
+	switch strings.ToLower(v) {
+	case "", "true", "yes", "1", "false", "no", "0":
+		return true
+	}
+	return false
+}
+
 var plannedKeys = map[string]string{
 	"run": "there is no run= key; building without running is the default, and expect=run asks for a run",
 }
@@ -532,6 +551,11 @@ func validateDirective(d mdscan.Directive) error {
 		default:
 			return fmt.Errorf("playground=%s: want none or keep", v)
 		}
+	}
+	if v := d.Get("skip"); d.Has("skip") && !isBoolWord(v) {
+		// Directive.Bool falls back to its default for anything it does not
+		// recognize, so `skip=treu` would quietly verify the block after all.
+		return fmt.Errorf("skip=%s: write skip on its own, or skip=true/false", v)
 	}
 	for _, key := range []string{"goos", "goarch"} {
 		if d.Has(key) && d.Get(key) == "" {

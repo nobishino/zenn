@@ -125,6 +125,7 @@ https://twitter.com/DQNEO/status/1594939354874798082
 
 最後に禁じ手っぽいものを紹介します（？）。[@tenntenn](https://github.com/tenntenn)さんからいただきました。
 
+<!-- zenncode: playground=keep -->
 ```go
 package main
 
