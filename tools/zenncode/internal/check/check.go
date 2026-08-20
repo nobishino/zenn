@@ -138,6 +138,72 @@ func (b *Builder) Build(ctx context.Context, req Request) (Result, error) {
 	return res, nil
 }
 
+// PackageRequest is a package that already exists in the repository, named by
+// a file= directive. Unlike Request there is nothing to synthesize: the
+// package is compiled where it lives, with its own go.mod, so several files,
+// build tags and tests all work as they do for the author.
+type PackageRequest struct {
+	Dir    string // package directory, relative to the working directory
+	IsMain bool   // the package is a command
+	Test   bool   // run `go test` rather than `go build`
+	Binary bool   // keep the executable so it can be run
+	GOOS   string
+	GOARCH string
+}
+
+// Package compiles, or tests, a package in the repository.
+func (b *Builder) Package(ctx context.Context, req PackageRequest) (Result, error) {
+	var args []string
+	bin := os.DevNull
+	switch {
+	case req.Test:
+		args = []string{"test", "."}
+	case req.IsMain:
+		if req.Binary {
+			// Build into the scratch directory: the repository is the
+			// author's, and verification does not leave anything in it.
+			dir := filepath.Join(b.root, fmt.Sprintf("p%04d", b.n.Add(1)))
+			if err := os.MkdirAll(dir, 0o755); err != nil {
+				return Result{}, err
+			}
+			bin = filepath.Join(dir, "prog")
+		}
+		args = []string{"build", "-o", bin, "."}
+	default:
+		args = []string{"build", "."}
+	}
+
+	cmd := exec.CommandContext(ctx, "go", args...)
+	cmd.Dir = req.Dir
+	// GOPROXY stays off here too, so verification never reaches the network.
+	// A sample module that needs more than the standard library has to be in
+	// the module cache already, and says so plainly when it is not.
+	cmd.Env = append(os.Environ(),
+		"GOPROXY=off",
+		"GOWORK=off",
+		"GOTOOLCHAIN=local",
+	)
+	if req.GOOS != "" {
+		cmd.Env = append(cmd.Env, "GOOS="+req.GOOS)
+	}
+	if req.GOARCH != "" {
+		cmd.Env = append(cmd.Env, "GOARCH="+req.GOARCH)
+	}
+
+	out, err := cmd.CombinedOutput()
+	res := Result{OK: err == nil, Output: clean(string(out), req.Dir)}
+	if res.OK && req.Binary && req.IsMain && !req.Test {
+		res.Bin = bin
+	}
+	if err != nil && res.Output == "" {
+		res.Output = err.Error()
+	}
+	if ctx.Err() != nil {
+		return res, ctx.Err()
+	}
+	return res, nil
+}
+
 // Run executes a program built with Request.Binary and captures its output.
 // A program that outlives timeout is killed and reported as timed out, which
 // is the normal fate of a sample that deadlocks on purpose.

@@ -134,9 +134,10 @@ const (
 type result struct {
 	block  mdscan.Block
 	prog   gosnippet.Program
-	stage  string // "normalize" or "build"; set when failed
-	output string // failure detail, positioned for a human reader
-	reason string // failure detail without article line numbers, for the baseline
+	src    *fileSource // set for file= blocks, where the repository holds the code
+	stage  string      // "normalize", "build", "run", ...; set when failed
+	output string      // failure detail, positioned for a human reader
+	reason string      // failure detail without article line numbers, for the baseline
 	status status
 	expect expectKind
 	known  bool // matched a baseline entry
@@ -162,6 +163,10 @@ func (r result) unlinkReason() string {
 	switch {
 	case r.block.Directive.Get("playground") == "none":
 		return "this block asks for no playground link"
+	case r.block.Directive.Has("file"):
+		// A file= sample exists precisely because it does not fit in one
+		// self-contained file, which is all the playground can hold.
+		return "this block mirrors " + r.block.Directive.Get("file") + ", which the playground cannot build"
 	case crossTarget(r.block.Directive) != "":
 		// The playground builds for its own platform, so a link to code
 		// written for another one would not even compile there.
@@ -470,6 +475,7 @@ var supportedKeys = map[string]bool{
 	"goos":       true,
 	"goarch":     true,
 	"playground": true,
+	"file":       true,
 	"expect":     true,
 	"error":      true,
 	"panic":      true,
@@ -480,8 +486,7 @@ var supportedKeys = map[string]bool{
 // plannedKeys are designed but not implemented. Rejecting them keeps a
 // directive from silently doing nothing in an article.
 var plannedKeys = map[string]string{
-	"run":  "there is no run= key; building without running is the default, and expect=run asks for a run",
-	"file": "sourcing a snippet from a .go file is not implemented yet",
+	"run": "there is no run= key; building without running is the default, and expect=run asks for a run",
 }
 
 func validateDirective(d mdscan.Directive) error {
@@ -493,6 +498,15 @@ func validateDirective(d mdscan.Directive) error {
 	for _, key := range []string{"goos", "goarch"} {
 		if d.Has(key) && d.Get(key) == "" {
 			return fmt.Errorf("%s needs a value, as in goos=wasip1 goarch=wasm", key)
+		}
+	}
+	if d.Has("file") {
+		// A file= block is compiled as the package it belongs to, so its
+		// module -- not the directive -- settles imports and language version.
+		for _, key := range []string{"imports", "goversion"} {
+			if d.Has(key) {
+				return fmt.Errorf("%s does not apply with file=: the package's own module decides that", key)
+			}
 		}
 	}
 	for key := range d.Opts {
@@ -521,6 +535,10 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 		return r.fail("directive", err.Error())
 	}
 	r.expect = exp.kind
+
+	if b.Directive.Has("file") {
+		return processFileBlock(builder, b, exp, r)
+	}
 
 	prog, err := gosnippet.Normalize(b.Code, normalizeOpts(b))
 	r.prog = prog
@@ -568,8 +586,14 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 		r.status = statusOK
 		return r
 	}
+	return checkRun(ctx, r, exp, res.Bin)
+}
 
-	run, err := check.Run(ctx, res.Bin, exp.timeout)
+// checkRun executes a built program and judges it against the expectation.
+// It serves both kinds of snippet: the ones restored from the article text and
+// the ones built from a file= package.
+func checkRun(ctx context.Context, r result, exp expectation, bin string) result {
+	run, err := check.Run(ctx, bin, exp.timeout)
 	if err != nil {
 		return r.fail("run", err.Error())
 	}

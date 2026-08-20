@@ -27,6 +27,7 @@ const (
 	actionAdd actionKind = iota
 	actionUpdate
 	actionRemove
+	actionSync
 )
 
 func (a action) String() string {
@@ -34,7 +35,9 @@ func (a action) String() string {
 	case actionUpdate:
 		return fmt.Sprintf("%s: update link %s -> %s", posOf(a.res.block, a.link.Line), a.link.URL, a.url)
 	case actionRemove:
-		return fmt.Sprintf("%s: remove link %s (playground=none)", posOf(a.res.block, a.link.Line), a.link.URL)
+		return fmt.Sprintf("%s: remove link %s (%s)", posOf(a.res.block, a.link.Line), a.link.URL, a.res.unlinkReason())
+	case actionSync:
+		return fmt.Sprintf("%s: copy %s into the block", a.res.block.Pos(), a.res.src.Rel)
 	default:
 		return fmt.Sprintf("%s: add link (%s) %s", a.res.block.Pos(), a.side, a.url)
 	}
@@ -74,6 +77,11 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 		var actions []action
 
 		for i, r := range group {
+			// A file= block shows a copy of code that lives in the
+			// repository; bring the copy up to date before anything else.
+			if r.src != nil && r.src.drifted(r.block.Code) {
+				actions = append(actions, action{res: r, kind: actionSync})
+			}
 			if r.unlinked() {
 				// The article dropped this block's link. Take it out, unless
 				// the link sits between two blocks and might be the other
@@ -155,7 +163,7 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 	}
 
 	if dryRun {
-		fmt.Printf("\n%d link changes in %d files (dry run; nothing shared or written)\n", changed, files)
+		fmt.Printf("\n%d changes in %d files (dry run; nothing shared or written)\n", changed, files)
 		return nil
 	}
 	if lk.Dirty() {
@@ -163,7 +171,7 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 			return err
 		}
 	}
-	fmt.Printf("\n%d link changes in %d files, %d snippets shared, %d stale lock entries pruned\n",
+	fmt.Printf("\n%d changes in %d files, %d snippets shared, %d stale lock entries pruned\n",
 		changed, files, shared, pruned)
 	return nil
 }
@@ -177,6 +185,9 @@ func applyActions(path string, actions []action) error {
 	doc := mdedit.New(src)
 	for _, a := range actions {
 		switch {
+		case a.kind == actionSync:
+			b := a.res.block
+			doc.ReplaceRange(b.OpenLine+1, b.CloseLine-1, a.res.src.fenceLines())
 		case a.kind == actionRemove:
 			doc.RemoveParagraph(a.link.Line)
 		case a.kind == actionUpdate:

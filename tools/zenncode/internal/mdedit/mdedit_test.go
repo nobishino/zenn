@@ -98,6 +98,59 @@ func TestRemoveParagraphWithOtherEdits(t *testing.T) {
 	}
 }
 
+func TestReplaceRange(t *testing.T) {
+	for _, tt := range []struct {
+		name     string
+		src      string
+		from, to int
+		lines    []string
+		want     string
+	}{
+		{
+			"same number of lines",
+			"```go\nold\n```\n", 2, 2, []string{"new"},
+			"```go\nnew\n```\n",
+		},
+		{
+			"more lines than before",
+			"```go\nold\n```\n", 2, 2, []string{"a", "b", "c"},
+			"```go\na\nb\nc\n```\n",
+		},
+		{
+			"fewer lines than before",
+			"```go\na\nb\nc\n```\n", 2, 4, []string{"one"},
+			"```go\none\n```\n",
+		},
+		{
+			"out of range is ignored",
+			"text\n", 3, 9, []string{"x"},
+			"text\n",
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			d := New([]byte(tt.src))
+			d.ReplaceRange(tt.from, tt.to, tt.lines)
+			if got := string(d.Bytes()); got != tt.want {
+				t.Errorf("got:\n%q\nwant:\n%q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestReplaceRangeWithLaterEdits(t *testing.T) {
+	// The fence contents grow while a link below it is removed. Both edits are
+	// planned against the original line numbers.
+	src := "```go\nold\n```\n\nURL\n\ntail\n"
+	d := New([]byte(src))
+	d.ReplaceRange(2, 2, []string{"a", "b"})
+	d.RemoveParagraph(5)
+	got := string(d.Bytes())
+	want := "```go\na\nb\n```\n\ntail\n"
+	if got != want {
+		t.Errorf("got:\n%q\nwant:\n%q", got, want)
+	}
+}
+
 func TestReplaceAndMultipleEdits(t *testing.T) {
 	// Edits are planned against the original line numbers; applying the
 	// later one first must not shift the earlier one.

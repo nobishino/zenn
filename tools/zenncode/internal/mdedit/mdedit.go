@@ -17,12 +17,15 @@ const (
 	opInsertAfter
 	opInsertBefore
 	opRemove
+	opReplaceRange
 )
 
 type op struct {
-	kind opKind
-	line int // 1-indexed, in the original document
-	text string
+	kind  opKind
+	line  int // 1-indexed, in the original document
+	text  string
+	end   int      // opReplaceRange: last line replaced, inclusive
+	lines []string // opReplaceRange: what goes in its place
 }
 
 // Doc is a Markdown document with pending edits.
@@ -50,26 +53,32 @@ func (d *Doc) Len() int { return len(d.lines) }
 
 // Replace overwrites line n.
 func (d *Doc) Replace(n int, text string) {
-	d.ops = append(d.ops, op{opReplace, n, text})
+	d.ops = append(d.ops, op{kind: opReplace, line: n, text: text})
 }
 
 // InsertParagraphAfter puts text on its own line below line n, separated from
 // its neighbours by a blank line.
 func (d *Doc) InsertParagraphAfter(n int, text string) {
-	d.ops = append(d.ops, op{opInsertAfter, n, text})
+	d.ops = append(d.ops, op{kind: opInsertAfter, line: n, text: text})
 }
 
 // InsertParagraphBefore puts text on its own line above line n, separated from
 // its neighbours by a blank line.
 func (d *Doc) InsertParagraphBefore(n int, text string) {
-	d.ops = append(d.ops, op{opInsertBefore, n, text})
+	d.ops = append(d.ops, op{kind: opInsertBefore, line: n, text: text})
 }
 
 // RemoveParagraph deletes line n along with the blank line that separated it
 // from what follows, so removing a one-line paragraph leaves the text around
 // it spaced as it was.
 func (d *Doc) RemoveParagraph(n int) {
-	d.ops = append(d.ops, op{opRemove, n, ""})
+	d.ops = append(d.ops, op{kind: opRemove, line: n})
+}
+
+// ReplaceRange swaps lines from..to (1-indexed, inclusive) for the given
+// lines, which may be a different number of them.
+func (d *Doc) ReplaceRange(from, to int, lines []string) {
+	d.ops = append(d.ops, op{kind: opReplaceRange, line: from, end: to, lines: lines})
 }
 
 // Dirty reports whether any edit is pending.
@@ -119,6 +128,12 @@ func (d *Doc) Bytes() []byte {
 				lo--
 			}
 			lines = append(lines[:lo:lo], lines[hi:]...)
+		case opReplaceRange:
+			lo, hi := o.line-1, o.end // [lo,hi)
+			if lo < 0 || hi > len(lines) || lo > hi {
+				break
+			}
+			lines = append(lines[:lo:lo], append(append([]string{}, o.lines...), lines[hi:]...)...)
 		}
 	}
 

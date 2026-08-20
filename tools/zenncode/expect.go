@@ -26,6 +26,10 @@ const (
 	// blow up at run time -- an article demonstrating that a comparison
 	// panics wants the panic, not a clean exit.
 	expectPanic
+	// expectTest runs `go test` on the package a file= block comes from,
+	// which is how an Example test in the repository doubles as the proof
+	// that the article's output is right.
+	expectTest
 )
 
 func (k expectKind) String() string {
@@ -36,6 +40,8 @@ func (k expectKind) String() string {
 		return "compile-error"
 	case expectPanic:
 		return "panic"
+	case expectTest:
+		return "test"
 	default:
 		return "build"
 	}
@@ -85,8 +91,20 @@ func parseExpectation(b mdscan.Block) (expectation, error) {
 		e.kind = expectCompileError
 	case "panic":
 		e.kind = expectPanic
+	case "test":
+		e.kind = expectTest
 	default:
-		return e, fmt.Errorf("expect=%s: want build, run, compile-error or panic", v)
+		return e, fmt.Errorf("expect=%s: want build, run, compile-error, panic or test", v)
+	}
+
+	// file= blocks are real packages in the repository. `go test` only has
+	// something to run there, and code committed to the repository is not the
+	// place for a snippet that is supposed to fail to compile.
+	switch {
+	case e.kind == expectTest && !d.Has("file"):
+		return e, fmt.Errorf("expect=test needs file=, since there is no package to test otherwise")
+	case e.kind == expectCompileError && d.Has("file"):
+		return e, fmt.Errorf("expect=compile-error does not apply to file=: a file in the repository has to compile")
 	}
 
 	if v := d.Get("error"); v != "" {

@@ -71,7 +71,7 @@ func TestParseExpectationErrors(t *testing.T) {
 		src  string
 		want string
 	}{
-		{"bad expect", "<!-- zenncode: expect=nonsense -->\n" + code, "want build, run, compile-error or panic"},
+		{"bad expect", "<!-- zenncode: expect=nonsense -->\n" + code, "want build, run, compile-error, panic or test"},
 		{"error without compile-error", `<!-- zenncode: expect=run error=x -->` + "\n" + code, "only applies with expect=compile-error"},
 		{"panic without expect=panic", `<!-- zenncode: expect=run panic=x -->` + "\n" + code, "only applies with expect=panic"},
 		{"bad panic regexp", `<!-- zenncode: expect=panic panic="[" -->` + "\n" + code, "error parsing regexp"},

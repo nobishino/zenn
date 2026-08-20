@@ -20,7 +20,8 @@ func TestValidateDirective(t *testing.T) {
 		{"cross target", "<!-- zenncode: goos=wasip1 goarch=wasm -->\n" + code, ""},
 		{"goos without a value", "<!-- zenncode: goos -->\n" + code, "goos needs a value"},
 		{"goarch without a value", "<!-- zenncode: goarch= -->\n" + code, "goarch needs a value"},
-		{"planned key", "<!-- zenncode: file=gosample/wasm -->\n" + code, "not implemented yet"},
+		{"file", "<!-- zenncode: file=gosample/main.go -->\n" + code, ""},
+		{"file with imports", "<!-- zenncode: file=gosample/main.go imports=fmt -->\n" + code, "does not apply with file="},
 		{"run is gone", "<!-- zenncode: run=false -->\n" + code, "there is no run= key"},
 		{"unknown key", "<!-- zenncode: nonsense=1 -->\n" + code, "unknown directive key"},
 	} {
