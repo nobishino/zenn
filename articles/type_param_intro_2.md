@@ -318,6 +318,7 @@ https://go.dev/play/p/B2aQu23h3Sw
 
 https://gotipplay.golang.org/p/G77uiNe_taU
 
+<!-- zenncode: playground=keep -->
 ```go
 type T[A any, B []C, C *A] struct {
 	A A
@@ -468,6 +469,7 @@ https://go.dev/play/p/848e6xMxR_y
 
 https://gotipplay.golang.org/p/ckSANEXiR9c
 
+<!-- zenncode: playground=keep -->
 ```go
 package main
 
@@ -554,6 +556,7 @@ https://go.dev/play/p/QmO1uGI4QDE
 
 これを次のように使いたいのですが、これはコンパイルできません。
 
+<!-- zenncode: playground=keep -->
 ```go
 type Settable int
 
@@ -576,6 +579,7 @@ https://gotipplay.golang.org/p/g2GkggqE7e0
 
 では、`*Settable`型を渡すとどうなるでしょうか。
 
+<!-- zenncode: playground=keep -->
 ```go
 func F() {
 	nums := FromStrings[*Settable]([]string{"1", "2"})
@@ -628,6 +632,7 @@ https://go.dev/play/p/3T-HxNN06L5
 
 これを利用して`F`を書き直せます:
 
+<!-- zenncode: playground=keep -->
 ```go
 func F2() {
 	nums := FromStrings2[Settable, *Settable]([]string{"1", "2"})
@@ -641,6 +646,7 @@ https://gotipplay.golang.org/p/VFxDjHrE7N6
 
 そこで、制約型推論を活用して次のようにすることができます。
 
+<!-- zenncode: playground=keep -->
 ```go
 func F3() {
 	nums := FromStrings2[Settable]([]string{"1", "2"})

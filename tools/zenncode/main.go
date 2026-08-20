@@ -148,8 +148,15 @@ type result struct {
 // verified, and only when there is a program to share -- a snippet that does
 // not even parse has none.
 func (r result) linkable() bool {
-	return r.status == statusOK && r.prog.Hash() != "" && !r.unlinked()
+	return r.status == statusOK && r.prog.Hash() != "" && !r.unlinked() && !r.kept()
 }
+
+// kept reports whether the article's own link is to be left exactly as it is,
+// with `playground=keep`. The old generics articles link to gotipplay, whose
+// snippets were written for a development build of Go and no longer compile
+// anywhere; the link is a record of what the article said at the time, so the
+// tool neither checks it nor rewrites it.
+func (r result) kept() bool { return r.block.Directive.Get("playground") == "keep" }
 
 // unlinked reports whether this block should carry no playground link at all.
 // Unlike the other reasons a snippet goes unlinked, these come from the block
@@ -289,6 +296,9 @@ func checkLinks(results []result, lk *lock.File) []linkIssue {
 	for _, group := range groupByFile(results) {
 		plan := planLinks(blocksOf(group))
 		for i, r := range group {
+			if r.kept() {
+				continue
+			}
 			if r.unlinked() {
 				if link := plan.link(i); link.Found() {
 					issues = append(issues, linkIssue{posOf(r.block, link.Line), unlinkMsg(r.unlinkReason(), plan.ambiguous(i))})
@@ -491,8 +501,10 @@ var plannedKeys = map[string]string{
 
 func validateDirective(d mdscan.Directive) error {
 	if d.Has("playground") {
-		if v := d.Get("playground"); v != "none" {
-			return fmt.Errorf("playground=%s: the only supported value is none", v)
+		switch v := d.Get("playground"); v {
+		case "none", "keep":
+		default:
+			return fmt.Errorf("playground=%s: want none or keep", v)
 		}
 	}
 	for _, key := range []string{"goos", "goarch"} {

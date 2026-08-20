@@ -80,6 +80,7 @@ Playground の共有エンドポイントは内容アドレスで、同じバイ
 | `goversion=1.18` | 実装済 | 一時 module の `go` ディレクティブ |
 | `goos=wasip1` / `goarch=wasm` | 実装済 | このターゲット向けにビルドする。実行と Playground リンクの対象外になる |
 | `playground=none` | 実装済 | 検証はするが Playground リンクを付けない。既にあるリンクは `fix` が消す |
+| `playground=keep` | 実装済 | 本文のリンクをそのまま保存する。照合も書き換えもしない |
 | `expect=build` | 実装済 | 既定。コンパイルが通ればよい（実行はしない） |
 | `expect=run` | 実装済 | 実行して正常終了することまで見る |
 | `expect=compile-error` | 実装済 | **意図的にコンパイルエラーになる**サンプル。通ってしまったら失敗 |
@@ -155,6 +156,23 @@ panic として認めない。
 - **Playground リンクを付けない** — Playground は自分のプラットフォーム向けに
   ビルドするので、リンク先はコンパイルすら通らない。既にリンクがあれば
   `playground=none` と同じく `fix` が消す
+
+### 当時のリンクをそのまま残したいとき
+
+`playground=keep` を書くと、そのブロックのリンクには一切手を触れない
+（照合もしないし、書き換えも削除もしない）。
+
+```markdown
+<!-- zenncode: playground=keep -->
+```
+
+`type_param_intro_2.md` の `gotipplay.golang.org` リンク6本がこれ。当時の Go の
+開発ビルド向けに書かれたコードで、今の Go ではどこでもコンパイルできない。
+リンクは「記事を書いた時点でこう動いた」という記録なので、ツールが現行の
+Playground リンクに貼り替えてしまわないようにしてある。
+
+`playground=none` との違いは、none が「リンクが無い状態にする」（既存リンクを
+消す）のに対し、keep は「今ある状態のまま凍結する」こと。
 
 ### リンクを付けたくないとき
 

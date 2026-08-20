@@ -82,6 +82,9 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 			if r.src != nil && r.src.drifted(r.block.Code) {
 				actions = append(actions, action{res: r, kind: actionSync})
 			}
+			if r.kept() {
+				continue // the article's link stands as written
+			}
 			if r.unlinked() {
 				// The article dropped this block's link. Take it out, unless
 				// the link sits between two blocks and might be the other
@@ -150,9 +153,9 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 	if fullRun {
 		live := map[string]bool{}
 		for _, r := range results {
-			// A block that asks for no link needs no URL, so its entry is
+			// A block with no link of ours needs no URL, so its entry is
 			// dead weight -- unless the same code appears elsewhere linked.
-			if r.unlinked() {
+			if r.unlinked() || r.kept() {
 				continue
 			}
 			if h := r.prog.Hash(); h != "" {
