@@ -263,11 +263,10 @@ func main() {
 https://go.dev/play/p/ht_akn1eCGy
 型定義に注目してください。
 
+<!-- zenncode: playground=none -->
 ```go
 type Set[T comparable] map[T]struct{}
 ```
-
-https://go.dev/play/p/LtDPwXKQgyK
 
 ここで、`comparable`という新しいインタフェース型が型制約に使われています。なぜ`any`ではダメなのでしょうか？
 
@@ -422,13 +421,12 @@ Go1.17までは、できませんでした。なぜなら、Go1.17までのイ�
 
 そこでGo言語は、「インタフェース型」として次のようなものも定義できるように機能を拡張することにしました。
 
+<!-- zenncode: playground=none -->
 ```go
 type Number interface {
     int | int32 | int64 | float32 | float64
 }
 ```
-
-https://go.dev/play/p/7lnFo6D1DtS
 
 この`Number`というインタフェースは、`int, int32, int64, float32, float64`という5種類の型によって **「満たされ」ます**。かつ、これ以外の型によっては満たされません。
 この文法要素`int | int32 | int64 | float32 | float64`のことを`unions`や`union element`と呼びます。
@@ -437,13 +435,12 @@ https://go.dev/play/p/7lnFo6D1DtS
 
 `|`を使わずに一つだけの型を書けば、その**一つの型によってのみ満たされるインタフェース**を定義できます。
 
+<!-- zenncode: playground=none -->
 ```go
 type Int interface {
     int
 }
 ```
-
-https://go.dev/play/p/EHOP1ljvR8k
 
 この`Int`インタフェースを実装するのは`int`型のみです。
 
@@ -501,13 +498,12 @@ https://go.dev/play/p/umd-vW_nWtw
 
 では、次のように定義した`NewInt`や`NewNewInt`に対して`Max`関数を使用できるでしょうか？
 
+<!-- zenncode: playground=none -->
 ```go
 type NewInt int
 
 type NewNewInt NewInt
 ```
-
-https://go.dev/play/p/MZTSjdYaQmJ
 
 「できない」というのが答えです。`int, NewInt, NewNewInt`はそれぞれ相異なる型であり、したがって`NewInt`と`NewNewInt`は`Number`インタフェースを実装しないからです。
 
@@ -526,13 +522,12 @@ type Number interface {
 
 しかし、「`int`を元にして型定義で作られる新しい型」は無限にあるので、それら全てが`Number`を実装するようにしたいです。そのための文法として、Go言語は`~`を導入しました。
 
+<!-- zenncode: playground=none -->
 ```go
 type Number interface { 
     ~int | ~int32 | ~int64 | ~float32 | ~float64
 }
 ```
-
-https://go.dev/play/p/dLY7oILp7rl
 
 このように定義すると、「`int, int32, int64, float32, float64`のうちいずれかをunderlying typeとする型」すべてが`Number`を実装するようになります。
 
@@ -580,6 +575,7 @@ Go言語の全ての型は、それに対応する"underlying type"という型�
 
 まず具体例を見てみます。
 
+<!-- zenncode: playground=none -->
 ```go
 type NewInt int // NewIntのunderlying typeはint
 
@@ -591,8 +587,6 @@ type IntSlice []int // IntSliceのunderlying typeは[]int
 
 // []intのunderlying typeは[]int
 ```
-
-https://go.dev/play/p/03qacW-WKVw
 
 大まかにいうと、`type A B`という形の型定義を左から右に遡ってゆき、それ以上遡れないところにある型がunderlying typeです。
 
@@ -626,6 +620,7 @@ https://go.dev/ref/spec##Types によると、
 
 実装は次のようになっています。
 
+<!-- zenncode: playground=none -->
 ```go
 // Ordered is a constraint that permits any ordered type: any type
 // that supports the operators < <= >= >.
@@ -643,8 +638,6 @@ type Ordered interface {
 		~string
 }
 ```
-
-https://go.dev/play/p/3p5f080M08r
 
 これを使って、一般的な`Max`関数を定義できます。
 
@@ -694,26 +687,24 @@ func Max[T cmp.Ordered](x, y T) T {
 
 となります。例えば次のインタフェースも複数要素`unions`の要素になれません。
 
+<!-- zenncode: playground=none -->
 ```go
 type I interface { // 許可されないインタフェースを埋め込んだインタフェースなので許可されない
 	fmt.Stringer // メソッド定義を含むインタフェースなので許可されない
 }
 ```
 
-https://go.dev/play/p/XPivAvKCDmp
-
 :::
 
 :::message
 ここで「複数要素の」と断ったのは、単一要素、つまり`|`を含まない`unions`にインタフェース型を使うのは、従来からあるインタフェース型の「埋め込み」と同じことだからです。
 
+<!-- zenncode: playground=none -->
 ```go
 type I interface {
 	fmt.Stringer // 単一要素のunionsにインタフェースを使うのは、インタフェースの埋め込みと同じこと
 }
 ```
-
-https://go.dev/play/p/GTKUve2ytiR
 
 :::
 

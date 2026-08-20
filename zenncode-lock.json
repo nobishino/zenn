@@ -6,11 +6,6 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
-    "0218ac1915cfd9d5": {
-      "url": "https://go.dev/play/p/MZTSjdYaQmJ",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
     "031b835133685d6b": {
       "url": "https://go.dev/play/p/of4pHMd7CHH",
       "file": "books/go-memory-model/3.happens-before-relation.md",
@@ -181,11 +176,6 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
-    "597ebd1fe1eff120": {
-      "url": "https://go.dev/play/p/XPivAvKCDmp",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
     "59d27e0710131871": {
       "url": "https://go.dev/play/p/0EALht3IeJo",
       "file": "articles/basic-interface-is-comparable.md",
@@ -223,11 +213,6 @@
     },
     "6818e9ae4b56fc0d": {
       "url": "https://go.dev/play/p/-WB97e8w2NC",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
-    "696421e766790e2b": {
-      "url": "https://go.dev/play/p/GTKUve2ytiR",
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
@@ -276,11 +261,6 @@
       "file": "articles/basic-interface-is-comparable.md",
       "sharedAt": "2026-08-13"
     },
-    "7d6eef8576e48be6": {
-      "url": "https://go.dev/play/p/EHOP1ljvR8k",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
     "7e4b0902579d3f5c": {
       "url": "https://go.dev/play/p/ZRx0SE4Q1Yi",
       "file": "articles/type_param_intro_2.md",
@@ -319,11 +299,6 @@
     "944688c1466d31c5": {
       "url": "https://go.dev/play/p/Va4dy8exaJg",
       "file": "articles/go-data-corruptions.md",
-      "sharedAt": "2026-08-13"
-    },
-    "982e5c2bf71ab7d8": {
-      "url": "https://go.dev/play/p/LtDPwXKQgyK",
-      "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
     "98dfd3d046789de6": {
@@ -396,11 +371,6 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
-    "ba18f29429d2b8d8": {
-      "url": "https://go.dev/play/p/dLY7oILp7rl",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
     "baf3fa5f9d1b6233": {
       "url": "https://go.dev/play/p/NEEpOLzM1Hz",
       "file": "books/go-memory-model/2.sequential-consistency.md",
@@ -413,11 +383,6 @@
     },
     "bd441af481d6e33e": {
       "url": "https://go.dev/play/p/4omaGria95F",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
-    "bfa21ea498026936": {
-      "url": "https://go.dev/play/p/03qacW-WKVw",
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
@@ -481,11 +446,6 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
-    "ed0a8f660eefa530": {
-      "url": "https://go.dev/play/p/3p5f080M08r",
-      "file": "articles/type_param_intro.md",
-      "sharedAt": "2026-08-13"
-    },
     "edd780409ac4b018": {
       "url": "https://go.dev/play/p/HCaYrQD3YE0",
       "file": "books/go-memory-model/5.synchronization.md",
@@ -514,11 +474,6 @@
     "f56da4adbfaa8775": {
       "url": "https://go.dev/play/p/i5UAGjIntwU",
       "file": "articles/goquiz_20230817.md",
-      "sharedAt": "2026-08-13"
-    },
-    "f886a91ea9b35b2d": {
-      "url": "https://go.dev/play/p/7lnFo6D1DtS",
-      "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
     "fa83735e2ee9a0ee": {
