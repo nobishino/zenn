@@ -144,12 +144,12 @@ func (s *Stack[T]) Pop() T {
 	return v
 }
 
-func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
-	result := make(Stack[U], 0, len(s))
-	for _, x := range s {
+func (s *Stack[T]) Map[U any](f func(T) U) *Stack[U] {
+	result := make(Stack[U], 0, len(*s))
+	for _, x := range *s {
 		result = append(result, f(x))
 	}
-	return result
+	return &result
 }
 
 func main() {
@@ -157,16 +157,16 @@ func main() {
 	s.Push("hello")
 	s.Push("world!")
 
-	fmt.Println(s.Pop()) // world
+	fmt.Println(s.Pop()) // world!
 	// 文字列のStackから文字列の長さのStackを作る
-	t := s.Map(func(word string) int { return len(word) }) 
+	t := s.Map(func(word string) int { return len(word) })
 
 	fmt.Println(s.Pop()) // hello
 	fmt.Println(t.Pop()) // 5
 }
 ```
 
-https://go.dev/play/p/iTw3URINgZw
+https://go.dev/play/p/duT73gL-jXV
 
 :::message
 
@@ -185,13 +185,15 @@ https://go.dev/play/p/iTw3URINgZw
 
 次にコンストラクタである`New`関数を見てみます。型自体がパラメータ化されているので、コンストラクタも型パラメータを持つ関数としています。
 
-Stackはメソッド`Push`と`Pop`を持ちます。型パラメータを持つ型に対してメソッドを宣言するときは、次のような構文を使います。
+Stackはメソッド`Push`, `Pop`, `Map`を持ちます。型パラメータを持つ型に対してメソッドを宣言するときは、次のような構文を使います。
 
 ```go
 func(s *Stack[T]) Push(x T)
 ```
 
 `*`とポインタにしてあるのはポインタレシーバにするためで、これは従来通りの文法です。少し覚えにくいのはレシーバの型を`Stack[T]`のようにして型パラメータをつける必要があるところです。この`T`をメソッド内の別な場所で参照することができます。`Push`の場合は引数の型として`(x T)`と使っていますね。
+
+なお、`Map`メソッドだけはメソッド名のあとにも`[U any]`という要素がついています。これはレシーバから受け取る`T`とは別に、メソッド自身が型パラメータを宣言するもので、Go1.27から使えるようになった書き方です。詳しくは後述します。
 
 最後に`main`を見てみましょう。
 
@@ -212,26 +214,26 @@ Go1.27からは、これに加えて**メソッド自身が新しい型パラメ
 例えば、`Stack[T]`の各要素を別の型に変換する`Map`メソッドは次のように書けます。
 
 ```go
-func (s Stack[T]) Map[U any](f func(T) U) Stack[U] {
-	result := make(Stack[U], 0, len(s))
-	for _, x := range s {
+func (s *Stack[T]) Map[U any](f func(T) U) *Stack[U] {
+	result := make(Stack[U], 0, len(*s))
+	for _, x := range *s {
 		result = append(result, f(x))
 	}
-	return result
+	return &result
 }
 ```
 
-ここでは、`T`はレシーバ`Stack[T]`によって宣言される型パラメータで、`U`は`Map[U any]`によってメソッド自身が新しく宣言する型パラメータです。そのため、1つのメソッドの中で入力側の型`T`と出力側の型`U`の両方を使うことができます。
+ここでは、`T`はレシーバ`*Stack[T]`によって宣言される型パラメータで、`U`は`Map[U any]`によってメソッド自身が新しく宣言する型パラメータです。そのため、1つのメソッドの中で入力側の型`T`と出力側の型`U`の両方を使うことができます。
 
 Go1.26まではメソッド自身が型パラメータを宣言することはできなかったため、同じような処理を書くには次のようにパッケージレベルのジェネリック関数にする必要がありました。
 
 ```go
-func Map[T, U any](s Stack[T], f func(T) U) Stack[U] {
-	result := make(Stack[U], 0, len(s))
-	for _, x := range s {
+func Map[T, U any](s *Stack[T], f func(T) U) *Stack[U] {
+	result := make(Stack[U], 0, len(*s))
+	for _, x := range *s {
 		result = append(result, f(x))
 	}
-	return result
+	return &result
 }
 ```
 

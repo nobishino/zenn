@@ -1,6 +1,6 @@
 {
   "_comment": "Snippets that do not verify today. Regenerate with `zenncode baseline`. Entries are matched by hash, so an edited snippet must pass on its own.",
-  "generated": "2026-08-20T17:40:50+09:00",
+  "generated": "2026-08-20T17:55:11+09:00",
   "entries": [
     {
       "file": "articles/3-means-of-go-comparable.md",
@@ -109,77 +109,77 @@
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 198,
+      "line": 200,
       "raw": "6607095ff07b7c8e",
       "stage": "normalize",
       "reason": "1:2: expected declaration, found s"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 214,
-      "hash": "26ca211fa95066c2",
+      "line": 216,
+      "hash": "db9081a3d28e4ddd",
       "stage": "build",
-      "reason": "sample.go:3:9: undefined: Stack"
+      "reason": "sample.go:3:10: undefined: Stack"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 228,
-      "hash": "b3396e0142172c50",
+      "line": 230,
+      "hash": "86e4b72e8affc4a0",
       "stage": "build",
-      "reason": "sample.go:3:22: undefined: Stack"
+      "reason": "sample.go:3:23: undefined: Stack"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 339,
+      "line": 341,
       "raw": "554f110d38327b37",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found xs"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 348,
+      "line": 350,
       "hash": "5091fd45be53f55d",
       "stage": "build",
       "reason": "sample.go:5:5: declared and not used: vs"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 361,
+      "line": 363,
       "raw": "dce2ae3e9745d0b3",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found 'if'"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 376,
+      "line": 378,
       "hash": "7e31dff46b8e6edb",
       "stage": "build",
       "reason": "sample.go:6:10: undefined: Stringer"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 424,
+      "line": 426,
       "raw": "ff788d4df34971a3",
       "stage": "normalize",
       "reason": "1:26: expected ';', found T; 2:2: expected declaration, found 'if'"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 540,
+      "line": 542,
       "hash": "97114402e680be75",
       "stage": "build",
       "reason": "sample.go:5:44: undefined: NewInt"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 566,
+      "line": 568,
       "raw": "e4f38b843821bef7",
       "stage": "normalize",
       "reason": "12:9: expected ';', found NewInt"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 701,
+      "line": 703,
       "hash": "9799085a08acc675",
       "stage": "build",
       "reason": "sample.go:3:6: generic function is missing function body"
