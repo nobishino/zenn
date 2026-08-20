@@ -35,6 +35,8 @@ func TestParseExpectation(t *testing.T) {
 		{"compile error", "<!-- zenncode: expect=compile-error -->\n" + code, expectCompileError},
 		{"error implies compile-error", `<!-- zenncode: error="cannot use" -->` + "\n" + code, expectCompileError},
 		{"output implies run", "<!-- zenncode: output=next -->\n" + code + "\n" + out, expectRun},
+		{"explicit panic", "<!-- zenncode: expect=panic -->\n" + code, expectPanic},
+		{"panic implies panic", `<!-- zenncode: panic="index out of range" -->` + "\n" + code, expectPanic},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			e, err := parseExpectation(block(t, tt.src))
@@ -69,8 +71,10 @@ func TestParseExpectationErrors(t *testing.T) {
 		src  string
 		want string
 	}{
-		{"bad expect", "<!-- zenncode: expect=nonsense -->\n" + code, "want build, run or compile-error"},
+		{"bad expect", "<!-- zenncode: expect=nonsense -->\n" + code, "want build, run, compile-error or panic"},
 		{"error without compile-error", `<!-- zenncode: expect=run error=x -->` + "\n" + code, "only applies with expect=compile-error"},
+		{"panic without expect=panic", `<!-- zenncode: expect=run panic=x -->` + "\n" + code, "only applies with expect=panic"},
+		{"bad panic regexp", `<!-- zenncode: expect=panic panic="[" -->` + "\n" + code, "error parsing regexp"},
 		{"output without a next block", "<!-- zenncode: output=next -->\n" + code, "no block after this one"},
 		{"output with compile-error", "<!-- zenncode: expect=compile-error output=next -->\n" + code, "only applies with expect=run"},
 		{"bad regexp", `<!-- zenncode: expect=compile-error error="[" -->` + "\n" + code, "error parsing regexp"},
@@ -95,6 +99,27 @@ func TestParseExpectationTimeout(t *testing.T) {
 	}
 	if e.timeout != 2*time.Second {
 		t.Errorf("timeout = %v", e.timeout)
+	}
+}
+
+func TestAborted(t *testing.T) {
+	for _, tt := range []struct {
+		name   string
+		stderr string
+		want   bool
+	}{
+		{"panic", "panic: runtime error: index out of range [1]\n\ngoroutine 1 [running]:\n", true},
+		{"fatal error", "fatal error: all goroutines are asleep - deadlock!\n", true},
+		{"panic after output on stderr", "log line\npanic: boom\n", true},
+		{"clean", "", false},
+		{"plain message", "flag provided but not defined: -x\n", false},
+		{"the word panic in prose", "the program did not panic: good\n", false},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := aborted(tt.stderr); got != tt.want {
+				t.Errorf("aborted(%q) = %v, want %v", tt.stderr, got, tt.want)
+			}
+		})
 	}
 }
 

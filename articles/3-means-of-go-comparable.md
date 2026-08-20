@@ -88,7 +88,7 @@ https://go.dev/play/p/uScAmOMA6FL
 
 例えば次のサンプルプログラムを実行するとrun-time panicになります。
 
-<!-- zenncode: expect=run -->
+<!-- zenncode: expect=panic panic="comparing uncomparable type" -->
 ```go
 // https://go.dev/play/p/gNmPDq0pl2X
 func main() {

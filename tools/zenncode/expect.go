@@ -22,6 +22,10 @@ const (
 	// expectCompileError inverts the check: the article is making a point
 	// out of the code being rejected.
 	expectCompileError
+	// expectPanic is expectRun's counterpart for code that is supposed to
+	// blow up at run time -- an article demonstrating that a comparison
+	// panics wants the panic, not a clean exit.
+	expectPanic
 )
 
 func (k expectKind) String() string {
@@ -30,6 +34,8 @@ func (k expectKind) String() string {
 		return "run"
 	case expectCompileError:
 		return "compile-error"
+	case expectPanic:
+		return "panic"
 	default:
 		return "build"
 	}
@@ -45,9 +51,13 @@ const defaultRunTimeout = 30 * time.Second
 type expectation struct {
 	kind    expectKind
 	errRe   *regexp.Regexp // compile-error only: the message must match
+	panicRe *regexp.Regexp // panic only: the message must match
 	output  string         // expected stdout; empty means it is not checked
 	timeout time.Duration
 }
+
+// runs reports whether the expectation requires executing the program.
+func (e expectation) runs() bool { return e.kind == expectRun || e.kind == expectPanic }
 
 // parseExpectation reads the directive on a block. The keys imply one
 // another -- naming an expected message means a compile error is expected,
@@ -62,6 +72,8 @@ func parseExpectation(b mdscan.Block) (expectation, error) {
 		switch {
 		case d.Has("error"):
 			e.kind = expectCompileError
+		case d.Has("panic"):
+			e.kind = expectPanic
 		case d.Has("output"):
 			e.kind = expectRun
 		}
@@ -71,8 +83,10 @@ func parseExpectation(b mdscan.Block) (expectation, error) {
 		e.kind = expectRun
 	case "compile-error":
 		e.kind = expectCompileError
+	case "panic":
+		e.kind = expectPanic
 	default:
-		return e, fmt.Errorf("expect=%s: want build, run or compile-error", v)
+		return e, fmt.Errorf("expect=%s: want build, run, compile-error or panic", v)
 	}
 
 	if v := d.Get("error"); v != "" {
@@ -84,6 +98,17 @@ func parseExpectation(b mdscan.Block) (expectation, error) {
 			return e, fmt.Errorf("error=%s: %w", v, err)
 		}
 		e.errRe = re
+	}
+
+	if v := d.Get("panic"); v != "" {
+		if e.kind != expectPanic {
+			return e, fmt.Errorf("panic= only applies with expect=panic")
+		}
+		re, err := regexp.Compile(v)
+		if err != nil {
+			return e, fmt.Errorf("panic=%s: %w", v, err)
+		}
+		e.panicRe = re
 	}
 
 	if d.Has("output") {
@@ -110,6 +135,21 @@ func parseExpectation(b mdscan.Block) (expectation, error) {
 		e.timeout = td
 	}
 	return e, nil
+}
+
+// aborted reports whether stderr is the runtime's report of a program dying on
+// its own terms. "panic:" covers explicit and runtime panics; "fatal error:"
+// covers what the runtime raises instead when no recovery is possible, such as
+// an all-goroutine deadlock or a concurrent map write. Both are the kind of
+// failure an article demonstrates on purpose, and both are distinct from a
+// program that merely exits non-zero.
+func aborted(stderr string) bool {
+	for _, line := range strings.Split(stderr, "\n") {
+		if strings.HasPrefix(line, "panic: ") || strings.HasPrefix(line, "fatal error: ") {
+			return true
+		}
+	}
+	return false
 }
 
 // diffOutput reports how got differs from want, or "" if they agree.

@@ -322,7 +322,11 @@ func cmdList(paths []string, jobs int, verbose bool) error {
 		if hash == "" {
 			hash = "-"
 		}
-		fmt.Printf("%-52s %-16s %-8s %s\n", r.block.Pos(), hash, label(r.status), play)
+		expect := r.expect.String()
+		if r.status == statusSkipped {
+			expect = "-"
+		}
+		fmt.Printf("%-52s %-16s %-8s %-13s %s\n", r.block.Pos(), hash, label(r.status), expect, play)
 		if verbose && r.output != "" {
 			fmt.Printf("    %s\n", indent(r.output))
 		}
@@ -431,6 +435,7 @@ var supportedKeys = map[string]bool{
 	"playground": true,
 	"expect":     true,
 	"error":      true,
+	"panic":      true,
 	"output":     true,
 	"timeout":    true,
 }
@@ -438,11 +443,8 @@ var supportedKeys = map[string]bool{
 // plannedKeys are designed but not implemented. Rejecting them keeps a
 // directive from silently doing nothing in an article.
 var plannedKeys = map[string]string{
-	"expect": "expected outcomes (build/run/compile-error) are not implemented yet",
-	"error":  "matching compiler messages is not implemented yet",
-	"run":    "running snippets is not implemented yet",
-	"output": "checking program output is not implemented yet",
-	"file":   "sourcing a snippet from a .go file is not implemented yet",
+	"run":  "there is no run= key; building without running is the default, and expect=run asks for a run",
+	"file": "sourcing a snippet from a .go file is not implemented yet",
 }
 
 func validateDirective(d mdscan.Directive) error {
@@ -494,7 +496,7 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 		Program:   prog.Source,
 		IsMain:    prog.HasMain,
 		GoVersion: b.Directive.Get("goversion"),
-		Binary:    exp.kind == expectRun,
+		Binary:    exp.runs(),
 	})
 	if err != nil {
 		return r.fail("build", fmt.Sprintf("%v\n%s", err, res.Output))
@@ -513,7 +515,7 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 	if !res.OK {
 		return r.fail("build", res.Output)
 	}
-	if exp.kind != expectRun {
+	if !exp.runs() {
 		r.status = statusOK
 		return r
 	}
@@ -522,11 +524,26 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 	if err != nil {
 		return r.fail("run", err.Error())
 	}
-	switch {
-	case run.TimedOut:
+	if run.TimedOut {
 		return r.fail("run", fmt.Sprintf("the program did not finish within %s", exp.timeout))
-	case !run.OK:
-		return r.fail("run", fmt.Sprintf("the program exited with status %d\n%s", run.ExitCode, strings.TrimRight(run.Stderr, "\n")))
+	}
+	stderr := strings.TrimRight(run.Stderr, "\n")
+
+	if exp.kind == expectPanic {
+		switch {
+		case run.OK:
+			return r.fail("expect", "the article expects a run-time panic, but the program ran to completion")
+		case !aborted(run.Stderr):
+			return r.fail("expect", fmt.Sprintf("the article expects a run-time panic, but the program exited with status %d without one\n%s", run.ExitCode, stderr))
+		case exp.panicRe != nil && !exp.panicRe.MatchString(run.Stderr):
+			return r.fail("expect", fmt.Sprintf("the panic message does not match %s:\n%s", exp.panicRe, stderr))
+		}
+		r.status = statusOK
+		return r
+	}
+
+	if !run.OK {
+		return r.fail("run", fmt.Sprintf("the program exited with status %d\n%s", run.ExitCode, stderr))
 	}
 	if exp.output != "" {
 		if d := diffOutput(exp.output, run.Stdout); d != "" {
