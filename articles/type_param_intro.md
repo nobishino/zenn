@@ -78,6 +78,7 @@ Goのジェネリクスの基本事項については[Type Parameters Proposal](
 
 まず「型パラメータを持つ関数」の具体例を見てみましょう。
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	fmt.Println(f([]MyInt{1, 2, 3, 4}))
@@ -123,6 +124,7 @@ https://go.dev/play/p/9QPNO6kq277
 
 一例として、データ構造「スタック」を実装してみます。
 
+<!-- zenncode: expect=run -->
 ```go
 type Stack[T any] []T
 
@@ -225,6 +227,7 @@ https://github.com/golang/go/issues/77273
 
 これはある型の値をただ集めた「集合」として使えるデータ型です。Goにおいては、次のように`map`のキーだけを使う方法で実装すると簡単です。そのキーとして使う型を「ジェネリック」にしたいです。
 
+<!-- zenncode: expect=run -->
 ```go
 type Set[T comparable] map[T]struct{}
 
@@ -647,6 +650,7 @@ https://go.dev/play/p/3p5f080M08r
 
 https://go.dev/play/p/-WB97e8w2NC
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -930,6 +934,7 @@ https://go.dev/ref/spec#Arithmetic_operators
 
 よって、次のコードはコンパイルできます。
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -1150,6 +1155,7 @@ https://go.dev/ref/spec#Package_unsafe
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type AB struct {
 	A int
@@ -1169,7 +1175,7 @@ func f[T Constraint](t T) int {
 }
 
 ```
-https://go.dev/play/p/IUcO6kAVYu3
+https://go.dev/play/p/fy6Y3gH4rXX
 
 ### 定数宣言
 
@@ -1179,6 +1185,7 @@ https://go.dev/play/p/IUcO6kAVYu3
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	complex128 | float64
@@ -1199,6 +1206,7 @@ https://go.dev/play/p/HKUPvDpkLmm
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	[]int | [1]int
@@ -1220,6 +1228,7 @@ https://go.dev/play/p/Ogs7lmQL3Cj
 追加条件として、`T`を満たすすべての型が、同一の要素型を持つ必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	[1]int | [1]string // どちらもインデックス式が作れるが、要素型がintとstringで異なる
@@ -1230,7 +1239,7 @@ func f[T Constraint]() {
 	_ = t[0] // このようなインデックス式は無効
 }
 ```
-https://go.dev/play/p/G1JrWC1UQKm
+https://go.dev/play/p/nI_viZ2ZdxN
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1246,6 +1255,7 @@ https://go.dev/ref/spec#Index_expressions
 追加条件として、`T`を満たすすべての型が同一のunderlying typeを持つ必要があります。ただし、`string`型と`[]byte`型はこのルールの適用上は同一視して良いことになっています。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	[10]int | [11]int // どちらもインデックス式が作れるが、underlying typeが異なる
@@ -1256,7 +1266,7 @@ func f[T Constraint]() {
 	_ = t[:] // このようなスライス式は無効
 }
 ```
-https://go.dev/play/p/y0ZsHgjBtre
+https://go.dev/play/p/zKyq1fyqjN2
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1274,6 +1284,7 @@ https://go.dev/ref/spec#Slice_expressions
 追加条件として、`Constraint`を満たすすべての型が同一のunderlying typeを持つ必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyIntPointer *int
 
@@ -1303,6 +1314,7 @@ https://go.dev/ref/spec#Calls
 追加条件として、`Constraint`を満たすすべての型について、その要素型が同一でなければいけません。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyInt int
 type MyChanInt chan<- MyInt
@@ -1329,6 +1341,7 @@ https://go.dev/ref/spec#Send_statements
 追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	string | []byte // E = byteとすればどちらもfor文でbyteを取り出せる型である
@@ -1353,6 +1366,7 @@ https://go.dev/ref/spec#For_range
 追加条件として、`Constraint`を満たす全ての型のunderlying typeが同一である必要があります。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyInt int
 
@@ -1402,6 +1416,7 @@ https://go.dev/ref/spec#Close
 これらの関数はそもそも型パラメータ型を受け取らないようになっているからです。
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	float32 | float64
@@ -1412,7 +1427,7 @@ func f[T Constraint](v T) {
 }
 ```
 
-https://go.dev/play/p/7PMcp7Q91oM
+https://go.dev/play/p/4omaGria95F
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1427,6 +1442,7 @@ https://go.dev/ref/spec#Complex_numbers
 
 よって、次のコードはコンパイルできません。
 
+<!-- zenncode: expect=compile-error -->
 ```go
 type MyInt int
 
@@ -1438,7 +1454,7 @@ func f[T Constraint](m T) {
 	delete(m, 1)
 }
 ```
-https://go.dev/play/p/__j2DhnYrUn
+https://go.dev/play/p/lMDa1Euvqk0
 
 :::message
 言語仕様上の根拠は次の箇所にあります。
@@ -1454,6 +1470,7 @@ https://go.dev/ref/spec#Deletion_of_map_elements
 - `Constraint`を満たす全ての型がチャネル型であり、その要素の型が同一で、方向が矛盾しない
 
 よって、次のコードはコンパイルできません。
+<!-- zenncode: expect=compile-error -->
 ```go
 type Constraint interface {
 	MyChan | chan<- int
@@ -1466,7 +1483,7 @@ func f[T Constraint]() {
 }
 ```
 
-https://go.dev/play/p/QTggKJPwmlW
+https://go.dev/play/p/Q0Tgw4lc0Bu
 
 :::message
 言語仕様上の根拠は次の箇所にあります。

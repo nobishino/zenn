@@ -71,7 +71,7 @@ func cmdFix(paths []string, jobs int, dryRun bool) error {
 		var actions []action
 
 		for i, r := range group {
-			if r.status != statusOK || r.block.Directive.Get("playground") == "none" {
+			if !r.linkable() {
 				continue
 			}
 			link := plan.link(i)

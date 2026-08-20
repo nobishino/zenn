@@ -8,12 +8,14 @@ package check
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"sync/atomic"
+	"time"
 )
 
 // Request is one snippet to compile.
@@ -21,12 +23,23 @@ type Request struct {
 	Program   string // complete program, as produced by gosnippet.Normalize
 	IsMain    bool   // package main with a func main
 	GoVersion string // go directive for the scratch module; defaults to the toolchain's
+	Binary    bool   // keep the executable so it can be run
 }
 
 // Result is the outcome of a build.
 type Result struct {
 	OK     bool
 	Output string // compiler diagnostics, with scratch paths stripped
+	Bin    string // the executable, when Request.Binary was set and OK
+}
+
+// RunResult is the outcome of running a built program.
+type RunResult struct {
+	OK       bool
+	Stdout   string
+	Stderr   string
+	ExitCode int
+	TimedOut bool
 }
 
 // Builder compiles snippets under a shared temporary directory.
@@ -43,6 +56,12 @@ func NewBuilder() (*Builder, error) {
 	root, err := os.MkdirTemp("", "zenncode-")
 	if err != nil {
 		return nil, err
+	}
+	// On macOS the temp directory is reached through a symlink, and a panic
+	// trace names the resolved path. Resolve it now so the two agree and
+	// scratch paths can be stripped from diagnostics.
+	if resolved, err := filepath.EvalSymlinks(root); err == nil {
+		root = resolved
 	}
 	b := &Builder{root: root, goVersion: toolchainVersion()}
 	return b, nil
@@ -75,10 +94,14 @@ func (b *Builder) Build(ctx context.Context, req Request) (Result, error) {
 	}
 
 	args := []string{"build"}
+	bin := os.DevNull
 	if req.IsMain {
-		// Discard the binary; for a library build there is nothing to discard
-		// and -o would be rejected.
-		args = append(args, "-o", os.DevNull)
+		// For a library build there is nothing to write and -o would be
+		// rejected, so only a main package names an output.
+		if req.Binary {
+			bin = filepath.Join(dir, "prog")
+		}
+		args = append(args, "-o", bin)
 	}
 	args = append(args, ".")
 
@@ -92,11 +115,51 @@ func (b *Builder) Build(ctx context.Context, req Request) (Result, error) {
 	)
 	out, err := cmd.CombinedOutput()
 	res := Result{OK: err == nil, Output: clean(string(out), dir)}
+	if res.OK && req.Binary && req.IsMain {
+		res.Bin = bin
+	}
 	if err != nil && res.Output == "" {
 		res.Output = err.Error()
 	}
 	if ctx.Err() != nil {
 		return res, ctx.Err()
+	}
+	return res, nil
+}
+
+// Run executes a program built with Request.Binary and captures its output.
+// A program that outlives timeout is killed and reported as timed out, which
+// is the normal fate of a sample that deadlocks on purpose.
+func Run(ctx context.Context, bin string, timeout time.Duration) (RunResult, error) {
+	ctx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+
+	var stdout, stderr strings.Builder
+	cmd := exec.CommandContext(ctx, bin)
+	cmd.Dir = filepath.Dir(bin)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+
+	dir := filepath.Dir(bin)
+	res := RunResult{
+		Stdout: stdout.String(),
+		// A panic trace names the scratch file it came from; strip the
+		// path so the message reads as if it came from the article.
+		Stderr: clean(stderr.String(), dir),
+	}
+	if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+		res.TimedOut = true
+		return res, nil
+	}
+	var exit *exec.ExitError
+	switch {
+	case err == nil:
+		res.OK = true
+	case errors.As(err, &exit):
+		res.ExitCode = exit.ExitCode()
+	default:
+		return res, err
 	}
 	return res, nil
 }

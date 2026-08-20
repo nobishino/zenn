@@ -24,6 +24,11 @@ type Block struct {
 	CloseLine int    // 1-indexed line of the closing fence
 	Code      string // fence contents; ends with a newline unless empty
 
+	// NextLang and NextCode describe the fenced block that follows this one
+	// in the document, which is where an article shows a program's output.
+	NextLang string
+	NextCode string
+
 	Directive Directive
 
 	// Articles in this repository put the playground link on either side of
@@ -166,6 +171,9 @@ func Scan(path string, src []byte) []Block {
 		}
 		b.Directive, b.PlayAbove = scanAbove(lines, open)
 		b.PlayBelow = scanBelow(lines, end)
+		if n := len(blocks); n > 0 {
+			blocks[n-1].NextLang, blocks[n-1].NextCode = b.Lang, b.Code
+		}
 		blocks = append(blocks, b)
 
 		i = end // resume after the closing fence

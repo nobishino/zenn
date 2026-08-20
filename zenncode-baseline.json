@@ -1,6 +1,6 @@
 {
   "_comment": "Snippets that do not verify today. Regenerate with `zenncode baseline`. Entries are matched by hash, so an edited snippet must pass on its own.",
-  "generated": "2026-08-13T03:50:02+09:00",
+  "generated": "2026-08-13T08:16:06+09:00",
   "entries": [
     {
       "file": "articles/3-means-of-go-comparable.md",
@@ -11,21 +11,14 @@
     },
     {
       "file": "articles/basic-interface-is-comparable.md",
-      "line": 157,
-      "hash": "59d27e0710131871",
-      "stage": "build",
-      "reason": "sample.go:7:3: []int does not satisfy comparable"
-    },
-    {
-      "file": "articles/basic-interface-is-comparable.md",
-      "line": 211,
+      "line": 212,
       "hash": "0ddf99f985d52507",
       "stage": "build",
       "reason": "sample.go:4:6: invalid recursive type: comparable refers to itself"
     },
     {
       "file": "articles/basic-interface-is-comparable.md",
-      "line": 297,
+      "line": 298,
       "hash": "9296e9ac358509e7",
       "stage": "build",
       "reason": "sample.go:5:22: undefined: T"
@@ -98,7 +91,7 @@
       "line": 101,
       "hash": "89afda1ccc652e35",
       "stage": "build",
-      "reason": "package zenncodesample: build constraints exclude all Go files in /private."
+      "reason": "package zenncodesample: build constraints exclude all Go files in ."
     },
     {
       "file": "articles/go-wasmimport-hello.md",
@@ -106,34 +99,6 @@
       "hash": "a63e00cf582419e0",
       "stage": "build",
       "reason": "sample.go:7:54: undefined: size"
-    },
-    {
-      "file": "articles/goquiz_20230817.md",
-      "line": 11,
-      "hash": "a1b059f403d16938",
-      "stage": "build",
-      "reason": "sample.go:8:6: cannot use x (variable of type int) as T value in assignment"
-    },
-    {
-      "file": "articles/goquiz_20230817.md",
-      "line": 41,
-      "hash": "a1b059f403d16938",
-      "stage": "build",
-      "reason": "sample.go:8:6: cannot use x (variable of type int) as T value in assignment"
-    },
-    {
-      "file": "articles/goquiz_20230817.md",
-      "line": 61,
-      "hash": "33db2b63106432a7",
-      "stage": "build",
-      "reason": "sample.go:11:6: cannot use x (variable of type int) as T value in assignment"
-    },
-    {
-      "file": "articles/goquiz_20230817.md",
-      "line": 238,
-      "hash": "a1b059f403d16938",
-      "stage": "build",
-      "reason": "sample.go:8:6: cannot use x (variable of type int) as T value in assignment"
     },
     {
       "file": "articles/learn_go_quine_for_great_good.md",
@@ -227,90 +192,6 @@
       "reason": "12:9: expected ';', found NewInt"
     },
     {
-      "file": "articles/type_param_intro.md",
-      "line": 1153,
-      "hash": "4499b6b6a84a4c48",
-      "stage": "build",
-      "reason": "sample.go:17:11: t.A undefined (type T has no field or method A)"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1182,
-      "hash": "cc387294258a3609",
-      "stage": "build",
-      "reason": "sample.go:9:10: invalid constant type T"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1202,
-      "hash": "c936709aa4f72f4b",
-      "stage": "build",
-      "reason": "sample.go:8:10: invalid composite literal type T (no common underlying type)"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1223,
-      "hash": "a1250d32ec2fe227",
-      "stage": "build",
-      "reason": "sample.go:9:7: cannot index t (variable of type T constrained by Constraint)"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1249,
-      "hash": "4a20cb5eec7b3652",
-      "stage": "build",
-      "reason": "sample.go:9:6: cannot slice t (variable of type T constrained by Constraint): [10]int and [11]int have different underlying types"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1277,
-      "hash": "2ea12c6e34014012",
-      "stage": "build",
-      "reason": "sample.go:11:15: invalid operation: cannot call f (variable of type F constrained by Constraint): func() *int and func() MyIntPointer have different underlying types"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1306,
-      "hash": "0a9b9c1c4204954b",
-      "stage": "build",
-      "reason": "sample.go:11:2: invalid operation: cannot send to t (variable of type T constrained by Constraint): channels chan\u003c- int and MyChanInt have different element types"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1332,
-      "hash": "707c563969aa51c4",
-      "stage": "build",
-      "reason": "sample.go:8:20: cannot range over t (variable of type T constrained by Constraint): string and []byte have different underlying types"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1356,
-      "hash": "154ff18ae92a73f9",
-      "stage": "build",
-      "reason": "sample.go:10:9: invalid append: mismatched slice element types int and MyInt in t (variable of type T constrained by Constraint)"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1405,
-      "hash": "bd441af481d6e33e",
-      "stage": "build",
-      "reason": "sample.go:8:14: v (variable of type T constrained by Constraint) not supported as argument to built-in complex for go1.18 (see go.dev/issue/50937)"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1430,
-      "hash": "4086433da1cd4495",
-      "stage": "build",
-      "reason": "sample.go:10:9: invalid argument: maps of m (variable of type T constrained by Constraint) must have identical key types"
-    },
-    {
-      "file": "articles/type_param_intro.md",
-      "line": 1457,
-      "hash": "595d9c8427064f5a",
-      "stage": "build",
-      "reason": "sample.go:10:11: invalid argument: cannot make T: channels MyChan and chan\u003c- int have conflicting directions"
-    },
-    {
       "file": "articles/type_param_intro_2.md",
       "line": 102,
       "hash": "2a91be422eaa1f21",
@@ -319,91 +200,70 @@
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 142,
-      "hash": "405df10b73e58385",
-      "stage": "build",
-      "reason": "sample.go:7:12: int does not satisfy fmt.Stringer (missing method String)"
-    },
-    {
-      "file": "articles/type_param_intro_2.md",
-      "line": 168,
-      "hash": "606c93a32dc61c26",
-      "stage": "build",
-      "reason": "sample.go:5:3: chan int does not satisfy \u003c-chan int (chan int missing in \u003c-chan int)"
-    },
-    {
-      "file": "articles/type_param_intro_2.md",
-      "line": 223,
+      "line": 225,
       "raw": "3260ba65640f2a07",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found x"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 271,
+      "line": 273,
       "raw": "6fdcd2057facaf5f",
       "stage": "normalize",
       "reason": "1:21: expected statement, found '...'; 4:6: expected '}', found 'EOF'"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 318,
+      "line": 320,
       "hash": "d755b842c34263c4",
       "stage": "build",
       "reason": "sample.go:12:8: not enough type arguments for type T: have 1, want 3"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 403,
-      "hash": "32789adc75716527",
-      "stage": "build",
-      "reason": "sample.go:6:4: in call to f, type []map[int]bool of make([]map[int]bool, 0) does not match *T (cannot infer T)"
-    },
-    {
-      "file": "articles/type_param_intro_2.md",
-      "line": 467,
+      "line": 470,
       "hash": "38119e49dfc48409",
       "stage": "build",
       "reason": "sample.go:12:8: not enough type arguments for type X: have 1, want 2"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 553,
+      "line": 556,
       "hash": "5e6ac68c732e8236",
       "stage": "build",
       "reason": "sample.go:13:10: undefined: FromStrings"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 575,
+      "line": 578,
       "hash": "9a99cb8f328e9537",
       "stage": "build",
       "reason": "sample.go:4:10: undefined: FromStrings"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 589,
+      "line": 592,
       "hash": "3d50b3a0089fca7c",
       "stage": "build",
       "reason": "sample.go:3:20: undefined: Setter"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 627,
+      "line": 630,
       "hash": "91160b59171ca147",
       "stage": "build",
       "reason": "sample.go:6:10: undefined: FromStrings2"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 640,
+      "line": 643,
       "hash": "174d30bffd2df7fd",
       "stage": "build",
       "reason": "sample.go:6:10: undefined: FromStrings2"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 656,
+      "line": 659,
       "hash": "6d794c00a37ea377",
       "stage": "build",
       "reason": "sample.go:5:3: undefined: Settable"

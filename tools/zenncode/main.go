@@ -138,7 +138,26 @@ type result struct {
 	output string // failure detail, positioned for a human reader
 	reason string // failure detail without article line numbers, for the baseline
 	status status
+	expect expectKind
 	known  bool // matched a baseline entry
+}
+
+// linkable reports whether a snippet should carry a playground link. A link
+// is a promise that the code is real, so it is only made for code that
+// verified, and only when there is a program to share -- a snippet that does
+// not even parse has none.
+func (r result) linkable() bool {
+	return r.status == statusOK &&
+		r.prog.Hash() != "" &&
+		r.block.Directive.Get("playground") != "none"
+}
+
+// fail records a failure and returns the result, so a caller can write
+// `return r.fail(...)` at each point a snippet can go wrong.
+func (r result) fail(stage, detail string) result {
+	r.status, r.stage = statusFailed, stage
+	r.output, r.reason = detail, detail
+	return r
 }
 
 func (r result) entry() baseline.Entry {
@@ -236,17 +255,18 @@ func checkLinks(results []result, lk *lock.File) []linkIssue {
 	for _, group := range groupByFile(results) {
 		plan := planLinks(blocksOf(group))
 		for i, r := range group {
-			if r.status != statusOK || r.block.Directive.Get("playground") == "none" {
+			if !r.linkable() {
 				continue
 			}
 			link := plan.link(i)
 			url, known := lk.URL(r.prog.Hash())
 			switch {
 			case !known && link.Found():
-				// The block has a link but this exact code has never been
-				// shared, which is what an edited snippet looks like.
+				// There is a link, but this exact code has never been
+				// shared: either the snippet was edited, or the link was
+				// made by hand before this tool existed.
 				issues = append(issues, linkIssue{posOf(r.block, link.Line),
-					"the code changed since this playground link was made; run `make fix`"})
+					"this link was not made from the code next to it; run `make fix`"})
 			case !known:
 				issues = append(issues, linkIssue{r.block.Pos(),
 					"no playground link for this code yet; run `make fix`"})
@@ -409,6 +429,10 @@ var supportedKeys = map[string]bool{
 	"imports":    true,
 	"goversion":  true,
 	"playground": true,
+	"expect":     true,
+	"error":      true,
+	"output":     true,
+	"timeout":    true,
 }
 
 // plannedKeys are designed but not implemented. Rejecting them keeps a
@@ -437,18 +461,28 @@ func validateDirective(d mdscan.Directive) error {
 func processBlock(builder *check.Builder, b mdscan.Block) result {
 	r := result{block: b}
 	if err := validateDirective(b.Directive); err != nil {
-		r.status, r.stage = statusFailed, "directive"
-		r.output, r.reason = err.Error(), err.Error()
-		return r
+		return r.fail("directive", err.Error())
 	}
 	if b.Directive.Bool("skip", false) {
 		r.status = statusSkipped
 		return r
 	}
+	exp, err := parseExpectation(b)
+	if err != nil {
+		return r.fail("directive", err.Error())
+	}
+	r.expect = exp.kind
 
 	prog, err := gosnippet.Normalize(b.Code, normalizeOpts(b))
 	r.prog = prog
 	if err != nil {
+		if exp.kind == expectCompileError {
+			// Code that does not even parse does not compile, which is what
+			// the article claims. There is no program to share, so this
+			// block gets no playground link.
+			r.status = statusOK
+			return r
+		}
 		r.status, r.stage = statusFailed, "normalize"
 		r.output, r.reason = locate(b, err), err.Error()
 		return r
@@ -460,17 +494,44 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 		Program:   prog.Source,
 		IsMain:    prog.HasMain,
 		GoVersion: b.Directive.Get("goversion"),
+		Binary:    exp.kind == expectRun,
 	})
 	if err != nil {
-		r.status, r.stage = statusFailed, "build"
-		r.output = fmt.Sprintf("%v\n%s", err, res.Output)
-		r.reason = r.output
+		return r.fail("build", fmt.Sprintf("%v\n%s", err, res.Output))
+	}
+
+	if exp.kind == expectCompileError {
+		switch {
+		case res.OK:
+			return r.fail("expect", "the article expects a compile error, but this code compiles")
+		case exp.errRe != nil && !exp.errRe.MatchString(res.Output):
+			return r.fail("expect", fmt.Sprintf("the compiler error does not match %s:\n%s", exp.errRe, res.Output))
+		}
+		r.status = statusOK
 		return r
 	}
 	if !res.OK {
-		r.status, r.stage = statusFailed, "build"
-		r.output, r.reason = res.Output, res.Output
+		return r.fail("build", res.Output)
+	}
+	if exp.kind != expectRun {
+		r.status = statusOK
 		return r
+	}
+
+	run, err := check.Run(ctx, res.Bin, exp.timeout)
+	if err != nil {
+		return r.fail("run", err.Error())
+	}
+	switch {
+	case run.TimedOut:
+		return r.fail("run", fmt.Sprintf("the program did not finish within %s", exp.timeout))
+	case !run.OK:
+		return r.fail("run", fmt.Sprintf("the program exited with status %d\n%s", run.ExitCode, strings.TrimRight(run.Stderr, "\n")))
+	}
+	if exp.output != "" {
+		if d := diffOutput(exp.output, run.Stdout); d != "" {
+			return r.fail("output", d)
+		}
 	}
 	r.status = statusOK
 	return r

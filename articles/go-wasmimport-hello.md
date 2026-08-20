@@ -58,6 +58,7 @@ https://docs.google.com/presentation/d/10ru3LdbofJqgdmD8pprZuZyWbGvOFC8rKxb6q5Q4
 
 実際にやってみましょう。出発点は次のコードです。
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
     fmt.Println("Hello, Wasm")
@@ -68,6 +69,7 @@ https://go.dev/play/p/fC8spIZnTY1
 
 まず、オリジナルのライブコーディング同様に、これを`syscall.Write`を使うようにリファクタリングします。
 
+<!-- zenncode: expect=run -->
 ```go
 func main() {
 	syscall.Write(1, []byte("Hello world\n"))

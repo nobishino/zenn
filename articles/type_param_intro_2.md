@@ -72,6 +72,7 @@ Go言語仕様書は非常に読みやすい言語仕様書ですが、それで
 次の例では、`Print[T any]`関数の`T`という型パラメータに`string`という型引数が代入されることで、`Print`関数のインスタンス化が行われています。
 
 
+<!-- zenncode: expect=run -->
 ```go
 package main
 
@@ -137,8 +138,9 @@ https://tip.golang.org/ref/spec#Type_declarations
 
 ### 具体例(インスタンス化の失敗)
 
-https://gotipplay.golang.org/p/FUdYlX-a6oH
+https://go.dev/play/p/YBg9HmvbCku
 
+<!-- zenncode: expect=compile-error -->
 ```go
 package main
 
@@ -163,8 +165,9 @@ type s = S[int]
 
 ### 型推論が成功してもインスタンス化が失敗することはある
 
-https://gotipplay.golang.org/p/t4n8HllorSt
+https://go.dev/play/p/t4n8HllorSt
 
+<!-- zenncode: expect=compile-error -->
 ```go
 package main
 
@@ -398,8 +401,9 @@ unificationが失敗する例をあげておきます。
 
 型推論の中でunificationが失敗すれば、コンパイルエラーとなります。
 
-https://gotipplay.golang.org/p/C1kepqzqWKJ
+https://go.dev/play/p/C1kepqzqWKJ
 
+<!-- zenncode: expect=compile-error -->
 ```go
 func f[T any](x *T) {}
 

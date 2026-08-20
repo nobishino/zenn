@@ -26,6 +26,7 @@ https://github.com/golang/go/issues/56548
 
 https://go.dev/play/p/ApQfJl4ocYu
 
+<!-- zenncode: expect=run -->
 ```go
 func f[T comparable](T) {}
 
@@ -77,6 +78,7 @@ Go1.18では、あらゆる型制約`C`について、
 
 https://go.dev/play/p/bC-CcdM6ywL
 
+<!-- zenncode: expect=run -->
 ```go
 func f[T comparable](T) {}
 
@@ -125,6 +127,7 @@ Proposal採用後は次のようになります。
 
 https://go.dev/play/p/oUCM73okc6p
 
+<!-- zenncode: expect=run -->
 ```go
 func f[T comparable](T) {}
 
@@ -152,8 +155,9 @@ func main() {
 
 一方、次のようなコードはGo1.18でもProposal採用後でもコンパイルできません。
 
-https://go.dev/play/p/vTpk2lXlA6L
+https://go.dev/play/p/0EALht3IeJo
 
+<!-- zenncode: expect=compile-error -->
 ```go
 func f[T comparable](T) {}
 

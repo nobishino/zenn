@@ -59,6 +59,7 @@ Go言語には次の3箇所で"comparable"ということばが現れますが�
 これを例示したのが、次のサンプルプログラムです。
 
 
+<!-- zenncode: expect=run -->
 ```go
 // https://go.dev/play/p/0du6Ya70CtL
 func main() {
@@ -87,6 +88,7 @@ https://go.dev/play/p/uScAmOMA6FL
 
 例えば次のサンプルプログラムを実行するとrun-time panicになります。
 
+<!-- zenncode: expect=run -->
 ```go
 // https://go.dev/play/p/gNmPDq0pl2X
 func main() {
@@ -122,6 +124,7 @@ comparable型制約について詳しくは[Go言語のジェネリクス入門(
 
 ややこしく書いてあるのはunions（後述)を考慮した記述なのでこの記事の本筋とは関係ありません。重要なのは、comparable(言語仕様)と違い、`X`がふつうのinterface型であるとき、comparable(型制約)は`X`を**含まない**ということです。これを示すのが次のサンプルプログラムです。
 
+<!-- zenncode: expect=run -->
 ```go
 // https://go.dev/play/p/WzCU9sh__fD
 func main() {
