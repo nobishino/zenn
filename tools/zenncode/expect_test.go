@@ -78,6 +78,8 @@ func TestParseExpectationErrors(t *testing.T) {
 		{"output without a next block", "<!-- zenncode: output=next -->\n" + code, "no block after this one"},
 		{"output with compile-error", "<!-- zenncode: expect=compile-error output=next -->\n" + code, "only applies with expect=run"},
 		{"bad regexp", `<!-- zenncode: expect=compile-error error="[" -->` + "\n" + code, "error parsing regexp"},
+		{"run on a cross target", "<!-- zenncode: expect=run goos=wasip1 goarch=wasm -->\n" + code, "built for wasip1/wasm and cannot be run here"},
+		{"panic on a cross target", "<!-- zenncode: expect=panic goarch=wasm -->\n" + code, "built for */wasm and cannot be run here"},
 		{"bad timeout", "<!-- zenncode: expect=run timeout=soon -->\n" + code, "timeout=soon"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {

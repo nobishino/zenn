@@ -78,6 +78,7 @@ Playground の共有エンドポイントは内容アドレスで、同じバイ
 | `skip` | 実装済 | このブロックを検証もリンク付けもしない |
 | `imports=math/rand,fmt` | 実装済 | goimports が迷う場合に import を指定する |
 | `goversion=1.18` | 実装済 | 一時 module の `go` ディレクティブ |
+| `goos=wasip1` / `goarch=wasm` | 実装済 | このターゲット向けにビルドする。実行と Playground リンクの対象外になる |
 | `playground=none` | 実装済 | 検証はするが Playground リンクを付けない。既にあるリンクは `fix` が消す |
 | `expect=build` | 実装済 | 既定。コンパイルが通ればよい（実行はしない） |
 | `expect=run` | 実装済 | 実行して正常終了することまで見る |
@@ -111,6 +112,25 @@ panic として認めない。
 クイズ形式の記事（`goquiz_20230817.md`）はこれで成り立っている。
 リンクが付かないのは、そもそも Go として構文解析できずプログラムを組み立て
 られなかったブロックと、`playground=none` を指定したブロック。
+
+### wasm など、この環境では動かないサンプル
+
+`//go:build wasip1 && wasm` が付いたファイルや `//go:wasmimport` の宣言は、
+ホスト向けにビルドすると「build constraints exclude all Go files」や
+「missing function body」で落ちる。`goos=` / `goarch=` を指定すると
+そのターゲット向けにビルドする。
+
+```markdown
+<!-- zenncode: goos=wasip1 goarch=wasm -->
+```
+
+ターゲットを指定したブロックは:
+
+- **実行されない** — クロスコンパイルした実行ファイルはここでは動かないので、
+  `expect=run` / `expect=panic` と併用するとディレクティブのエラーになる
+- **Playground リンクを付けない** — Playground は自分のプラットフォーム向けに
+  ビルドするので、リンク先はコンパイルすら通らない。既にリンクがあれば
+  `playground=none` と同じく `fix` が消す
 
 ### リンクを付けたくないとき
 

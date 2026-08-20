@@ -124,6 +124,10 @@ func parseExpectation(b mdscan.Block) (expectation, error) {
 		e.output = b.NextCode
 	}
 
+	if t := crossTarget(d); t != "" && e.runs() {
+		return e, fmt.Errorf("expect=%s: this snippet is built for %s and cannot be run here", e.kind, t)
+	}
+
 	if v := d.Get("timeout"); v != "" {
 		td, err := time.ParseDuration(v)
 		if err != nil {
@@ -135,6 +139,24 @@ func parseExpectation(b mdscan.Block) (expectation, error) {
 		e.timeout = td
 	}
 	return e, nil
+}
+
+// crossTarget renders the GOOS/GOARCH a block names as "wasip1/wasm", or ""
+// when it builds for the host. Naming either one is enough: `goarch=wasm`
+// alone still means the code is not built the way this machine builds things,
+// so it is neither run nor shared.
+func crossTarget(d mdscan.Directive) string {
+	goos, goarch := d.Get("goos"), d.Get("goarch")
+	if goos == "" && goarch == "" {
+		return ""
+	}
+	if goos == "" {
+		goos = "*"
+	}
+	if goarch == "" {
+		goarch = "*"
+	}
+	return goos + "/" + goarch
 }
 
 // aborted reports whether stderr is the runtime's report of a program dying on

@@ -24,6 +24,8 @@ type Request struct {
 	IsMain    bool   // package main with a func main
 	GoVersion string // go directive for the scratch module; defaults to the toolchain's
 	Binary    bool   // keep the executable so it can be run
+	GOOS      string // cross-compilation target; empty means the host's
+	GOARCH    string
 }
 
 // Result is the outcome of a build.
@@ -113,6 +115,15 @@ func (b *Builder) Build(ctx context.Context, req Request) (Result, error) {
 		"GOWORK=off",
 		"GOTOOLCHAIN=local",
 	)
+	// A snippet written for wasm only compiles under its own GOOS/GOARCH:
+	// on the host the build constraints exclude it, or a //go:wasmimport
+	// declaration is rejected for having no body.
+	if req.GOOS != "" {
+		cmd.Env = append(cmd.Env, "GOOS="+req.GOOS)
+	}
+	if req.GOARCH != "" {
+		cmd.Env = append(cmd.Env, "GOARCH="+req.GOARCH)
+	}
 	out, err := cmd.CombinedOutput()
 	res := Result{OK: err == nil, Output: clean(string(out), dir)}
 	if res.OK && req.Binary && req.IsMain {

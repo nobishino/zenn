@@ -150,11 +150,25 @@ func (r result) linkable() bool {
 	return r.status == statusOK && r.prog.Hash() != "" && !r.unlinked()
 }
 
-// unlinked reports whether the article asked for this block to carry no
-// playground link, with `playground=none`. Unlike the other reasons a snippet
-// goes unlinked, this one is a decision by the author rather than a verdict on
-// the code, so it also means an existing link should go away.
-func (r result) unlinked() bool { return r.block.Directive.Get("playground") == "none" }
+// unlinked reports whether this block should carry no playground link at all.
+// Unlike the other reasons a snippet goes unlinked, these come from the block
+// itself rather than from a verdict on the code, so they also mean an existing
+// link should go away.
+func (r result) unlinked() bool { return r.unlinkReason() != "" }
+
+// unlinkReason says why a block carries no link, phrased to be read at the
+// start of a sentence. It returns "" for the blocks that should have one.
+func (r result) unlinkReason() string {
+	switch {
+	case r.block.Directive.Get("playground") == "none":
+		return "this block asks for no playground link"
+	case crossTarget(r.block.Directive) != "":
+		// The playground builds for its own platform, so a link to code
+		// written for another one would not even compile there.
+		return "this snippet is built for " + crossTarget(r.block.Directive) + ", which the playground cannot build"
+	}
+	return ""
+}
 
 // fail records a failure and returns the result, so a caller can write
 // `return r.fail(...)` at each point a snippet can go wrong.
@@ -245,15 +259,15 @@ func cmdVerify(paths []string, jobs int, verbose bool) error {
 	return nil
 }
 
-// unlinkMsg explains a link that `playground=none` says should not be there.
-// An ambiguous link is one written between two code blocks, where the tool
-// only guessed which block it belongs to; that guess is not good enough to
-// delete on, so the author is asked to do it.
-func unlinkMsg(ambiguous bool) string {
+// unlinkMsg explains a link that should not be there. An ambiguous link is one
+// written between two code blocks, where the tool only guessed which block it
+// belongs to; that guess is not good enough to delete on, so the author is
+// asked to do it.
+func unlinkMsg(reason string, ambiguous bool) string {
 	if ambiguous {
-		return "this block asks for no playground link, but this link could belong to either neighbouring block; remove it by hand if it is this one's"
+		return reason + ", but this link could belong to either neighbouring block; remove it by hand if it is this one's"
 	}
-	return "this block asks for no playground link; run `make fix` to remove it"
+	return reason + "; run `make fix` to remove it"
 }
 
 // linkIssue is a mismatch between an article's playground link and the code
@@ -272,7 +286,7 @@ func checkLinks(results []result, lk *lock.File) []linkIssue {
 		for i, r := range group {
 			if r.unlinked() {
 				if link := plan.link(i); link.Found() {
-					issues = append(issues, linkIssue{posOf(r.block, link.Line), unlinkMsg(plan.ambiguous(i))})
+					issues = append(issues, linkIssue{posOf(r.block, link.Line), unlinkMsg(r.unlinkReason(), plan.ambiguous(i))})
 				}
 				continue
 			}
@@ -453,6 +467,8 @@ var supportedKeys = map[string]bool{
 	"skip":       true,
 	"imports":    true,
 	"goversion":  true,
+	"goos":       true,
+	"goarch":     true,
 	"playground": true,
 	"expect":     true,
 	"error":      true,
@@ -472,6 +488,11 @@ func validateDirective(d mdscan.Directive) error {
 	if d.Has("playground") {
 		if v := d.Get("playground"); v != "none" {
 			return fmt.Errorf("playground=%s: the only supported value is none", v)
+		}
+	}
+	for _, key := range []string{"goos", "goarch"} {
+		if d.Has(key) && d.Get(key) == "" {
+			return fmt.Errorf("%s needs a value, as in goos=wasip1 goarch=wasm", key)
 		}
 	}
 	for key := range d.Opts {
@@ -523,6 +544,8 @@ func processBlock(builder *check.Builder, b mdscan.Block) result {
 		IsMain:    prog.HasMain,
 		GoVersion: b.Directive.Get("goversion"),
 		Binary:    exp.runs(),
+		GOOS:      b.Directive.Get("goos"),
+		GOARCH:    b.Directive.Get("goarch"),
 	})
 	if err != nil {
 		return r.fail("build", fmt.Sprintf("%v\n%s", err, res.Output))

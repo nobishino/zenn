@@ -1,24 +1,24 @@
 {
   "_comment": "Snippets that do not verify today. Regenerate with `zenncode baseline`. Entries are matched by hash, so an edited snippet must pass on its own.",
-  "generated": "2026-08-13T08:16:06+09:00",
+  "generated": "2026-08-20T13:34:42+09:00",
   "entries": [
     {
       "file": "articles/3-means-of-go-comparable.md",
-      "line": 187,
+      "line": 190,
       "hash": "49472f89a552329c",
       "stage": "build",
       "reason": "sample.go:6:9: undefined: Value"
     },
     {
       "file": "articles/basic-interface-is-comparable.md",
-      "line": 212,
+      "line": 215,
       "hash": "0ddf99f985d52507",
       "stage": "build",
       "reason": "sample.go:4:6: invalid recursive type: comparable refers to itself"
     },
     {
       "file": "articles/basic-interface-is-comparable.md",
-      "line": 298,
+      "line": 301,
       "hash": "9296e9ac358509e7",
       "stage": "build",
       "reason": "sample.go:5:22: undefined: T"
@@ -39,21 +39,21 @@
     },
     {
       "file": "articles/go-encoding-csv-rfc.md",
-      "line": 365,
+      "line": 370,
       "raw": "d19cb7cb8e1960fa",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found first_name"
     },
     {
       "file": "articles/go-encoding-csv-rfc.md",
-      "line": 378,
+      "line": 383,
       "raw": "aa5ec082202e3851",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found \"Rob\"; 1:15: string literal not terminated"
     },
     {
       "file": "articles/go-encoding-csv-rfc.md",
-      "line": 386,
+      "line": 391,
       "raw": "005449d9f9e5c358",
       "stage": "normalize",
       "reason": "3:1: expected declaration, found LazyQuotes"
@@ -81,28 +81,14 @@
     },
     {
       "file": "articles/go-wasmimport-hello.md",
-      "line": 21,
-      "hash": "5aeb877d1cb3cbcd",
-      "stage": "build",
-      "reason": "sample.go:4:6: missing function body"
-    },
-    {
-      "file": "articles/go-wasmimport-hello.md",
-      "line": 101,
-      "hash": "89afda1ccc652e35",
-      "stage": "build",
-      "reason": "package zenncodesample: build constraints exclude all Go files in ."
-    },
-    {
-      "file": "articles/go-wasmimport-hello.md",
-      "line": 172,
+      "line": 177,
       "hash": "a63e00cf582419e0",
       "stage": "build",
       "reason": "sample.go:7:54: undefined: size"
     },
     {
       "file": "articles/learn_go_quine_for_great_good.md",
-      "line": 126,
+      "line": 128,
       "hash": "4a97403adae96f41",
       "stage": "build",
       "reason": "sample.go:8:12: pattern main.go: no matching files found"
@@ -116,154 +102,154 @@
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 174,
+      "line": 176,
       "hash": "abca9b36678402c6",
       "stage": "build",
       "reason": "sample.go:3:10: undefined: Stack"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 182,
+      "line": 184,
       "raw": "6607095ff07b7c8e",
       "stage": "normalize",
       "reason": "1:2: expected declaration, found s"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 198,
+      "line": 200,
       "raw": "c87868a86ed208b7",
       "stage": "normalize",
-      "reason": "2:27: method must have no type parameters"
+      "reason": "2:50: missing parameter name"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 207,
+      "line": 209,
       "raw": "77e2b4aa2b8855aa",
       "stage": "normalize",
       "reason": "2:51: missing parameter name"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 314,
+      "line": 316,
       "raw": "554f110d38327b37",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found xs"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 323,
+      "line": 325,
       "hash": "5091fd45be53f55d",
       "stage": "build",
       "reason": "sample.go:5:5: declared and not used: vs"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 336,
+      "line": 338,
       "raw": "dce2ae3e9745d0b3",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found 'if'"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 351,
+      "line": 353,
       "hash": "7e31dff46b8e6edb",
       "stage": "build",
       "reason": "sample.go:6:10: undefined: Stringer"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 398,
+      "line": 400,
       "raw": "ff788d4df34971a3",
       "stage": "normalize",
       "reason": "1:26: expected ';', found T; 2:2: expected declaration, found 'if'"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 517,
+      "line": 516,
       "hash": "97114402e680be75",
       "stage": "build",
       "reason": "sample.go:5:44: undefined: NewInt"
     },
     {
       "file": "articles/type_param_intro.md",
-      "line": 544,
+      "line": 542,
       "raw": "e4f38b843821bef7",
       "stage": "normalize",
       "reason": "12:9: expected ';', found NewInt"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 102,
+      "line": 103,
       "hash": "2a91be422eaa1f21",
       "stage": "build",
       "reason": "sample.go:4:2: undefined: Print"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 225,
+      "line": 226,
       "raw": "3260ba65640f2a07",
       "stage": "normalize",
       "reason": "1:1: expected declaration, found x"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 273,
+      "line": 274,
       "raw": "6fdcd2057facaf5f",
       "stage": "normalize",
       "reason": "1:21: expected statement, found '...'; 4:6: expected '}', found 'EOF'"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 320,
+      "line": 321,
       "hash": "d755b842c34263c4",
       "stage": "build",
       "reason": "sample.go:12:8: not enough type arguments for type T: have 1, want 3"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 470,
+      "line": 471,
       "hash": "38119e49dfc48409",
       "stage": "build",
       "reason": "sample.go:12:8: not enough type arguments for type X: have 1, want 2"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 556,
+      "line": 557,
       "hash": "5e6ac68c732e8236",
       "stage": "build",
       "reason": "sample.go:13:10: undefined: FromStrings"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 578,
+      "line": 579,
       "hash": "9a99cb8f328e9537",
       "stage": "build",
       "reason": "sample.go:4:10: undefined: FromStrings"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 592,
+      "line": 593,
       "hash": "3d50b3a0089fca7c",
       "stage": "build",
       "reason": "sample.go:3:20: undefined: Setter"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 630,
+      "line": 631,
       "hash": "91160b59171ca147",
       "stage": "build",
       "reason": "sample.go:6:10: undefined: FromStrings2"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 643,
+      "line": 644,
       "hash": "174d30bffd2df7fd",
       "stage": "build",
       "reason": "sample.go:6:10: undefined: FromStrings2"
     },
     {
       "file": "articles/type_param_intro_2.md",
-      "line": 659,
+      "line": 660,
       "hash": "6d794c00a37ea377",
       "stage": "build",
       "reason": "sample.go:5:3: undefined: Settable"
