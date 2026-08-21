@@ -1,0 +1,6 @@
+title: "Goの型推論を仕様書から読む"
+summary: "Goの型推論について、実際のコードを動かしながら、言語仕様書の記述を上から順に読み解きます。"
+topics: ["go", "generics"]
+published: false
+price: 0
+toc_depth: 2
