@@ -1,249 +1,98 @@
 # Goの型推論を仕様書から読む
 
-## 現在のGoでできる型推論
+## この本の方針
 
-### 通常の関数呼び出し
+第1章と第2章で、現在のGoでできる型推論と処理の全体像を先に確認します。
 
-### 既知の関数型の変数への代入
+第3章以降は、次の2つの仕様書を上から順に読みます。
 
-### 別の関数の引数として渡す
+- [Type inference](https://go.dev/ref/spec#Type_inference)
+- [Type unification rules](https://go.dev/ref/spec#Type_unification_rules)
 
-### 関数の戻り値として返す
+仕様書の各センテンスは、割り当てられた章で少なくとも一度取り上げます。READMEでは、各章が担当する原文の連続範囲を段落単位で示します。仕様書の改訂時にはこの対応を見直します。
 
-### 関数型への変換
+## 第1章 現在のGoでできる型推論
 
-### ジェネリックメソッド
+## 第2章 型推論の全体像
 
-### 型引数を一部だけ明示する
+## 第3章 型同士の関係と型方程式
 
-### 制約から別の型引数を推論する
+カバーする原文の全範囲:
 
-### 型推論が行われないもの
+[Type inference](https://go.dev/ref/spec#Type_inference)の冒頭4段落。型引数を省略できる条件と成功条件から始まり、型同士の関係を型方程式の集合にして解くという説明まで。
 
-## 型推論の全体像
+## 第4章 dedupの例
 
-### インスタンス化と型推論
+カバーする原文の全範囲:
 
-### この章で扱う例
+[Type inference](https://go.dev/ref/spec#Type_inference)の`dedup`の例全体。サンプルコードの提示から、`S ➞ Slice`と`E ➞ int`を得る説明まで。
 
-### 型推論の入力と出力
+## 第5章 bound type parameter
 
-### 型推論が行われる場面
+カバーする原文の全範囲:
 
-### 型推論に使われる関係
+[Type inference](https://go.dev/ref/spec#Type_inference)のbound type parameterを定義する2段落。解く対象の定義から、型方程式はbound type parameterについてだけ解かれるという説明まで。
 
-### 型方程式
+## 第6章 型方程式の作り方
 
-### 型方程式を解く
+カバーする原文の全範囲:
 
-### 単純な場合の流れ
+[Type inference](https://go.dev/ref/spec#Type_inference)の型推論が対応する利用場面と、場面ごとに作られる入力を列挙する範囲。ジェネリック関数の呼び出しと関数型が要求される文脈の説明から、`Pₖ ≡C Cₖ`の生成規則まで。
 
-### 一般的な場合の流れ
+## 第7章 型推論の2つのフェーズ
 
-### 型制約の確認
+カバーする原文の全範囲:
 
-### 型推論が成功する条件
+[Type inference](https://go.dev/ref/spec#Type_inference)の型付きオペランドを優先するという説明から、第1フェーズ、第2フェーズ、全型引数が見つからない場合の失敗、`Pₖ ➞ Aₖ`という結果の提示まで。
 
-### 仕様書の構成
+## 第8章 型引数の簡約
 
-## 型同士の関係と型方程式
+カバーする原文の全範囲:
 
-### 関数呼び出しから得られる≡A
+[Type inference](https://go.dev/ref/spec#Type_inference)の型引数がbound type parameterを含み得るという説明から、繰り返し置換による簡約と、循環参照による失敗の説明まで。
 
-### ≡Aは代入可能性そのものではない
+## 第9章 type unificationとmap
 
-### 関数型との照合から得られる≡A
+カバーする原文の全範囲:
 
-### ≡Aの出どころ
+[Type inferenceのType unification](https://go.dev/ref/spec#Type_inference)の冒頭3段落。型方程式の左右を再帰的に比較する説明から、bound type parameterと推論済み型引数のmapを参照・更新し、成功または失敗へ進む説明まで。
 
-### 型制約から得られる≡C
+## 第10章 複合型のunification
 
-### ≡Cは対称ではない
+カバーする原文の全範囲:
 
-### 型方程式の両辺
+[Type inferenceのType unification](https://go.dev/ref/spec#Type_inference)の配列と構造体を使った例全体。型方程式の提示から、空のmapを更新しながら`P ➞ string`を得て型推論に成功する説明まで。
 
-### 型方程式にならない情報
+## 第11章 exactとlooseと型制約
 
-### Go 1.18の説明との対応
+カバーする原文の全範囲:
 
-### 記号を英語で読む
+[Type inferenceのType unification](https://go.dev/ref/spec#Type_inference)のexactとlooseの導入から、`≡A`の比較、`≡C`に対する4つの規則、型制約由来の式から新しい型引数が得られる限り処理を繰り返すという説明まで。
 
-### G(x)から得られる情報
+## 第12章 type unification rulesの読み方
 
-## dedupの例
+カバーする原文の全範囲:
 
-### サンプルコード
+[Type unification rules](https://go.dev/ref/spec#Type_unification_rules)の冒頭2段落。規則の目的と位置づけから、exactとlooseというmatching mode、および`≡A`でelement matching modeがexactへ変化する説明まで。
 
-### SliceとSの型方程式
+## 第13章 bound type parameterではない型のexact unification
 
-### Sと型制約の型方程式
+カバーする原文の全範囲:
 
-### Sの型引数
+[Type unification rules](https://go.dev/ref/spec#Type_unification_rules)のbound type parameterではない2型がexactに一致する条件の全体。identical、同一構造、片方だけがunbound type parameterである場合の3条件。
 
-### Eの型引数
+## 第14章 bound type parameterのunification
 
-## bound type parameter
+カバーする原文の全範囲:
 
-### bound type parameterとは
+[Type unification rules](https://go.dev/ref/spec#Type_unification_rules)のbound type parameterを含む比較の全体。両辺がbound type parameterである場合の3条件から、片方がbound type parameterである場合、interfaceの扱い、defined typeによる推論結果の置換まで。
 
-### unbound type parameterとは
+## 第15章 loose unification
 
-### 今回の型推論で解く型パラメータ
+カバーする原文の全範囲:
 
-### 複数のジェネリック関数をまとめて推論する場合
+[Type unification rules](https://go.dev/ref/spec#Type_unification_rules)のloose unificationの全体。exactに一致する場合から、defined typeとtype literal、interface同士、interfaceとその他の型、同一構造の型を比較する各条件まで。
 
-## 型推論の2つのフェーズ
+## 第16章 まとめ
 
-### 第1フェーズ
-
-#### 型方程式をunificationする
-
-### 第2フェーズ
-
-#### untyped constantのconstant kind
-
-#### default type
-
-### constant kindが競合する場合
-
-#### サンプルコード
-
-#### 型推論の流れ
-
-### 型引数が決まらない場合
-
-## 型引数の簡約
-
-### bound type parameterを含む型引数
-
-### bound type parameterの置換
-
-### 循環参照
-
-#### サンプルコード
-
-#### P1の型推論
-
-#### P2の型推論
-
-#### 型引数を簡約する
-
-#### 型推論が失敗する
-
-## type unification
-
-### bound type parameterと型引数のmap
-
-### 空のmapから始める
-
-### 型引数をmapに追加する
-
-### 既知の型引数を使う
-
-### 複合型を再帰的に比較する
-
-#### 仕様書のサンプル
-
-#### 配列型
-
-#### 構造体型
-
-#### Pとstring
-
-#### []Pと[]string
-
-### type unificationが成功する条件
-
-## exactとloose
-
-### exact
-
-### loose
-
-### ≡Aのmatching mode
-
-### element matching mode
-
-## 型制約のunification
-
-### 共通のunderlying type
-
-#### サンプルコード
-
-#### 型推論の流れ
-
-### channel type
-
-#### サンプルコード
-
-#### 型推論の流れ
-
-### 1つだけのtype term
-
-#### サンプルコード
-
-#### 型推論の流れ
-
-### method
-
-#### サンプルコード
-
-#### 型推論の流れ
-
-### 繰り返し処理
-
-## Goのバージョンによる変更
-
-### Go 1.18
-
-### Go 1.21
-
-### Go 1.27
-
-## type unification rules
-
-### matching mode
-
-### bound type parameterではない型同士
-
-#### identicalな型
-
-#### 同じ構造の型
-
-#### unbound type parameterを含む場合
-
-### bound type parameter同士
-
-#### 同じ型パラメータ
-
-#### 型パラメータをjoinする場合
-
-#### どちらにも型引数がある場合
-
-### bound type parameterとその他の型
-
-#### 型引数がまだない場合
-
-#### 型引数がすでにある場合
-
-#### interface typeの場合
-
-#### defined typeを残す場合
-
-### loose unification
-
-#### exact unificationできる場合
-
-#### defined typeとtype literal
-
-#### interface type同士
-
-#### interface typeとその他の型
-
-#### 同じ構造の型
-
-## まとめ
-
-### 型推論の流れ
-
-### 仕様書を読み直す
+第3章から第15章までの流れをまとめ、仕様書を上から読み直します。
