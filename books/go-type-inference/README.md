@@ -21,9 +21,9 @@
 
 [Type inference](https://go.dev/ref/spec#Type_inference)の冒頭4段落。型引数を省略できる条件と成功条件から始まり、型同士の関係を型方程式の集合にして解くという説明まで。
 
-> “Otherwise, type inference fails and the program is invalid.”
+> A use of a generic function may omit some or all type arguments if they can be inferred from the context within which the function is used, including the constraints of the function's type parameters. Type inference succeeds if it can infer the missing type arguments and instantiation succeeds with the inferred type arguments. Otherwise, type inference fails and the program is invalid.
 
-この文を含む冒頭から、`type equations`を解くという説明までを扱います。
+この段落に続く、型の対の関係、型制約との関係、型方程式の集合についての3段落までを扱います。
 
 ## 第4章 dedupの例
 
