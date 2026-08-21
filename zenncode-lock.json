@@ -71,6 +71,11 @@
       "file": "articles/type_param_intro.md",
       "sharedAt": "2026-08-13"
     },
+    "2d9d45084b5e8a78": {
+      "url": "https://go.dev/play/p/riHB7L_G6Ix",
+      "file": "books/go-type-inference/1.current-type-inference.md",
+      "sharedAt": "2026-08-21"
+    },
     "2ea12c6e34014012": {
       "url": "https://go.dev/play/p/gUfpOnaSmKj",
       "file": "articles/type_param_intro.md",
